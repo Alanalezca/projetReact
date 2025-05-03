@@ -1,0 +1,5 @@
+cd C:\Users\alana\OneDrive\DevWeb\NexusRE\frontend
+
+npm run build
+
+git push --force origin main
