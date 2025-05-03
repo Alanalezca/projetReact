@@ -2,6 +2,8 @@ cd C:\Users\alana\OneDrive\DevWeb\NexusRE\frontend
 
 npm run build
 
+cd C:\Users\alana\OneDrive\DevWeb\NexusRE\
+
 git add .
 git commit -m "Build complet et mise à jour"
 git push --force

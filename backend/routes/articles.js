@@ -1,9 +1,9 @@
 // backend/routes/articles.js
 import express from 'express';
 import { pool } from '../db.js'; // Note bien l'extension .js
-//const router = express.Router();
+const router = express.Router();
 
-{/*router.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM articles");
     res.json(result.rows);
@@ -11,6 +11,6 @@ import { pool } from '../db.js'; // Note bien l'extension .js
     console.error('Erreur lors de la récupération des articles:', err);
     res.status(500).json({ error: 'Erreur serveur' });
   }
-});*/}
+});
 
 export default router;
