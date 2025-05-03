@@ -4,8 +4,8 @@ import path from 'path';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 
-import articlesRoutes from './routes/articles.js';
-import usersRoutes from './routes/users.js';
+//import articlesRoutes from './routes/articles.js';
+//import usersRoutes from './routes/users.js';
 import fs from 'fs';
 
 dotenv.config(); 
@@ -27,8 +27,8 @@ app.use(cors(corsOptions)); // Mettre CORS avant les routes
 app.use(express.json());
 
 // Routes API
-app.use('/api/users', usersRoutes);
-app.use('/api/articles', articlesRoutes);
+//app.use('/api/users', usersRoutes);
+//app.use('/api/articles', articlesRoutes);
 
 // Production : sert le frontend React
 if (process.env.NODE_ENV === 'production') {
