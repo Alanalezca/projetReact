@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // Route par défaut en dev
   app.get('/', (req, res) => {
-    res.send('Bienvenue sur le serveur backend');
+    res.send('Bienvenue sur le serveur backend !!!');
   });
 }
 
