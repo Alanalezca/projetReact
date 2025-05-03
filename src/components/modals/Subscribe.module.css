@@ -1,9 +1,0 @@
-.SubscribeModalBot {
-    background-color: var(--backgroundColorC) !important;
-}
-
-.bxTopRight {
-    position: absolute;
-    top: 16px;  /* Ajuste la distance du haut si nécessaire */
-    right: 16px;  /* Aligne à droite avec un léger espacement */
-  }
