@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 
 import articlesRoutes from './routes/articles.js';
 import usersRoutes from './routes/users.js';
+import fs from 'fs';
 
 dotenv.config(); 
 
@@ -32,15 +33,20 @@ app.use('/api/articles', articlesRoutes);
 // Production : sert le frontend React
 if (process.env.NODE_ENV === 'production') {
   const frontendBuildPath = path.join(__dirname, '../frontend/build');
+  const indexPath = path.join(frontendBuildPath, 'index.html');
+
   app.use(express.static(frontendBuildPath));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendBuildPath, 'index.html'));
-  });
-} else {
-  // Route par défaut en dev
-  app.get('/', (req, res) => {
-    res.send('Bienvenue sur le serveur backend !!! ');
-  });
+  console.log("frontendBuildPath =", frontendBuildPath);
+  console.log("🚧 Vérif existence de :", frontendBuildPath);
+  console.log("Exists ?", fs.existsSync(frontendBuildPath));
+
+  if (fs.existsSync(indexPath)) {
+    app.get('*', (req, res) => {
+      res.sendFile(indexPath);
+    });
+  } else {
+    console.warn("⚠️ Le fichier index.html est introuvable. La route catch-all (*) n'a pas été enregistrée.");
+  }
 }
 
 // Middleware pour gérer les erreurs
