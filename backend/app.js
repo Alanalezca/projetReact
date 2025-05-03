@@ -7,22 +7,6 @@ import { fileURLToPath } from 'url';
 import articlesRoutes from './routes/articles.js';
 import usersRoutes from './routes/users.js';
 
-import { Pool } from 'pg';
-
-// Configurer la connexion à la base de données
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }, // Important pour Render
-});
-
-pool.connect()
-  .then(() => {
-    console.log('✅ Connexion à la base de données réussie');
-  })
-  .catch((err) => {
-    console.error('❌ Erreur de connexion à la base de données:', err);
-  });
-
 dotenv.config(); 
 
 const app = express();
@@ -55,7 +39,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // Route par défaut en dev
   app.get('/', (req, res) => {
-    res.send('Bienvenue sur le serveur backend !!!');
+    res.send('Bienvenue sur le serveur backend !!! ');
   });
 }
 
