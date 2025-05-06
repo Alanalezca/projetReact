@@ -6,9 +6,9 @@ import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 //import { useHistory } from "react-router-dom";
 import styles from './MenuHeader.module.css';
-import Login from '../modals/Login';
-import Subscribe from '../modals/Subscribe';
-import LauncherLogin from '../modals/LauncherModal';
+import Login from '../components/modals/Login';
+import Subscribe from '../components/modals/Subscribe';
+import LauncherLogin from '../components/modals/LauncherModal';
   
   const MenuHeader = ({}) => {
     const [menuOpen, setMenuOpen] = useState(false);
