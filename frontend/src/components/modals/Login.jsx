@@ -10,9 +10,6 @@ const LoginForm = () => {
   const [logOrEmail, setLogOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  //const history = useHistory();
-  //const { sessionUser, setSessionUser } = useGlobalContext();
-
 
   // Créer une référence pour l'icône de fermeture
   const closeModalIconRef = React.useRef(null);
@@ -20,31 +17,26 @@ const LoginForm = () => {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault(); // Empêche la soumission si nécessaire
-      //validerIDPass(event); // Appel de la fonction pour valider la connexion
     }
   };
 
-  //const validerIDPass = async (event) => {
-  //  console.log('tentative de connexion');
-  //  event.preventDefault();
-  //  // Appel à la méthode Meteor.loginWithPassword
-  //  Meteor.loginWithPassword(logOrEmail, password, (err) => {
-  //    if (err) {
-  //      setError('Identifiants incorrects');
-  //    } else {
-  //      console.log('On est loggués');
-  //      setSessionUser(Meteor.user());
-  //      console.log(Meteor.user().profile.pseudo);
-  //      // Simuler un clic sur l'icône de fermeture pour cacher le modal
-  //      if (closeModalIconRef.current) {
-  //        closeModalIconRef.current.click();
-  //      }
-  //
-  //      // Rediriger l'utilisateur vers la page actuelle sans rechargement
-  //      navigate(window.location.pathname)
-  //    }
-  //  });
-  //};
+const identification = async () => {
+  const response = await fetch('http://localhost:5000/api/users/login', {
+    method: 'POST',
+    credentials: 'include', // IMPORTANT pour envoyer les cookies
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email: 'alana_forever@hotmail.com', password: '123456' }),
+  });
+
+  const data = await response.json();
+  if (response.ok) {
+    console.log('Connecté :', data);
+  } else {
+    console.error('Erreur login :', data.message);
+  }
+};
 
   return (
     <>
@@ -66,7 +58,7 @@ const LoginForm = () => {
 
                     <div className={`modal-footer ${styles.LoginModalBot}`}>
                         <label className={styles.subscribe} data-bs-toggle="modal" data-bs-target="#modalSubscribe">S'enregistrer</label><label> / </label><label className={styles.subscribe}>Mot de passe oublié</label>
-                        <button type="button" id="btnValidIDPass" className="btn btn-primary btn-ColorA" data-bs-dismiss="modal">Connexion</button>
+                        <button type="button" id="btnValidIDPass" className="btn btn-primary btn-ColorA" data-bs-dismiss="modal" onClick={(e) => identification()}>Connexion</button>
                         {/*<button type="button" id="btnValidIDPass" className="btn btn-primary btn-ColorA" onClick={validerIDPass} data-bs-dismiss="modal">Connexion</button>*/}
                     </div>
                 </div>
