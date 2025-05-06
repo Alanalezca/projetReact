@@ -7,7 +7,6 @@ function App() {
       fetch('/api/articles')
       .then(response => response.json())
       .then(data => {
-        console.log('Articles reçus du backend :', data); // ← ← ←
         setArticles(data);
       })
       .catch(error => console.error('Erreur fetch articles:', error));
