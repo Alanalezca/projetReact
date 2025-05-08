@@ -88,7 +88,7 @@ router.post('/register', async (req, res) => {
   router.post('/logout', async (req, res) => {
     // Vérifier si la session existe avant d'essayer de la détruire
     if (!req.session.userId) {
-      res.status(200).json({ message: 'Echec de la récupération de session' });
+      return res.status(200).json({ message: 'Echec de la récupération de session' });
     }
 
     // Destruction de la session

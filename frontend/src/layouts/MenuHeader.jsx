@@ -79,11 +79,11 @@ import LauncherLogin from '../components/modals/LauncherModal';
         </ul>
 
         {/* Zone Utilisateur */}
-        <div className={styles.userInfo}>
-            {sessionUser ? (<>
+        <div>
+            {sessionUser ? (<div className={styles.userInfo}>
                 <span className={`txtColorA txtBold ${styles.pseudoUser} ${styles.marginRight}`}>{sessionUser.pseudo}</span>
                   <div className={styles.btnDisconnect}><i className={`bx bxs-exit ${styles.bxNormalOrange} bxNormalOrange`} onClick={() => logoutUser()}></i>
-                </div></>
+                </div></div>
             ) : (<>
                   <div className={styles.btnLogin}><LauncherLogin libelleBtn="Connexion" target="modalLogin" /></div>
                 </>
