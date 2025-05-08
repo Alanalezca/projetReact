@@ -5,59 +5,61 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
+import session from 'express-session';
+import pg from 'pg';
+import connectPgSimple from 'connect-pg-simple';
+
 import articlesRoutes from './routes/articles.js';
 import usersRoutes from './routes/users.js';
 
-dotenv.config();
+dotenv.config(); // À placer tôt
 
-const app = express();
+const app = express(); // <-- doit être déclaré avant son premier usage
 console.log('Initialisation – connexion BDD à :', process.env.DATABASE_URL);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const pgSession = connectPgSimple(session);
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+});
 
-// CORS – autoriser le frontend React à communiquer avec le backend
+// Middleware de session
+app.use(session({
+  store: new pgSession({
+    pool: pool,
+    tableName: 'session',
+  }),
+  secret: process.env.SESSION_SECRET || 'dev-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 1000 * 60 * 60 * 24, // 1 jour
+  },
+}));
+
+// CORS – autoriser le frontend à communiquer avec le backend
 const corsOptions = {
   origin: ['http://localhost:3000', 'https://nexus-backend-68rm.onrender.com'],
   credentials: true,
 };
 app.use(cors(corsOptions));
 
-// Middleware pour parser les JSON dans les requêtes
+// Middleware pour parser les JSON
 app.use(express.json());
 
-// Servir le build React en statique
+// Servir le build React
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const frontendBuildPath = path.join(__dirname, '../frontend/build');
 app.use(express.static(frontendBuildPath));
 console.log('Frontend Build Path:', frontendBuildPath);
-
-// ➕ Route de test en environnement de développement
-if (process.env.NODE_ENV !== 'production') {
-  app.get('/test', (req, res) => {
-    const indexPath = path.join(frontendBuildPath, 'index.html');
-    console.log('📄 Tentative de lecture de :', indexPath);
-
-    fs.access(indexPath, fs.constants.F_OK, (err) => {
-      if (err) {
-        console.error('❌ Fichier non trouvé :', err);
-        return res.status(404).send('Fichier index.html non trouvé!');
-      }
-
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          console.error('❌ Erreur envoi fichier :', err);
-          res.status(500).send('Erreur lors de l’envoi du fichier');
-        }
-      });
-    });
-  });
-}
 
 // Routes API
 app.use('/api/users', usersRoutes);
 app.use('/api/articles', articlesRoutes);
 
-// Fallback : pour toute autre requête GET non API → index.html (SPA)
+// Fallback React
 app.use((req, res, next) => {
   if (req.method === 'GET' && !req.path.startsWith('/api')) {
     res.sendFile(path.join(frontendBuildPath, 'index.html'));
@@ -66,7 +68,7 @@ app.use((req, res, next) => {
   }
 });
 
-// Lancement du serveur
+// Démarrage du serveur
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Serveur backend démarré sur http://localhost:${PORT}`);

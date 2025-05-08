@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSessionUserContext } from '../components/contexts/sessionUserContext';
 //import { useGlobalContext } from "../context/contextGlobalSession"
 //import { useToastContext } from "../context/contextToast";
 //import { useTracker } from "meteor/react-meteor-data";
@@ -11,30 +12,43 @@ import Subscribe from '../components/modals/Subscribe';
 import LauncherLogin from '../components/modals/LauncherModal';
   
   const MenuHeader = ({}) => {
+    const {sessionUser, setSessionUser} = useSessionUserContext();
     const [menuOpen, setMenuOpen] = useState(false);
-
-    //const history = useHistory();
     //const { showToast } = useToastContext();
+    const logoutUser = async () => {
+      const response = await fetch('http://localhost:5000/api/users/logout', {
+        method: 'POST',
+        credentials: 'include', // IMPORTANT pour envoyer les cookies
+      });
 
-    //Récupération des variables de contexte
-    const { sessionUser, setSessionUser } = "varContext";
-
-    //useTracker change la valeur de MeteorLoaded dès qu'il récupère le Meteor.user()
-    //const MeteorLoaded = useTracker(() => Meteor.user(), []);
-
-    //Dès MeteorLoaded est modifié, on affecte au context.sessionUser les informations user stockées dans la session Meteor
-    //useEffect(() => {
-      //(!sessionUser && Meteor.user()) ? setSessionUser(Meteor.user()) : "";
-    //}, [MeteorLoaded]);
-
-
-    const logoutUser = () => {
-      //.logout(() => {
-        //showToast('success', 'Notification', 'Déconnexion', `Votre session est à présent déconnectée !`);
-        //setSessionUser(null); // Vide le contexte
-        //history.push("/");
-      //});
+      if (response.ok) {
+        setSessionUser(null); // Vide le contexte utilisateur
+        console.log('Déconnexion réussie');
+      } else {
+        const data = await response.json();
+        console.error('Erreur lors de la déconnexion :', data.message);
+      }
     };
+
+    //En cas de refresh de la page, on retourne chercher les éléments de session
+    useEffect(() => {
+      const checkSession = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/users/session', {
+            credentials: 'include'
+          });
+          
+          const data = await response.json();
+          if (data) {
+            setSessionUser(data.user);
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération de la session:', error);
+        }
+      };
+    
+      checkSession();
+    }, []);
 
     return (
     <><Login/><Subscribe/>
@@ -67,9 +81,8 @@ import LauncherLogin from '../components/modals/LauncherModal';
         {/* Zone Utilisateur */}
         <div className={styles.userInfo}>
             {sessionUser ? (<>
-                <span className={`txtColorA txtBold ${styles.pseudoUser}`}>
-                  {sessionUser.username}</span>
-                  <div className={styles.btnDisconnect}><i className={`bx bxs-exit ${styles.bxNormalOrange}`} onClick={() => logoutUser()}></i>
+                <span className={`txtColorA txtBold ${styles.pseudoUser} ${styles.marginRight}`}>{sessionUser.pseudo}</span>
+                  <div className={styles.btnDisconnect}><i className={`bx bxs-exit ${styles.bxNormalOrange} bxNormalOrange`} onClick={() => logoutUser()}></i>
                 </div></>
             ) : (<>
                   <div className={styles.btnLogin}><LauncherLogin libelleBtn="Connexion" target="modalLogin" /></div>

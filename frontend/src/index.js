@@ -1,19 +1,20 @@
 import React from 'react';
+import { SessionUserContextProvider } from './components/contexts/sessionUserContext';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import MenuHeader from './layouts/MenuHeader';
 import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <MenuHeader />
-      <App />
+      <SessionUserContextProvider>
+        <MenuHeader />
+        <App />
+      </SessionUserContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

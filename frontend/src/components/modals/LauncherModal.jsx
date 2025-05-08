@@ -1,4 +1,4 @@
-import React from 'react';
+
 import styles from './LauncherModal.module.css';
 
 const LauncherModal = ({libelleBtn, target}) => {
