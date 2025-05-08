@@ -8,15 +8,7 @@ code {
     text-shadow: 0 0 5px #FF5E00, 0 0 10px #FF5E00, 0 0 20px #FF5E00;
 }
 
-@import url('https://unpkg.com/boxicons/css/boxicons.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-@font-face {
-  font-family: 'boxicons';
-  src: url('https://unpkg.com/boxicons@2.1.4/fonts/boxicons.woff2') format('woff2'),
-       url('https://unpkg.com/boxicons@2.1.4/fonts/boxicons.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
 
 *{
   margin: 0px;

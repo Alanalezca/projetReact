@@ -113,8 +113,12 @@
     .MenuHeader.active {
         display: flex;
     }
+}
 
-    .userInfo {
-        margin-top: 10px;
-    }
+.userInfo {
+    margin-top: 10px;
+}
+
+.marginRight {
+    margin-right: 10px;
 }
