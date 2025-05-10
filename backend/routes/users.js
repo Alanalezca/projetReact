@@ -58,7 +58,7 @@ router.post('/register', async (req, res) => {
       } else {
         result = await pool.query('SELECT * FROM tab_users WHERE LOWER(pseudo) = $1', [identifiant]);
       }
-  
+   
       const user = result.rows[0];
 
       // 2. Compare les mots de passe

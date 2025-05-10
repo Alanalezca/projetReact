@@ -14,7 +14,7 @@ const LoginForm = () => {
       credentials: 'include', // IMPORTANT pour envoyer les cookies
       headers: {
         'Content-Type': 'application/json',
-      },
+      }, 
       body: JSON.stringify({ identifiant: logOrEmail.toLowerCase(), password: password }),
     });
 
