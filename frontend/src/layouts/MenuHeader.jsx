@@ -21,7 +21,7 @@ import LauncherLogin from '../components/modals/LauncherModal';
         credentials: 'include', // IMPORTANT pour envoyer les cookies
       });
 
-      if (response.ok) {
+      if (response.ok) { 
         setSessionUser(null); // Vide le contexte utilisateur
         console.log('Déconnexion réussie');
       } else {
