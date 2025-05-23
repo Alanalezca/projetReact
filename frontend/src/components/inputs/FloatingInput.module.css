@@ -1,6 +1,7 @@
 /* Floating input : Début */
   .floatingInputDarkmode {
     background-color: var(--backgroundColorD) !important;
+    color: var(--txtColorWhite) !important;
   }
   
   .floatingLabelDarkMode {
@@ -19,6 +20,12 @@
   .floatingInput textarea:focus {
     border: 4px solid var(--ColorARGB);
     box-shadow: 0 0 8px 4px rgba(var(--ColorARGB-RGB), 0.5); /* Halo plus diffus */
+    color: var(--txtColorWhite);
   }
+
+.floatingInput input:focus ~ label,
+.floatingInput input:not(:placeholder-shown) ~ label {
+  color: var(--txtColorC) !important; /* couleur au focus ou si rempli */
+}
   
   /* Floating input : Fin */

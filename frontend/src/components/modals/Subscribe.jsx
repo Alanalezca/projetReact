@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-//import { useToastContext } from "../context/contextToast";
 import FloatingLabel from '../inputs/FloatingInput';
-//import './../../main.css';
+import { useOngletAlerteContext } from '../contexts/ToastContext';
 import styles from './Subscribe.module.css';
 
 const SubscribeForm = () => {
+  const { showOngletAlerte } = useOngletAlerteContext();
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -53,6 +53,7 @@ const SubscribeForm = () => {
           }
       
           console.log('Utilisateur créé:', data.user);
+          showOngletAlerte('success', '(Enregistrement)', '', 'Votre compte a bien été créé. Vous pouvez à présent vous connecter.');
           // Ici, tu peux fermer le modal et afficher une notification si tu veux
       
         } catch (err) {
@@ -64,7 +65,7 @@ const SubscribeForm = () => {
 
   return (
     <>
-      <div className="modal" id="modalSubscribe" tabIndex="-1" aria-hidden="true">
+      <div className="modal fade" id="modalSubscribe" tabIndex="-1" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header bgcolorC modalTopBordBotTransparent">

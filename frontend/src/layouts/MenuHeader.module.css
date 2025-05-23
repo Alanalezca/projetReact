@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #212529;
+    background: var(--backgroundColorB);
     color: white;
     border-bottom: 2px solid #FF9901;
     height: 45px;
@@ -16,7 +16,7 @@
     display: flex;
     list-style: none;
     height: 45px;
-    padding-left: 100px;
+    padding-left: 300px;
     margin: auto;
     margin-top: -0px;
 }
@@ -63,6 +63,17 @@
     align-items: center;
     padding: 5px 10px;
     border-radius: 5px;
+}
+
+.blocLoginEnglobant {
+    width: 300px;
+}
+
+.blocLogin {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Aligne le contenu à droite à l’intérieur */
+    flex: 1; /* Prend tout l'espace restant à droite */
 }
 
 .txtBold {

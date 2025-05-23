@@ -27,16 +27,18 @@ code {
   --font-xl: clamp(1.5rem, 4vw, 2rem); /* Très grand texte */
   --font-xxl: clamp(2rem, 5vw, 3rem); /* Titre XXL */
 
-  --backgroundColorA: #212529;
-  --backgroundColorARGB: rgba(033, 037, 041);
-  --backgroundColorB: #343a40;
-  --backgroundColorBRGB: rgba(052, 058, 064);
-  --backgroundColorC: #495057;
-  --backgroundColorCRGB: rgba(073, 080, 087);
-  --backgroundColorD: #6c757d;
-  --backgroundColorDRGB: rgba(108, 117, 125);
-  --backgroundColorE: #adb5bd;
-  --backgroundColorERGB: rgba(173, 181, 189);
+  --backgroundColorA: #191919;
+  --backgroundColorARGB: rgba(025, 025, 025);
+  --backgroundColorB: #212121;
+  --backgroundColorBRGB: rgba(033, 033, 033);
+  --backgroundColorC: #29292E;
+  --backgroundColorCRGB: rgba(041, 041, 046);
+  --backgroundColorD: #333439;
+  --backgroundColorDRGB: rgba(051, 052, 057);
+  --backgroundColorE: #70757b;
+  --backgroundColorERGB: rgba(112, 117, 123);
+  --backgroundColorF: #adb5bd;
+  --backgroundColorFRGB: rgba(173, 181, 189);
 
   --backgroundColorSuccess: #1B722F;
   --backgroundColorSuccessRGB: rgba(27, 114, 47);
@@ -55,6 +57,8 @@ code {
 
   --backgroundColorCautionLight: #D56A11;
   --backgroundColorCautionLightRGB: rgba(213, 106, 17);
+
+  --backgroundColorHaloRGB: rgba(173, 131, 5, 0.5);
   
   --ColorA: #FF9901;
   --ColorARGB: rgba(255, 153, 1);
@@ -64,6 +68,12 @@ code {
 
   --ColorC: #C47215;
   --ColorCRGB: rgba(196, 114, 21);
+
+  --ColorD: #adb5bd;
+  --ColorCRGD: rgba(173, 181, 189);
+
+  --ColorE: #C47215;
+  --ColorCRGE: rgba(196, 114, 21);
 
   --txtColorWhite: #FFFFFF;
   --txtColorWhiteRGB: rgba(255, 255, 255);
@@ -133,11 +143,11 @@ html body {
   background-color: var(--backgroundColorE);
 }
 
- /* Textes : Début */
-
- .txtColorDarkA {
-  color: var(--txtColorDarkA);
+.bgcolorF {
+  background-color: var(--backgroundColorE);
 }
+
+ /* Textes : Début */
 
 .txtColorWhite {
   color: var(--txtColorWhite);
@@ -153,6 +163,14 @@ html body {
 
 .txtColorC {
   color: var(--ColorC);
+}
+
+.txtColorD {
+  color: var(--ColorD);
+}
+
+.txtColorE {
+  color: var(--ColorE);
 }
 
 .txtBold {
@@ -201,47 +219,47 @@ html body {
   filter: invert(1) grayscale(100%) brightness(200%); /* Change en blanc */
 }
 
-/* Toast */
-.toastBGTtopStandard {
+/* ongletAlerte */
+.ongletAlerteBGTtopStandard {
   background-color: var(--backgroundColorB) !important;
   border-bottom: 1px solid var(--ColorA) !important;
   color: var(--txtColorB) !important;
 }
 
-.toastBGTBottomStandard {
+.ongletAlerteBGTBottomStandard {
   background-color: var(--backgroundColorB) !important;
   color: var(--txtColorLight) !important;
 }
 
-.toastBGTtopSuccess {
+.ongletAlerteBGTtopSuccess {
   background-color: var(--backgroundColorSuccess) !important;
   border-bottom: 1px solid var(--ColorA) !important;
   color: var(--txtColorWhite) !important;
 }
 
-.toastBGTBottomSuccess {
+.ongletAlerteBGTBottomSuccess {
   background-color: var(--backgroundColorSuccessLight) !important;
   color: var(--txtColorWhite) !important;
 }
 
-.toastBGTtopDanger {
+.ongletAlerteBGTtopDanger {
   background-color: var(--backgroundColorDanger) !important;
   border-bottom: 1px solid var(--ColorA) !important;
   color: var(--txtColorWhite) !important;
 }
 
-.toastBGTBottomDanger {
+.ongletAlerteBGTBottomDanger {
   background-color: var(--backgroundColorDangerLight) !important;
   color: var(--txtColorWhite) !important;
 }
 
-.toastBGTtopCaution {
+.ongletAlerteBGTtopCaution {
   background-color: var(--backgroundColorCaution) !important;
   border-bottom: 1px solid var(--ColorA) !important;
   color: var(--txtColorWhite) !important;
 }
 
-.toastBGTBottomCaution {
+.ongletAlerteBGTBottomCaution {
   background-color: var(--backgroundColorCautionLight) !important;
   color: var(--txtColorWhite) !important;
 }
@@ -316,6 +334,34 @@ html body {
     width: 70%;
   }
 }
+
+/* List-group-item : début */
+
+.list-group-item {
+  background-color: var(--backgroundColorD) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorLight) !important;
+}
+
+.list-group-item:hover {
+  background-color: var(--backgroundColorE) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorLight) !important;
+}
+
+.list-group-item.active {
+  background-color: var(--backgroundColorF) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorWhite) !important;
+}
+
+.list-group-item.disabled {
+  background-color: var(--backgroundColorA) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorDark) !important;
+}
+
+/* List-group-item : fin */
 
 .colXXX {
   background-color: #f8f9fa;

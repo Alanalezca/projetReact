@@ -1,0 +1,9 @@
+.inputSearch {
+    background-color: var(--backgroundColorD);
+    color: var(--txtColorWhite)
+}
+
+.inputSearch:focus {
+  box-shadow: 0 0 0.25rem 0.25rem var(--backgroundColorHaloRGB); /* bleu clair */
+  border-color: var(--backgroundColorHaloRGB);
+}
