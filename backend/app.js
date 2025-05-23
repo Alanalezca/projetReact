@@ -25,6 +25,7 @@ const pool = new pg.Pool({
 });
 
 // Middleware de session
+app.set('trust proxy', 1);
 app.use(session({
   name: 'sid',
   store: new pgSession({
