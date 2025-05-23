@@ -18,6 +18,7 @@ import { Modal } from 'bootstrap';
     const logoutUser = async () => {
       //console.log("cookies", document.cookie);
       const response = await fetch('/api/users/logout', {
+        method: 'POST',
         credentials: 'include', // IMPORTANT pour envoyer les cookies
       });
 
