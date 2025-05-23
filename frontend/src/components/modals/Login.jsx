@@ -11,7 +11,7 @@ const LoginForm = ({handleClickShowModalFromParent}) => {
   const {sessionUser, setSessionUser} = useSessionUserContext();
 
   const identification = async () => {
-    const response = await fetch('http://localhost:5000/api/users/login', {
+    const response = await fetch('/api/users/login', {
       method: 'POST',
       credentials: 'include', // IMPORTANT pour envoyer les cookies
       headers: {
