@@ -17,10 +17,10 @@ import { Modal } from 'bootstrap';
 
     const logoutUser = async () => {
       //console.log("cookies", document.cookie);
-      const response = await fetch('/api/users/logout', {
-        method: 'POST',
-        credentials: 'include', // IMPORTANT pour envoyer les cookies
-      });
+const response = await fetch('https://nexus-backend-68rm.onrender.com/api/users/logout', {
+  method: 'POST',
+  credentials: 'include',
+});
 
       if (response.ok) { 
         setSessionUser(null); // Vide le contexte utilisateur
