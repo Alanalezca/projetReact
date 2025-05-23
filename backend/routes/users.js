@@ -70,6 +70,7 @@ router.post('/register', async (req, res) => {
       // 3. Stocke l’ID utilisateur dans le cookie de session
       req.session.user = user;
       //res.json({ user: req.session.user });
+      console.log("Session set côté serveur:", req.session);
       res.json({ message: 'Connexion réussie', user: { id: user.id, email: user.email,pseudo: user.pseudo } });
     } catch (error) {
       console.error('Erreur lors de la connexion :', error);
