@@ -17,7 +17,7 @@ import { Modal } from 'bootstrap';
 
     const logoutUser = async () => {
       //console.log("cookies", document.cookie);
-      const response = await fetch('http://localhost:5000/api/users/logout', {
+      const response = await fetch('/api/users/logout', {
         method: 'POST',
         credentials: 'include', // IMPORTANT pour envoyer les cookies
       });
@@ -36,7 +36,7 @@ import { Modal } from 'bootstrap';
     useEffect(() => {
       const checkSession = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/users/session', {
+          const response = await fetch('/api/users/session', {
             credentials: 'include'
           });
           
