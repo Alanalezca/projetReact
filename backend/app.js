@@ -35,9 +35,11 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 1000 * 60 * 60 * 24, // 1 jour
-  },
+  secure: process.env.NODE_ENV === 'production',  // 🔒 requis pour SameSite=None
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 🔁 clé du souci
+  httpOnly: true,
+  maxAge: 1000 * 60 * 60 * 24, // 1 jour
+},
 }));
 
 // CORS – autoriser le frontend à communiquer avec le backend
