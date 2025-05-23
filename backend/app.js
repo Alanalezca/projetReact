@@ -10,6 +10,7 @@ import pg from 'pg';
 import connectPgSimple from 'connect-pg-simple';
 
 import articlesRoutes from './routes/articles.js';
+import tagsArticlesRoutes from './routes/tagsArticles.js';
 import usersRoutes from './routes/users.js';
 
 dotenv.config(); // À placer tôt
@@ -25,6 +26,7 @@ const pool = new pg.Pool({
 
 // Middleware de session
 app.use(session({
+  name: 'sid',
   store: new pgSession({
     pool: pool,
     tableName: 'session',
@@ -58,6 +60,7 @@ console.log('Frontend Build Path:', frontendBuildPath);
 // Routes API
 app.use('/api/users', usersRoutes);
 app.use('/api/articles', articlesRoutes);
+app.use('/api/tagsArticles', tagsArticlesRoutes);
 
 // Fallback React
 app.use((req, res, next) => {

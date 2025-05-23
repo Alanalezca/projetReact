@@ -1,27 +1,18 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Articles from '../src/pages/articles/articles';
+import Smashup from '../src/pages/smashup/smashup';
 
 function App() {
-  const [articles, setArticles] = useState([]);
-
-  useEffect(() => {
-      fetch('/api/articles')
-      .then(response => response.json())
-      .then(data => {
-        setArticles(data);
-      })
-      .catch(error => console.error('Erreur fetch articles:', error));
-  }, []);
 
   return (
-    <div>
-      <h1>Liste des articles</h1>
-      <ul>
-        {Array.isArray(articles) && articles.map((article, index) => (
-          <li key={index}>{article.title}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+    <Routes>
+      <Route path="/" element={<Articles />} />
+      <Route path="/smashup" element={<Smashup />} />
+      <Route path="*" element={<Articles />} />
+    </Routes>
+  )
+};
 
 export default App;

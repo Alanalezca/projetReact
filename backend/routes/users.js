@@ -69,8 +69,8 @@ router.post('/register', async (req, res) => {
   
       // 3. Stocke l’ID utilisateur dans le cookie de session
       req.session.user = user;
-
-      res.json({ message: 'Connexion réussie', user: { id: user.id, email: user.email } });
+      //res.json({ user: req.session.user });
+      res.json({ message: 'Connexion réussie', user: { id: user.id, email: user.email,pseudo: user.pseudo } });
     } catch (error) {
       console.error('Erreur lors de la connexion :', error);
       res.status(500).json({ message: 'Erreur serveur' });
@@ -78,27 +78,34 @@ router.post('/register', async (req, res) => {
   });
 
   router.get('/session', async (req, res) => {
-    if (req.session.user) {
-      res.send({ user: req.session.user });
-    } else {
-      console.error('Erreur lors de la connexion :', error);
-    }
-  })
-
-  router.post('/logout', async (req, res) => {
-    // Vérifier si la session existe avant d'essayer de la détruire
-    if (!req.session.userId) {
-      return res.status(200).json({ message: 'Echec de la récupération de session' });
-    }
-
-    // Destruction de la session
-    req.session.destroy(err => {
-      if (err) {
-        return res.status(500).json({ message: 'Erreur lors de la déconnexion' });
+    try {
+      if (req.session && req.session.user) {
+        res.json({ user: req.session.user });
+      } else {
+        res.status(401).json({ message: 'Aucune session active' });
       }
-      res.clearCookie('connect.sid');
-      res.status(200).json({ message: 'Déconnecté avec succès' });
-    });
+    } catch (error) {
+      res.status(500).json({ message: 'Erreur serveur', error: error.message });
+    }
   });
+
+router.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Erreur lors de la destruction de session :', err);
+      return res.status(500).json({ message: 'Erreur lors de la déconnexion' });
+    }
+
+    // Efface le cookie nommé "sid" (que tu as défini dans app.js)
+    res.clearCookie('sid', {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' // ou strict si tu veux plus de sécurité
+    });
+
+    res.status(200).json({ message: 'Déconnexion réussie' });
+  });
+});
   
   export default router;

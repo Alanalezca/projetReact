@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSessionUserContext } from '../contexts/sessionUserContext';
 import FloatingLabel from '../inputs/FloatingInput';
 import styles from './Login.module.css';
+import { useOngletAlerteContext } from '../contexts/ToastContext';
 
-const LoginForm = () => {
+const LoginForm = ({handleClickShowModalFromParent}) => {
+  const { showOngletAlerte } = useOngletAlerteContext();
   const [logOrEmail, setLogOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const {sessionUser, setSessionUser} = useSessionUserContext();
@@ -23,6 +25,7 @@ const LoginForm = () => {
       setSessionUser(data.user);
       console.log('Connecté :', data);
       console.log('Connecté :', data.user);
+      showOngletAlerte('success', '(Identification)', '', 'Vous êtes à présent connecté.');
     } else {
       console.error('Erreur login :', data.message);
     }
@@ -44,7 +47,7 @@ const LoginForm = () => {
                     </div>
 
                     <div className={`modal-footer ${styles.LoginModalBot}`}>
-                        <label className={styles.subscribe} data-bs-toggle="modal" data-bs-target="#modalSubscribe">S'enregistrer</label><label> / </label><label className={styles.subscribe}>Mot de passe oublié</label>
+                        <label className={styles.subscribe} onClick={() => handleClickShowModalFromParent("modalSubscribe")}>S'enregistrer</label><label> / </label><label className={styles.subscribe}>Mot de passe oublié</label>
                         <button type="button" id="btnValidIDPass" className="btn btn-primary btn-ColorA" data-bs-dismiss="modal" onClick={(e) => identification()}>Connexion</button>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { SessionUserContextProvider } from './components/contexts/sessionUserContext';
+import { OngletAlerteProvider } from './components/contexts/ToastContext';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -12,8 +13,10 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <SessionUserContextProvider>
-        <MenuHeader />
-        <App />
+        <OngletAlerteProvider>
+          <MenuHeader />
+          <App />
+        </OngletAlerteProvider>
       </SessionUserContextProvider>
     </BrowserRouter>
   </React.StrictMode>
