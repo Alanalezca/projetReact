@@ -16,11 +16,11 @@ import { Modal } from 'bootstrap';
     const [menuOpen, setMenuOpen] = useState(false);
 
     const logoutUser = async () => {
-      //console.log("cookies", document.cookie);
-const response = await fetch('https://nexus-backend-68rm.onrender.com/api/users/logout', {
-  method: 'POST',
-  credentials: 'include',
-});
+      console.log("cookies", document.cookie);
+      const response = await fetch('/api/users/logout', {
+        method: 'POST',
+        credentials: 'include', // IMPORTANT pour envoyer les cookies
+      });
 
       if (response.ok) { 
         setSessionUser(null); // Vide le contexte utilisateur
@@ -43,6 +43,7 @@ const response = await fetch('https://nexus-backend-68rm.onrender.com/api/users/
           const data = await response.json();
           if (data) {
             setSessionUser(data.user);
+            console.log("cookies", document.cookie);
           }
         } catch (error) {
           console.error('Erreur lors de la récupération de la session:', error);

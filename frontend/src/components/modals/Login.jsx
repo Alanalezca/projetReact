@@ -25,6 +25,7 @@ const LoginForm = ({handleClickShowModalFromParent}) => {
       setSessionUser(data.user);
       console.log('Connecté :', data);
       console.log('Connecté :', data.user);
+      console.log("cookies", document.cookie);
       showOngletAlerte('success', '(Identification)', '', 'Vous êtes à présent connecté.');
     } else {
       console.error('Erreur login :', data.message);
