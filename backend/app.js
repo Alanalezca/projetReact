@@ -21,7 +21,9 @@ console.log('Initialisation – connexion BDD à :', process.env.DATABASE_URL);
 const pgSession = connectPgSimple(session);
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+  ssl: process.env.DATABASE_SSL === 'true' 
+    ? { rejectUnauthorized: false } 
+    : false, // bien expliciter false quand pas de SSL
 });
 
 // Middleware de session
