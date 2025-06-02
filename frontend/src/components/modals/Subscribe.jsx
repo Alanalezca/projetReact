@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { Modal, Button } from 'react-bootstrap';
 import FloatingLabel from '../inputs/FloatingInput';
 import { useOngletAlerteContext } from '../contexts/ToastContext';
 import styles from './Subscribe.module.css';
 
-const SubscribeForm = () => {
+const SubscribeFormV2 = ({handleClose, show}) => {
   const { showOngletAlerte } = useOngletAlerteContext();
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
@@ -64,33 +65,56 @@ const SubscribeForm = () => {
   };
 
   return (
-    <>
-      <div className="modal fade" id="modalSubscribe" tabIndex="-1" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header bgcolorC modalTopBordBotTransparent">
-              <h5 className="modal-title txtColorWhite">S'enregistrer</h5>
-              <i className={`bx bxs-x-square bxNormalOrange ${styles.bxTopRight}`} ref={closeModalIconRefSubscribe} data-bs-dismiss="modal"></i>
-            </div>
+    <Modal
+      show={show}
+      onHide={handleClose}
+      centered
+      backdrop="static"
+      keyboard={false}
+    >
+      <Modal.Header closeButton className="bgcolorC modalTopBordBotTransparent">
+        <Modal.Title className="txtColorWhite">S'enregistrer</Modal.Title>
+      </Modal.Header>
 
-            <div className="modal-body bgcolorC">
-              <form onSubmit={soumissionFormCreationCompte} onKeyDown={handleKeyPressEnter}>
-                <FloatingLabel strLibelleLabel="Identifiant" strTypeInput="text" value={pseudo} cbOnChange={(e) => setPseudo(e.target.value)} cbOnKeyDown={handleKeyPressEnter}/>
-                <FloatingLabel strLibelleLabel="Email" strTypeInput="email" value={email} cbOnChange={(e) => setEmail(e.target.value)} cbOnKeyDown={handleKeyPressEnter}/>
-                <FloatingLabel strLibelleLabel="Mot de passe" strTypeInput="password" value={password} cbOnChange={(e) => setPassword(e.target.value)} cbOnKeyDown={handleKeyPressEnter}/>
-              </form>
-            </div>
+      <Modal.Body className="bgcolorC">
+        <form onSubmit={soumissionFormCreationCompte} onKeyDown={handleKeyPressEnter}>
+          <FloatingLabel
+            strLibelleLabel="Identifiant"
+            strTypeInput="text"
+            value={pseudo}
+            cbOnChange={(e) => setPseudo(e.target.value)}
+            cbOnKeyDown={handleKeyPressEnter}
+          />
+          <FloatingLabel
+            strLibelleLabel="Email"
+            strTypeInput="email"
+            value={email}
+            cbOnChange={(e) => setEmail(e.target.value)}
+            cbOnKeyDown={handleKeyPressEnter}
+          />
+          <FloatingLabel
+            strLibelleLabel="Mot de passe"
+            strTypeInput="password"
+            value={password}
+            cbOnChange={(e) => setPassword(e.target.value)}
+            cbOnKeyDown={handleKeyPressEnter}
+          />
+        </form>
+      </Modal.Body>
 
-            <div className={`modal-footer ${styles.SubscribeModalBot}`}>
-              <button type="button" id="btnValiderCreationCompte" className={`btn btn-primary ${saisieOK ? 'btn-ColorA' : 'btn-ColorInactif'}`} onClick={saisieOK ? soumissionFormCreationCompte : null} data-bs-dismiss={saisieOK ? "modal" : ""}>
-                Valider l'enregistrement
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+      <Modal.Footer className={styles.SubscribeModalBot}>
+        <Button
+          id="btnValiderCreationCompte"
+          variant="primary"
+          className={saisieOK ? 'btn-ColorA' : 'btn-ColorInactif'}
+          onClick={saisieOK ? soumissionFormCreationCompte : null}
+          disabled={!saisieOK}
+        >
+          Valider l'enregistrement
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
-export default SubscribeForm;
+export default SubscribeFormV2;

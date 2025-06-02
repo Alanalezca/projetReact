@@ -8,12 +8,13 @@ const Card = ({
     classCSSColorTxtContenu,
     texteContenu,
     classCSSColorTxtBottom,
-    texteBottom
+    texteBottom,
+    tailleCol
 }) => {
 
     return (
         <>
-            <div className="col">
+            <div className={`col-${tailleCol}`}>
                 <div className={`card h-100 ${classCSSColorBackground}`}>
                   <img src={cheminImg} className={`card-img-top ${styles.cardImg}`} alt="..." />
                   <div className="card-body">
