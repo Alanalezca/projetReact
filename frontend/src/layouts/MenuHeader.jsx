@@ -8,12 +8,13 @@ import { Link } from "react-router-dom";
 import styles from './MenuHeader.module.css';
 import Login from '../components/modals/Login';
 import Subscribe from '../components/modals/Subscribe';
-import { Modal } from 'bootstrap';
   
   const MenuHeader = ({}) => {
     const { showOngletAlerte } = useOngletAlerteContext();
     const {sessionUser, setSessionUser} = useSessionUserContext();
     const [menuOpen, setMenuOpen] = useState(false);
+    const [showModalLogin, setShowModalLogin] = useState(false);
+    const [showModalSubscribe, setShowModalSubscribe] = useState(false);
 
     const logoutUser = async () => {
       console.log("cookies", document.cookie);
@@ -53,14 +54,8 @@ import { Modal } from 'bootstrap';
       checkSession();
     }, []);
 
-    const handleClickShowModal = (modalIDtoShow) => {
-        const modalElementToShow = document.getElementById(modalIDtoShow);
-        const modalToShow = new Modal(modalElementToShow);
-        modalToShow.show(); // ou modal.hide() si besoin
-    }
-
     return (
-    <><Login handleClickShowModalFromParent={handleClickShowModal}/><Subscribe/>
+    <><Subscribe show={showModalSubscribe} handleClose={setShowModalSubscribe}/><Login show={showModalLogin} handleClose={setShowModalLogin} handleShowSubscribe={setShowModalSubscribe}/>
       <nav className={`txt-base ${styles.navbar}`}>
         {/* Menu Burger Mobile */} 
         <button className={styles.menuToggle} onClick={() => setMenuOpen(!menuOpen)}>
@@ -86,7 +81,7 @@ import { Modal } from 'bootstrap';
                     <div className={styles.btnDisconnect}><i className={`bx bxs-exit ${styles.bxNormalOrange} bxNormalOrange`} onClick={() => logoutUser()}></i>
                   </div></div>
               ) : (<>
-                      <button type="button" className="btn btn-primary btn-ColorA" onClick={() => handleClickShowModal('modalLogin')}>Connexion</button>
+                      <button type="button" className="btn btn-primary btn-ColorA" onClick={() => setShowModalLogin(true)}>Connexion</button>
                   </>
               )}
           </div>

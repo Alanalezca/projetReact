@@ -1,5 +1,7 @@
 import Card from '../../components/others/Card';
+import CardLarge from '../../components/others/CardLarge';
 import CardLoading from '../../components/others/CardLoading';
+import CardLargeLoading from '../../components/others/CardLargeLoading';
 import styles from './articles.module.css';
 import { useState, useEffect } from 'react';
 
@@ -7,6 +9,7 @@ const Articles = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [tags, setTags] = useState([]);
     const [articles, setArticles] = useState([]);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
 
   useEffect(() => {
       fetch('/api/tagsArticles')
@@ -29,54 +32,61 @@ const Articles = () => {
       .catch(error => console.error('Erreur fetch articles:', error));
   }, []);
 
+  useEffect(() => {
+    const checkScreenSize = () => setIsLargeScreen(window.innerWidth >= 992);
+    checkScreenSize();
+
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   return (
-    <div className="container-xl mt-4">
+    <div className="container-xl mt-4">{isLargeScreen ? "large" : "pas large"}
       <div className="row">
-        <div className="col-9">
+        <div className="col-12 col-lg-9">
           <div className="p-3">
-              {isLoading ? 
-                <div className="row row-cols-1 row-cols-md-3 g-4">
-                  <CardLoading classCSSColorBackground="bgcolorC"/>
-                  <CardLoading classCSSColorBackground="bgcolorC"/>
-                  <CardLoading classCSSColorBackground="bgcolorC"/>
+              <div className="row row-cols-12 g-4">
+                  {isLoading ? 
+                  <>
+                      <CardLoading classCSSColorBackground="bgcolorC" tailleCol={isLargeScreen ? 4 : 12}/>
+                      <CardLoading classCSSColorBackground="bgcolorC" tailleCol={isLargeScreen ? 4 : 12}/>
+                      <CardLoading classCSSColorBackground="bgcolorC" tailleCol={isLargeScreen ? 4 : 12}/>
+                  </>
+                  :
+                  <>
+                      {articles.slice(0, 3).map((currentArticles, index) => (
+                        <Card tailleCol={isLargeScreen ? 4 : 12} classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom="Last updated 3 mins ago" key={currentArticles.CodeArticle} />
+                      ))}
+                  </>
+                  }
                 </div>
-              :
-                <div className="row row-cols-1 row-cols-md-3 g-4">
-                  {articles.slice(0, 3).map((currentArticles, index) => (
-                    <Card classCSSColorBackground="bgcolorC" cheminImg="\images\articles\articleA.png" classCSSColorTxtTitre="txtColorA" titre="Card title" classCSSColorTxtContenu="txtColorWhite" texteContenu="This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer." classCSSColorTxtBottom="txtColorD" texteBottom="Last updated 3 mins ago" key={currentArticles.CodeArticle} />
-                  ))}
-                </div>
-              }
-                <div className="row row-cols-12 row-cols-md-12 g-4 mt-4">
-                  {articles.slice(3, 999).map((currentArticles, index) => (
-
-
-
-<div class="card mb-3">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <img src="..." class="img-fluid rounded-start" alt="..."/>
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-                  ))}
+                <div className="row row-cols-12 g-4 mt-1">
+                  {isLoading ?
+                  isLargeScreen ? (
+                  <>
+                    <CardLargeLoading classCSSColorBackground="bgcolorC"/>
+                    <CardLargeLoading classCSSColorBackground="bgcolorC"/>
+                    <CardLargeLoading classCSSColorBackground="bgcolorC"/>
+                  </>
+                  ) : (
+                    <CardLoading classCSSColorBackground="bgcolorC" tailleCol={12}/>
+                  )
+                  :
+                  <>
+                    {articles.slice(3, 999).map((currentArticles, index) => (
+                      isLargeScreen ? (
+                        <CardLarge classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom="Last updated 3 mins ago" key={currentArticles.CodeArticle} />
+                      ) : (
+                        <Card classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom="Last updated 3 mins ago" key={currentArticles.CodeArticle} />
+                      )
+                    ))}
+                  </>
+                  }
                 </div>
           </div>
         </div>
 
-        <div className="col-3">
+        <div className="col-3 d-none d-lg-block">
           <div className="input-group mt-2 mb-1 px-3">
             <span className={`${styles.inputSearch} input-group-text`} id="libelleInputSearchArticles">@</span>
             <input type="text" className={`${styles.inputSearch} form-control`} placeholder="Recherche..." aria-label="rechercheArticles" aria-describedby="basic-addon1"></input>
