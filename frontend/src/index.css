@@ -105,6 +105,12 @@ code {
   font-size: 32px;
 }
 
+.bxNormalColorE {
+  color: var(--backgroundColorE);
+  font-size: 32px;
+}
+
+
 html body {
   padding: 0px;
   font-family: 'Roboto', sans-serif, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -373,3 +379,10 @@ html body {
 .red {
   background-color: red;
 }
+
+/* Icones : début */
+
+
+/* Icones : fin */
+
+/* Autres */
