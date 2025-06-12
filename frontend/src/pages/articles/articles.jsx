@@ -4,6 +4,7 @@ import CardLoading from '../../components/others/CardLoading';
 import CardLargeLoading from '../../components/others/CardLargeLoading';
 import styles from './articles.module.css';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const Articles = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -26,6 +27,7 @@ const Articles = () => {
       .then(response => response.json())
       .then(data => {
         console.log('articles', data);
+        //const filteredResult = data.filter(article => article.Tags?.includes('Keyforge'));
         setArticles(data);
         setIsLoading(false);
       })
@@ -55,7 +57,19 @@ const Articles = () => {
                   :
                   <>
                       {articles.slice(0, 3).map((currentArticles, index) => (
-                        <Card tailleCol={isLargeScreen ? 4 : 12} classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom="Last updated 3 mins ago" key={currentArticles.CodeArticle} />
+                        <Card 
+                          tailleCol={isLargeScreen ? 4 : 12} 
+                          classCSSColorBackground="bgcolorC" 
+                          cheminImg={currentArticles.LienImg} 
+                          classCSSColorTxtTitre="txtColorA" 
+                          titre={currentArticles.Titre} 
+                          classCSSColorTxtContenu="txtColorWhite" 
+                          texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} 
+                          classCSSColorTxtBottom="txtColorD" 
+                          texteBottom="Last updated 3 mins ago" 
+                          key={currentArticles.CodeArticle}
+                          slugArticle={currentArticles.Slug}
+                          />
                       ))}
                   </>
                   }

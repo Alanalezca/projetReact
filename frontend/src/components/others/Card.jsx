@@ -1,4 +1,5 @@
 import styles from './Card.module.css';
+import { Link } from 'react-router-dom';
 
 const Card = ({
     classCSSColorBackground,
@@ -9,12 +10,13 @@ const Card = ({
     texteContenu,
     classCSSColorTxtBottom,
     texteBottom,
-    tailleCol
+    tailleCol,
+    slugArticle
 }) => {
 
     return (
-        <>
             <div className={`col-${tailleCol}`}>
+              <Link to={`/article/${slugArticle}`}>
                 <div className={`card h-100 ${classCSSColorBackground}`}>
                   <img src={cheminImg} className={`card-img-top ${styles.cardImg}`} alt="..." />
                   <div className="card-body">
@@ -27,8 +29,8 @@ const Card = ({
                     <small className="text-body-secondary"><span className={classCSSColorTxtBottom}>{texteBottom}</span></small>
                   </div>
                 </div>
+              </Link>
             </div>
-        </>
     )
 };
 

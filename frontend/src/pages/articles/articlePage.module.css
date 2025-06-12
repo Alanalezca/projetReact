@@ -1,0 +1,12 @@
+.cadreTitre {
+  border-radius: 8px;
+  border: 1px solid var(--backgroundColorE);
+}
+
+.articleImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+  max-height: 400px; /* à adapter si besoin */
+}
