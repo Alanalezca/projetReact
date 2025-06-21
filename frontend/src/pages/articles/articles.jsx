@@ -102,11 +102,11 @@ const Articles = () => {
 
         <div className="col-3 d-none d-lg-block">
           <div className="input-group mt-2 mb-1 px-3">
-            <span className={`${styles.inputSearch} input-group-text`} id="libelleInputSearchArticles">@</span>
-            <input type="text" className={`${styles.inputSearch} form-control`} placeholder="Recherche..." aria-label="rechercheArticles" aria-describedby="basic-addon1"></input>
+            <span className={`${styles.inputSearch} input-group-text ${styles.shadow}`} id="libelleInputSearchArticles">@</span>
+            <input type="text" className={`${styles.inputSearch} form-control ${styles.shadow}`} placeholder="Recherche..." aria-label="rechercheArticles" aria-describedby="basic-addon1"></input>
           </div>
           <div className="p-3">
-            <div className="list-group">
+            <div className={`list-group ${styles.shadow}`}>
                 {tags.map((currentTags, index) => (
                   <a href="#" key={index} className="list-group-item list-group-item-action">{currentTags.Libelle}<span className="badge text-bg-primary rounded-pill">X</span></a>
                 ))}

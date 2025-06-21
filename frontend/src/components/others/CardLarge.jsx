@@ -14,7 +14,7 @@ const Card = ({
     return (
         <>
           <div className="col-12">
-            <div className={`card h-100 d-flex flex-row ${classCSSColorBackground}`}>
+            <div className={`card h-100 d-flex flex-row ${classCSSColorBackground} ${styles.shadow}`}>
               
               {/* Image à gauche, hauteur 100% */}
               <img 

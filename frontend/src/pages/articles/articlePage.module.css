@@ -10,3 +10,9 @@
   border-radius: 8px 8px 0 0;
   max-height: 400px; /* à adapter si besoin */
 }
+
+.shadow {
+  box-shadow:
+    5px 5px 10px rgba(0, 0, 0, 0.5),
+   -5px -5px 10px rgba(255, 255, 255, 0.03);
+}

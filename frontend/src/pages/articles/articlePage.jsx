@@ -8,11 +8,24 @@ const ArticlePage = () => {
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sanitizedHtml, setSanitizedHtml] = useState(null);
+
+  const splitTags = (tagsString) => {
+    if (tagsString) {
+      return tagsString.split(",");
+    }
+  };
+
   useEffect(() => {
     setIsLoading(true);
     fetch(`/api/articles/${slug}`)
       .then((res) => res.json())
-      .then((data) => setArticle(data),setIsLoading(false))
+      .then((data) => {
+        const dataModify = data;
+        dataModify[0].Tags = splitTags(data[0].Tags);
+        setArticle(dataModify);
+        setIsLoading(false);
+      }
+    )
       .catch((err) => console.error('Erreur:', err));
   }, [slug]);
 
@@ -21,19 +34,20 @@ const ArticlePage = () => {
         setSanitizedHtml(DOMPurify.sanitize(article[0].Contenu));
     }
   }, [article]);
+  console.log('article', article);
   return (
     <div className="article">
       {!isLoading && article ? (
             <div className="container-xl mt-5">
                 <div className="row">
-                    <div className={`col-12 col-lg-10 offset-lg-1 p-0 bgcolorC ${styles.cadreTitre}`}>
+                    <div className={`col-12 col-lg-10 offset-lg-1 p-0 bgcolorC ${styles.cadreTitre} ${styles.shadow}`}>
                         <img src={article[0].LienImg} alt={article[0].Titre} className={styles.articleImage}/>
                         <h2 className="mt-4 text-center txtColorWhite">{article[0].Titre}</h2>
                         <div className="row mt-4">
                             <div className="col-12 col-lg-4 d-flex align-items-center justify-content-center">
                               <i className={`bx bx-user-circle bx-sm bxNormalColorE`}></i>
                                  <span className="ps-1"><b>Article créé par : </b></span>
-                              <span className="ps-1 txtColorWhite">{article[0].CreePar}</span>
+                              <span className="ps-1 txtColorWhite">{article[0].PseudoCreateur}</span>
                             </div>
                             <div className="col-12 col-lg-4 d-flex align-items-center justify-content-center">
                               <i className={`bx bx-calendar-alt bx-sm bxNormalColorE`}></i>
@@ -50,7 +64,9 @@ const ArticlePage = () => {
                             <div className="col-12 d-flex align-items-center justify-content-center">
                               <i className={`bx bx-purchase-tag-alt bx-sm bxNormalColorE`}></i>
                               <span className="ps-1"><b>Tags : </b></span>
-                              <span className="ps-1 txtColorWhite">{article[0].CreePar}</span>
+                              {article[0].Tags && article[0].Tags.map((currentTag, index) => (
+                                <div className="ps-2"><span class="badge badge-custom">{currentTag}</span></div>
+                              ))}
                             </div>
                         </div>
                     </div>
