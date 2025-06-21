@@ -71,7 +71,7 @@ router.post('/register', async (req, res) => {
       req.session.user = user;
       //res.json({ user: req.session.user });
       console.log("Session set côté serveur:", req.session);
-      res.json({ message: 'Connexion réussie', user: { id: user.id, email: user.email,pseudo: user.pseudo } });
+      res.json({ message: 'Connexion réussie', user: req.session.user });
     } catch (error) {
       console.error('Erreur lors de la connexion :', error);
       res.status(500).json({ message: 'Erreur serveur' });

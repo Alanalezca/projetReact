@@ -385,4 +385,11 @@ html body {
 
 /* Icones : fin */
 
+/* Badges : Début */
+.badge-custom {
+  background-color: #6B4FA3; /* violet foncé */
+  color: white;
+}
+/* Badges : Fin */
+
 /* Autres */

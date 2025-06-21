@@ -7,7 +7,7 @@ const CardLoading = ({
 
     return (
             <div className={`col-${tailleCol}`}>
-              <div className={`card h-100 ${classCSSColorBackground}`}>
+              <div className={`card h-100 ${classCSSColorBackground} ${styles.shadow}`}>
                 <img src="\images\articles\fontLoad.png" className={`card-img-top ${styles.cardImg}`} alt="..." />
                 <div className="card-body">
                   <h5 className="card-title placeholder-glow">
