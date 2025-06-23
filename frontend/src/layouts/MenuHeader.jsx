@@ -81,7 +81,7 @@ import Subscribe from '../components/modals/Subscribe';
                     <div className={styles.btnDisconnect}><i className={`bx bxs-exit ${styles.bxNormalOrange} bxNormalOrange`} onClick={() => logoutUser()}></i>
                   </div></div>
               ) : (<>
-                      <button type="button" className="btn btn-primary btn-ColorA" onClick={() => setShowModalLogin(true)}>Connexion</button>
+                      <button type="button" className={`btn btn-primary btn-ColorA ${styles.positionBtnCnx}`} onClick={() => setShowModalLogin(true)}>Connexion</button>
                   </>
               )}
           </div>

@@ -13,9 +13,10 @@ import styles from './createArticle.module.css';
 import convertDateToDateLong from '../../functions/getDateLong';
 
 const CreateArticle = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingFinish, setLoadingFinish] = useState(false);
   const { slug } = useParams();
   const [article, setArticle] = useState(null);
+  const [tags, setTags] = useState(null);
   const [htmlContent, setHtmlContent] = useState("");
   const {sessionUser, setSessionUser} = useSessionUserContext();
   const [inputForm, setInputForm] = useState({
@@ -27,6 +28,16 @@ const CreateArticle = () => {
     lienImg: ""
   });
 
+  const handleChangeTagChecker = (ref, value) => {
+    setTags(currentTags =>
+      currentTags.map(tag =>
+        tag.CodeTagArticle === ref
+          ? { ...tag, checked: value } // ou `true` si tu veux forcer
+          : tag
+      )
+    );
+  };
+
   useEffect(() => {
     if (sessionUser) {
     const splitTags = (tagsString) => {
@@ -35,22 +46,46 @@ const CreateArticle = () => {
       }
     };
 
-    setIsLoading(true);
+    setLoadingFinish(false);
     fetch(`/api/articles/${slug}`)
       .then((res) => res.json())
       .then((data) => {
         const dataModify = data;
-           if (dataModify[0]) {
+          if (dataModify[0]) {
           dataModify[0].Tags = splitTags(data[0].Tags);
           setArticle(dataModify);
           handleSetterInputFormFromDB(dataModify);
-          setIsLoading(false);
         }
       }
     )
       .catch((err) => console.error('Erreur:', err));
     }
+    setLoadingFinish(true);
   }, [slug, sessionUser]);
+
+useEffect(() => {
+  setLoadingFinish(false);
+
+  fetch(`/api/tagsArticles`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data) {
+        const dataModifyWithChecked = data.map(current => {
+          let isChecked = false;
+            isChecked = Array.isArray(article?.[0]?.Tags) && article[0].Tags.includes(current.Libelle);
+          return {
+            ...current,
+            checked: isChecked
+          };
+        });
+        setTags(dataModifyWithChecked);
+      }
+    })
+    .catch((err) => console.error('Erreur:', err))
+    .finally(() => {
+      setLoadingFinish(true);
+    });
+}, [slug, sessionUser, article]);
 
   const handleSetterInputFormFromDB = (objectData) => {
     setInputForm(prevInputValueFromDB => ({
@@ -169,9 +204,10 @@ const handleCreateNewArticle = async () => {
   console.log("user", sessionUser);
   console.log("article", article);
   console.log("Input", inputForm);
+  console.log("tags", tags);
   return (
     <div className="container-xl mt-4">
-      {isLoading ?
+      {!loadingFinish ?
       <Loader/> :
         (sessionUser?.grade == "Administrateur" ?
         <div className="row">
@@ -201,7 +237,7 @@ const handleCreateNewArticle = async () => {
             value={article ? article[0].LienImg : ""}
             onBlur={(e) => handleSetterInputForm(e.target.id.replace("create", ""), e.target.value)}
             />
-            <textarea className={`mt-2 mb-4 ${styles.input}`}
+            <textarea className={`mt-2 mb-2 ${styles.input}`}
               maxLength={300}
               placeholder="Résumé de l'article"
               id="createresume"
@@ -209,6 +245,13 @@ const handleCreateNewArticle = async () => {
               onBlur={(e) => handleSetterInputForm(e.target.id.replace("create", ""), e.target.value)}
               rows={5}
             />
+              <div className="col-12 mb-2 d-flex align-items-left justify-content-left txtColorWhite">
+                <span className="ps-1"><b>Tags : </b></span>
+                {tags && tags.map((currentTag, index) => (
+                  <div className="ps-2" key={currentTag.CodeTagArticle} onClick={()=>handleChangeTagChecker(currentTag.CodeTagArticle, !currentTag.checked)}><span className={`badge ${currentTag.checked ? "badge-customOn" : "badge-customOff"} cPointer`}>{currentTag.Libelle}</span></div>
+                ))}
+              </div>
+              <div className={`${styles.breakerTitre} mt-4 mb-4`}></div>
               <div style={{ marginBottom: "1em", display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 <button className={styles.button}
                   type="button"
