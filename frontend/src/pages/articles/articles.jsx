@@ -22,7 +22,7 @@ const Articles = () => {
       .catch(error => console.error('Erreur fetch articles:', error));
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
       fetch('/api/articles')
       .then(response => response.json())
       .then(data => {
@@ -55,7 +55,9 @@ const Articles = () => {
                       <CardLoading classCSSColorBackground="bgcolorC" tailleCol={isLargeScreen ? 4 : 12}/>
                   </>
                   :
-                  <>
+                  <>  {!isLoading && !articles[0] && (
+                    <h2 className="mt-4 text-center txtColorWhite">Aucun article ne correspond à vos critères</h2>
+                  )}
                       {articles.slice(0, 3).map((currentArticles, index) => (
                         <Card 
                           tailleCol={isLargeScreen ? 4 : 12} 
@@ -66,7 +68,7 @@ const Articles = () => {
                           classCSSColorTxtContenu="txtColorWhite" 
                           texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} 
                           classCSSColorTxtBottom="txtColorD" 
-                          texteBottom="Last updated 3 mins ago" 
+                          texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')} 
                           key={currentArticles.CodeArticle}
                           slugArticle={currentArticles.Slug}
                           />
@@ -89,9 +91,9 @@ const Articles = () => {
                   <>
                     {articles.slice(3, 999).map((currentArticles, index) => (
                       isLargeScreen ? (
-                        <CardLarge classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom="Last updated 3 mins ago" key={currentArticles.CodeArticle} />
+                        <CardLarge classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} />
                       ) : (
-                        <Card classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom="Last updated 3 mins ago" key={currentArticles.CodeArticle} />
+                        <Card classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} />
                       )
                     ))}
                   </>

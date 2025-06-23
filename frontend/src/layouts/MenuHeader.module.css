@@ -1,6 +1,8 @@
 /* --- Navbar --- */
 .navbar {
     display: flex;
+    position: sticky;
+    top: 0;
     justify-content: space-between;
     align-items: center;
     background: var(--backgroundColorB);
@@ -131,5 +133,9 @@
 }
 
 .marginRight {
+    margin-right: 10px;
+}
+
+.positionBtnCnx {
     margin-right: 10px;
 }

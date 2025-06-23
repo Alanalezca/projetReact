@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM l_tags_articles ORDER BY \"CodeTagArticle\" ASC");
+    const result = await pool.query("SELECT * FROM l_tags_articles ORDER BY \"Libelle\" ASC");
     res.json(result.rows);
   } catch (err) {
     console.error('Erreur lors de la récupération des articles:', err);
