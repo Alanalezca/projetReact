@@ -10,9 +10,10 @@ const ArticlePage = () => {
   const [sanitizedHtml, setSanitizedHtml] = useState(null);
 
   const splitTags = (tagsString) => {
-    if (tagsString) {
-      return tagsString.split(",");
+    if (typeof tagsString === 'string' && tagsString.trim() !== '') {
+      return tagsString.split(',').map(tag => tag.trim());
     }
+    return [];
   };
 
   useEffect(() => {
