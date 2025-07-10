@@ -8,16 +8,21 @@ import { Link } from 'react-router-dom';
 
 const Articles = () => {
     const [isLoading, setIsLoading] = useState(true);
-    const [tags, setTags] = useState([]);
+    const [tagsArticlesActifs, setTagsArticlesActifs] = useState([]);
+    const [tagsSelectForFilter, setTagsSelectForFilter] = useState([]);
     const [articles, setArticles] = useState([]);
+    const [articlesFiltered, setArticlesFiltered] = useState([]);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [inputRecherche, setInputRecherche] = useState("");
 
   useEffect(() => {
       fetch('/api/tagsArticles')
       .then(response => response.json())
       .then(data => {
-        console.log('tags', data);
-        setTags(data);
+        const dataRemastered = data.map((currentTag, index) => ({
+          ...currentTag,
+          nb: 0
+        }));
       })
       .catch(error => console.error('Erreur fetch articles:', error));
   }, []);
@@ -29,6 +34,7 @@ const Articles = () => {
         console.log('articles', data);
         //const filteredResult = data.filter(article => article.Tags?.includes('Keyforge'));
         setArticles(data);
+        setArticlesFiltered(data);
         setIsLoading(false);
       })
       .catch(error => console.error('Erreur fetch articles:', error));
@@ -41,6 +47,90 @@ const Articles = () => {
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  
+
+  // Comptage des tags //
+  const splitTags = (tagsString) => {
+    if (typeof tagsString === 'string' && tagsString.trim() !== '') {
+      return tagsString.split(',').map(tag => tag.trim());
+    }
+    return [];
+  };
+
+  // Récupération des tags associés aux articles actifs
+useEffect(() => {
+  if (articles[0]?.CodeArticle) {
+    const tempAllTagsArticles = [];
+    articles.forEach((currentArticle) => {
+      tempAllTagsArticles.push(...splitTags(currentArticle.tags));
+    });
+
+    let allTagsArticlesWithCount = tempAllTagsArticles.reduce((acc, tag) => {
+      acc[tag] = (acc[tag] || 0) +1;
+      return acc;
+    }, {});
+
+    allTagsArticlesWithCount = Object.entries(allTagsArticlesWithCount);
+
+    const allTags = [];
+    allTagsArticlesWithCount.forEach((current, index) => {
+      allTags.push({tag: current[0], nb: current[1], filtreActif: false});
+    });
+
+    setTagsArticlesActifs(allTags);
+    };
+}, [articles]);
+
+  // Activation/Desactivation du filtre sur les tuiles tags
+  const handleClickFilterTagOnOff = (e) => {
+    const tagAlreadySelected = tagsSelectForFilter.includes(e.tag);
+    //Si le tag n'est pas encore sélectionné
+    if (!tagAlreadySelected) {
+      const tagsArticlesActifsModified = tagsArticlesActifs.map(current => 
+        current.tag == e.tag
+          ? {...current, filtreActif: !current.filtreActif}
+          : current
+      );
+
+      setTagsArticlesActifs(tagsArticlesActifsModified);
+      setTagsSelectForFilter(prev => {
+        if (!prev.includes(e.tag)) {
+          return [...prev, e.tag];
+        }
+        return prev;
+      });
+      //Si le tag est déjà sélectionné
+    } else {
+      const tagsArticlesActifsModified = tagsArticlesActifs.map(current => 
+        current.tag == e.tag
+          ? {...current, filtreActif: !current.filtreActif}
+          : current
+      );
+      setTagsArticlesActifs(tagsArticlesActifsModified);
+
+      const tagsSelectForFilterModified = tagsSelectForFilter.filter(current => current !== e.tag);
+      setTagsSelectForFilter(tagsSelectForFilterModified);
+    }
+  };
+
+  // Application des tags pris en sélection afin de filtrer la liste des articles à afficher
+  useEffect(() => {
+    const tempoArticlesFiltered = articles.filter(currentArticle => {
+      const articleTagsArray = currentArticle?.tags
+        ?.split(',')
+        .map(tag => tag.trim().toLowerCase());
+      if (tagsSelectForFilter.length > 0) {
+        return tagsSelectForFilter.every(currentTag =>
+          articleTagsArray?.includes(currentTag.toLowerCase()) && (currentArticle.Titre.includes(inputRecherche) || currentArticle.Resume.includes(inputRecherche))
+        );
+      } else {
+        return currentArticle.Titre.includes(inputRecherche) || currentArticle.Resume.includes(inputRecherche);
+      }
+    });
+
+    setArticlesFiltered(tempoArticlesFiltered);
+  }, [tagsSelectForFilter, inputRecherche]);
 
   return (
     <div className="container-xl mt-4">{isLargeScreen ? "large" : "pas large"}
@@ -58,7 +148,7 @@ const Articles = () => {
                   <>  {!isLoading && !articles[0] && (
                     <h2 className="mt-4 text-center txtColorWhite">Aucun article ne correspond à vos critères</h2>
                   )}
-                      {articles.slice(0, 3).map((currentArticles, index) => (
+                      {articlesFiltered.slice(0, 3).map((currentArticles, index) => (
                         <Card 
                           tailleCol={isLargeScreen ? 4 : 12} 
                           classCSSColorBackground="bgcolorC" 
@@ -89,7 +179,7 @@ const Articles = () => {
                   )
                   :
                   <>
-                    {articles.slice(3, 999).map((currentArticles, index) => (
+                    {articlesFiltered.slice(3, 999).map((currentArticles, index) => (
                       isLargeScreen ? (
                         <CardLarge classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} />
                       ) : (
@@ -105,12 +195,12 @@ const Articles = () => {
         <div className="col-3 d-none d-lg-block">
           <div className="input-group mt-2 mb-1 px-3">
             <span className={`${styles.inputSearch} input-group-text ${styles.shadow}`} id="libelleInputSearchArticles">@</span>
-            <input type="text" className={`${styles.inputSearch} form-control ${styles.shadow}`} placeholder="Recherche..." aria-label="rechercheArticles" aria-describedby="basic-addon1"></input>
+            <input type="text" className={`${styles.inputSearch} form-control ${styles.shadow}`} placeholder="Recherche..." aria-label="rechercheArticles" aria-describedby="basic-addon1" onBlur={(e) => setInputRecherche(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') {setInputRecherche(e.target.value);}}}></input>
           </div>
           <div className="p-3">
             <div className={`list-group ${styles.shadow}`}>
-                {tags.map((currentTags, index) => (
-                  <a href="#" key={index} className="list-group-item list-group-item-action">{currentTags.Libelle}<span className="badge text-bg-primary rounded-pill">X</span></a>
+                {tagsArticlesActifs?.map((currentTags, index) => (
+                  <a href="#" key={index} className={`list-group-item list-group-item-action ${!currentTags.filtreActif ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickFilterTagOnOff(currentTags)}>{currentTags.tag}<span className="badge text-bg-primary rounded-pill ms-2">{currentTags.nb}</span></a>
                 ))}
             </div>
           </div>
