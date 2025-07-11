@@ -108,6 +108,19 @@ a {
 .bxNormalOrange:hover {
   color: #FFB300;
   font-size: 32px;
+  animation: tada 1s;
+}
+
+.bxNormalGrey {
+  color: var(--backgroundColorE);
+  font-size: 32px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxNormalGrey:hover {
+  color: var(--backgroundColorF);
+  font-size: 32px;
+  animation: tada 1s;
 }
 
 .bxEnabledToDisabled {

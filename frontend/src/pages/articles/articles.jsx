@@ -14,6 +14,7 @@ const Articles = () => {
     const [articlesFiltered, setArticlesFiltered] = useState([]);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
     const [inputRecherche, setInputRecherche] = useState("");
+    const [activeGridTags, setActiveGridTag] = useState(false);
 
   useEffect(() => {
       fetch('/api/tagsArticles')
@@ -133,9 +134,10 @@ useEffect(() => {
   }, [tagsSelectForFilter, inputRecherche]);
 
   return (
-    <div className="container-xl mt-4">{isLargeScreen ? "large" : "pas large"}
+    <div className="container-xl mt-4">{isLargeScreen ? "" : ""}
       <div className="row">
-        <div className="col-12 col-lg-9">
+        {isLargeScreen ? null : <div className="d-flex justify-content-end"><i className={`bx bx-filter ${activeGridTags ? "bxNormalGrey" : "bxNormalOrange"}`} onClick={() => activeGridTags ? setActiveGridTag(false) : setActiveGridTag(true)}></i></div>}
+        <div className="col-12 col-lg-9 order-2 order-lg-1">
           <div className="p-3">
               <div className="row row-cols-12 g-4">
                   {isLoading ? 
@@ -192,7 +194,7 @@ useEffect(() => {
           </div>
         </div>
 
-        <div className="col-3 d-none d-lg-block">
+        <div className={`${activeGridTags ? "col-12" : "col-3"} ${activeGridTags ? "d-block" : "d-none"} d-lg-block order-1 order-lg-2`}>
           <div className="input-group mt-2 mb-1 px-3">
             <span className={`${styles.inputSearch} input-group-text ${styles.shadow}`} id="libelleInputSearchArticles">@</span>
             <input type="text" className={`${styles.inputSearch} form-control ${styles.shadow}`} placeholder="Recherche..." aria-label="rechercheArticles" aria-describedby="basic-addon1" onBlur={(e) => setInputRecherche(e.target.value)} onKeyDown={(e) => {if (e.key === 'Enter') {setInputRecherche(e.target.value);}}}></input>
