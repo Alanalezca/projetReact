@@ -1,15 +1,24 @@
 import { Modal, Button } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSessionUserContext } from '../contexts/sessionUserContext';
 import { useOngletAlerteContext } from '../contexts/ToastContext';
 import styles from './Login.module.css';
 import FloatingLabel from '../inputs/FloatingInput';
 
-const LoginForm2 = ({ handleClose, show, handleShowSubscribe}) => {
+  const LoginForm2 = ({ handleClose, show, handleShowSubscribe}) => {
   const { showOngletAlerte } = useOngletAlerteContext();
   const [logOrEmail, setLogOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const {sessionUser, setSessionUser} = useSessionUserContext();
+  const [saisieOK, setSaisieOK] = useState(false);
+
+  useEffect(() => {
+    if (logOrEmail !== '' && password.length >= 6) {
+      setSaisieOK(true);
+    } else {
+      setSaisieOK(false);
+    }
+  }, [logOrEmail, password]);
 
   const identification = async () => {
     const response = await fetch('/api/users/login', {
@@ -46,10 +55,10 @@ const LoginForm2 = ({ handleClose, show, handleShowSubscribe}) => {
       </Modal.Body>
 
       <Modal.Footer className={`${styles.LoginModalBot} ${styles.borderBottom}`}>
-        <label className={styles.subscribe} onClick={() => {handleShowSubscribe(true); handleClose(false);}}>S'enregistrer</label>
-        <label> / </label>
         <label className={styles.subscribe}>Mot de passe oublié</label>
-        <Button variant="primary" className="btn-ColorA" onClick={(e) => identification()}>
+        <label> / </label>
+        <label className={styles.subscribe} onClick={() => {handleShowSubscribe(true); handleClose(false);}}>S'enregistrer</label>
+        <Button variant="primary" className={saisieOK ? 'btn-ColorA' : 'btn-ColorInactif'} onClick={(e) => identification()} disabled={!saisieOK}>
           Connexion
         </Button>
       </Modal.Footer>

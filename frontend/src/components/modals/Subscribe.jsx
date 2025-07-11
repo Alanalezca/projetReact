@@ -4,7 +4,7 @@ import FloatingLabel from '../inputs/FloatingInput';
 import { useOngletAlerteContext } from '../contexts/ToastContext';
 import styles from './Subscribe.module.css';
 
-const SubscribeFormV2 = ({handleClose, show}) => {
+const SubscribeFormV2 = ({handleClose, show, handleShowLogin}) => {
   const { showOngletAlerte } = useOngletAlerteContext();
   const [pseudo, setPseudo] = useState('');
   const [email, setEmail] = useState('');
@@ -103,6 +103,9 @@ const SubscribeFormV2 = ({handleClose, show}) => {
       </Modal.Body>
 
       <Modal.Footer className={styles.SubscribeModalBot}>
+        <label className={styles.login} onClick={() => {handleShowLogin(true); handleClose(false);}} >Se connecter</label>
+        <label> / </label>
+        <label className={styles.login} onClick={() => {handleClose(false);}}>S'enregistrer</label>
         <Button
           id="btnValiderCreationCompte"
           variant="primary"

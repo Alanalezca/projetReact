@@ -55,7 +55,7 @@ import Subscribe from '../components/modals/Subscribe';
     }, []);
 
     return (
-    <><Subscribe show={showModalSubscribe} handleClose={setShowModalSubscribe}/><Login show={showModalLogin} handleClose={setShowModalLogin} handleShowSubscribe={setShowModalSubscribe}/>
+    <><Subscribe show={showModalSubscribe} handleClose={setShowModalSubscribe} handleShowLogin={setShowModalLogin}/><Login show={showModalLogin} handleClose={setShowModalLogin} handleShowSubscribe={setShowModalSubscribe}/>
       <nav className={`txt-base ${styles.navbar}`}>
         {/* Menu Burger Mobile */} 
         <button className={styles.menuToggle} onClick={() => setMenuOpen(!menuOpen)}>
