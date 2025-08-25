@@ -8,7 +8,8 @@ const Card = ({
     classCSSColorTxtContenu,
     texteContenu,
     classCSSColorTxtBottom,
-    texteBottom
+    texteBottom,
+    tags
 }) => {
 
     return (

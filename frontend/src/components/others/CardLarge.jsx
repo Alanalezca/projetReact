@@ -1,4 +1,5 @@
 import styles from './CardLarge.module.css';
+import { useState, useEffect } from  'react';
 
 const Card = ({
     classCSSColorBackground,
@@ -8,8 +9,15 @@ const Card = ({
     classCSSColorTxtContenu,
     texteContenu,
     classCSSColorTxtBottom,
-    texteBottom
+    texteBottom,
+    tags
 }) => {
+
+    const [tagsArray, setTagsArray] = useState([]);
+
+    useEffect(() => {
+      setTagsArray(tags?.split(","));
+    }, []);
 
     return (
         <>
@@ -32,7 +40,14 @@ const Card = ({
                 </div>
                 <div className="card-footer">
                   <small className="text-body-secondary">
-                    <span className={classCSSColorTxtBottom}>{texteBottom}</span>
+                    <span className={classCSSColorTxtBottom}>
+                      {texteBottom}
+                      <div className="ps-2 d-inline-block">
+                        {tagsArray?.map((currentTag, index) => (
+                          <div className="d-inline-block me-1" key={currentTag}><span className="badge badge-custom">{currentTag}</span></div>
+                        ))}
+                      </div>
+                    </span>
                   </small>
                 </div>
               </div>

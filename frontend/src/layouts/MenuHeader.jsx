@@ -15,8 +15,9 @@ import Subscribe from '../components/modals/Subscribe';
     const [menuOpen, setMenuOpen] = useState(false);
     const [showModalLogin, setShowModalLogin] = useState(false);
     const [showModalSubscribe, setShowModalSubscribe] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
-    const logoutUser = async () => {
+      const logoutUser = async () => {
       console.log("cookies", document.cookie);
       const response = await fetch('/api/users/logout', {
         method: 'POST',
@@ -53,7 +54,7 @@ import Subscribe from '../components/modals/Subscribe';
     
       checkSession();
     }, []);
-
+    console.log('test', sessionUser);
     return (
     <><Subscribe show={showModalSubscribe} handleClose={setShowModalSubscribe} handleShowLogin={setShowModalLogin}/><Login show={showModalLogin} handleClose={setShowModalLogin} handleShowSubscribe={setShowModalSubscribe}/>
       <nav className={`txt-base ${styles.navbar}`}>
@@ -66,9 +67,10 @@ import Subscribe from '../components/modals/Subscribe';
         <ul className={`${styles.MenuHeader} ${menuOpen ? "active" : ""}`}>
           <li><Link to="/">Articles</Link></li>
           <li>
-              <a href="#">Outils</a>
+              <a href="#">Drafters</a>
                 <ul className={styles.subMenus}>
                   <li><Link to="/">Smash Up</Link></li>
+                  <li><Link to="/">Dice Throne</Link></li>
                 </ul>
           </li>
         </ul>
@@ -77,9 +79,27 @@ import Subscribe from '../components/modals/Subscribe';
         <div className={styles.blocLoginEnglobant}>
           <div className={styles.blocLogin}>
               {sessionUser ? (<div className={styles.userInfo}>
-                  <span className={`txtColorA txtBold ${styles.pseudoUser} ${styles.marginRight}`}>{sessionUser.pseudo}</span>
-                    <div className={styles.btnDisconnect}><i className={`bx bxs-exit ${styles.bxNormalOrange} bxNormalOrange`} onClick={() => logoutUser()}></i>
-                  </div></div>
+                  {sessionUser["grade"] == "Administrateur" ?
+                  <>
+                    <Link to={`/article/admin`}>
+                      <div className={styles.btnDisconnect}>
+                        <i className={`bx bx-list-ul bxNormalOrange`}></i>
+                      </div>
+                    </Link>
+                    <Link to={`/article/create`}>
+                      <div className={styles.btnDisconnect}>
+                        <i className={`bx bx-list-plus bxNormalOrange`}></i>
+                      </div>
+                    </Link>
+                    <div className={styles.btnDisconnect}>
+                      <i className={`bx bxs-cog bxNormalGrey`}></i>
+                    </div>
+                  </>: null}
+                  <span className={`txtColorA ps-1 txtBold ${styles.pseudoUser} ${styles.marginRight}`}>{sessionUser.pseudo}</span>
+                  <div className={styles.btnDisconnect}>
+                    <i className={`bx bxs-exit ${styles.bxNormalOrange} bxNormalOrange`} onClick={() => logoutUser()}></i>
+                  </div>
+                  </div>
               ) : (<>
                       <button type="button" className={`btn btn-primary btn-ColorA ${styles.positionBtnCnx}`} onClick={() => setShowModalLogin(true)}>Connexion</button>
                   </>

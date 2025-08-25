@@ -17,3 +17,17 @@ export const SessionUserContextProvider = ({ children }) => {
     </SessionUserContext.Provider>
   );
 };
+
+
+// A ajouter 
+// =========
+// Importation
+// import { useOngletAlerteContext } from '../components/contexts/ToastContext';
+//
+// Récupération du contexte
+// const { showOngletAlerte } = useOngletAlerteContext();
+// 
+// Appel de la fonction 
+// showOngletAlerte('success', '(Déconnexion)', '', 'Vous êtes à présent déconnecté.');
+//
+//
