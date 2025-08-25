@@ -11,6 +11,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import Code from "@tiptap/extension-code";
 import styles from './createArticle.module.css';
 import convertDateToDateLong from '../../functions/getDateLong';
+import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
 
 const CreateArticle = () => {
   const [loadingFinish, setLoadingFinish] = useState(false);
@@ -27,6 +28,7 @@ const CreateArticle = () => {
     contenu:"",
     lienImg: ""
   });
+  const { showOngletAlerte } = useOngletAlerteContext();
 
   const handleChangeTagChecker = (ref, value) => {
     setTags(currentTags =>
@@ -101,14 +103,16 @@ useEffect(() => {
 
   const handleEditCurrentArticle = async () => {
     const dateNow = new Date();
-    const dateFormated = convertDateToDateLong(dateNow);
+    const tagsToInsert = tags.filter(currentArticle => 
+      currentArticle.checked == true
+    );
   try {
     const response = await fetch("/api/articles/validationMaJ", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ parCodeArticle: article?.[0]?.CodeArticle, parTitre: inputForm.titre, parResume: inputForm.resume, parSlug: inputForm.slug, parContenu: htmlContent, parDateMaj: dateNow, parLienImg: inputForm.lienImg})
+      body: JSON.stringify({ parCodeArticle: article?.[0]?.CodeArticle, parTitre: inputForm.titre, parResume: inputForm.resume, parSlug: inputForm.slug, parContenu: htmlContent, parDateMaj: dateNow, parLienImg: inputForm.lienImg, parTags: tagsToInsert})
     });
 
     if (!response.ok) {
@@ -117,7 +121,7 @@ useEffect(() => {
     }
 
     const result = await response.json();
-    console.log("Mise à jour réussie :", result);
+    showOngletAlerte('success', '(Modification article)', '', `L'article "` + inputForm.titre + `" a bien été modifié !`);
   } catch (err) {
     console.error("Erreur lors de la mise à jour de l'article :", err);
   }
@@ -133,13 +137,16 @@ useEffect(() => {
 const handleCreateNewArticle = async () => {
     const dateNow = new Date();
     const dateFormated = convertDateToDateLong(dateNow);
+    const tagsToInsert = tags.filter(currentArticle => 
+      currentArticle.checked == true
+    );
   try {
     const response = await fetch("/api/articles/validationCreation", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ parCodeArticle: (sessionUser.id.toString() + "-" + dateFormated), parTitre: inputForm.titre, parResume: inputForm.resume, parSlug: inputForm.slug, parContenu: htmlContent, parDateCreation: dateNow, parDateMaj: dateNow, parCreePar: sessionUser.id, parLienImg: inputForm.lienImg})
+      body: JSON.stringify({ parCodeArticle: (sessionUser.id.toString() + "-" + dateFormated), parTitre: inputForm.titre, parResume: inputForm.resume, parSlug: inputForm.slug, parContenu: htmlContent, parDateCreation: dateNow, parDateMaj: dateNow, parCreePar: sessionUser.id, parLienImg: inputForm.lienImg, parTags: tagsToInsert})
     });
 
     if (!response.ok) {
@@ -149,6 +156,7 @@ const handleCreateNewArticle = async () => {
 
     const result = await response.json();
     console.log("Création réussie :", result);
+    showOngletAlerte('success', '(Création article)', '', `L'article "` + inputForm.titre + `" a bien été créé !`);
   } catch (err) {
     console.error("Erreur lors de la création de l'article :", err);
   }
@@ -201,10 +209,7 @@ const handleCreateNewArticle = async () => {
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
-  console.log("user", sessionUser);
-  console.log("article", article);
-  console.log("Input", inputForm);
-  console.log("tags", tags);
+
   return (
     <div className="container-xl mt-4">
       {!loadingFinish ?
@@ -217,32 +222,32 @@ const handleCreateNewArticle = async () => {
             type="text"
             maxLength={45}
             placeholder="Titre"
-            value={article ? article[0].Titre : ""}
+            value={inputForm ? inputForm.titre : ""}
             id="createtitre"
-            onBlur={(e) => handleSetterInputForm(e.target.id.replace("create", ""), e.target.value)}
+            onChange={(e) => setInputForm((prev) => ({...prev, titre: e.target.value}))}
             />
             <input className={`mt-2 ${styles.input}`}
             type="text"
             maxLength={30}
             placeholder="Slug"
             id="createslug"
-            value={article ? article[0].Slug : ""}
-            onBlur={(e) => handleSetterInputForm(e.target.id.replace("create", ""), e.target.value)}
+            value={inputForm ? inputForm.slug : ""}
+            onChange={(e) => setInputForm((prev) => ({...prev, slug: e.target.value}))}
             />
             <input className={`mt-2 ${styles.input}`}
             type="text"
             maxLength={80}
             placeholder="Lien image de l'article"
             id="createlienImg"
-            value={article ? article[0].LienImg : ""}
-            onBlur={(e) => handleSetterInputForm(e.target.id.replace("create", ""), e.target.value)}
+            value={inputForm ? inputForm.lienImg : ""}
+            onChange={(e) => setInputForm((prev) => ({...prev, lienImg: e.target.value}))}
             />
             <textarea className={`mt-2 mb-2 ${styles.input}`}
               maxLength={300}
               placeholder="Résumé de l'article"
               id="createresume"
-              value={article ? article[0].Resume : ""}
-              onBlur={(e) => handleSetterInputForm(e.target.id.replace("create", ""), e.target.value)}
+              value={inputForm ? inputForm.resume : ""}
+              onChange={(e) => setInputForm((prev) => ({...prev, resume: e.target.value}))}
               rows={5}
             />
               <div className="col-12 mb-2 d-flex align-items-left justify-content-left txtColorWhite">
@@ -413,7 +418,6 @@ const handleCreateNewArticle = async () => {
             type="button"
             onClick={() => {
               console.log("Contenu HTML sauvegardé:", htmlContent);
-              alert("Article sauvegardé (voir console)");
               handleCreateNewArticle();
             }}
             style={{ marginTop: "1em" }}
@@ -425,7 +429,6 @@ const handleCreateNewArticle = async () => {
             type="button"
             onClick={() => {
               console.log("Contenu HTML modifié et sauvegardé:", htmlContent);
-              alert("Article mise à jour (voir console)");
               handleEditCurrentArticle();
             }}
             style={{ marginTop: "1em" }}

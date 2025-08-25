@@ -2,20 +2,22 @@ import styles from './articlePage.module.css';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import DOMPurify from 'dompurify';
+import { useSessionUserContext } from '../../components/contexts/sessionUserContext';
+import { Link } from 'react-router-dom';
 
 const ArticlePage = () => {
   const { slug } = useParams();
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sanitizedHtml, setSanitizedHtml] = useState(null);
-
+  const {sessionUser, setSessionUser} = useSessionUserContext();
   const splitTags = (tagsString) => {
     if (typeof tagsString === 'string' && tagsString.trim() !== '') {
       return tagsString.split(',').map(tag => tag.trim());
     }
     return [];
   };
-
+console.log('context', sessionUser);
   useEffect(() => {
     setIsLoading(true);
     fetch(`/api/articles/${slug}`)
@@ -71,8 +73,22 @@ const ArticlePage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
+                     <div className="row">
                         <div className="col-12 col-lg-10 offset-lg-1 txtColorWhite">
+                          {/* Mini menu admin */}
+                          {sessionUser.grade == "Administrateur" ? 
+                          <div className={styles.ancrageOverlayCommandesAdmin}>
+                            <div className={styles.overlayCommandesAdmin}>
+                              <Link to={`/article/create/${article[0].Slug}`}><i className={`bx bx-edit bxNormalOrange cPointer`}></i></Link>
+                              <i className={`bx bx-trash bxNormalOrangeToRed ps-1 cPointer`}></i>
+                              {article[0].Publie == true ? 
+                            <i className={`bx bxs-cloud bxEnabledToDisabled topMinus3  cPointer`}></i>
+                            :
+                            <i className={`bx bxs-cloud-upload bxDisabledToEnabled topMinus3 cPointer`}></i>
+                            }
+                            </div>
+                          </div>
+                          : null}
                             <p><i>{article.DateMaj}</i></p>
                             <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
                         </div>

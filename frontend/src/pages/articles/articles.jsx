@@ -4,7 +4,6 @@ import CardLoading from '../../components/others/CardLoading';
 import CardLargeLoading from '../../components/others/CardLargeLoading';
 import styles from './articles.module.css';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 const Articles = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -16,17 +15,17 @@ const Articles = () => {
     const [inputRecherche, setInputRecherche] = useState("");
     const [activeGridTags, setActiveGridTag] = useState(false);
 
-  useEffect(() => {
-      fetch('/api/tagsArticles')
-      .then(response => response.json())
-      .then(data => {
-        const dataRemastered = data.map((currentTag, index) => ({
-          ...currentTag,
-          nb: 0
-        }));
-      })
-      .catch(error => console.error('Erreur fetch articles:', error));
-  }, []);
+  //useEffect(() => {
+  //    fetch('/api/tagsArticles')
+  //    .then(response => response.json())
+  //    .then(data => {
+  //      const dataRemastered = data.map((currentTag, index) => ({
+  //        ...currentTag,
+  //        nb: 0
+  //      }));
+  //    })
+  //    .catch(error => console.error('Erreur fetch articles:', error));
+  //}, []);
 
   useEffect(() => {
       fetch('/api/articles')
@@ -89,7 +88,7 @@ useEffect(() => {
     //Si le tag n'est pas encore sélectionné
     if (!tagAlreadySelected) {
       const tagsArticlesActifsModified = tagsArticlesActifs.map(current => 
-        current.tag == e.tag
+        current.tag === e.tag
           ? {...current, filtreActif: !current.filtreActif}
           : current
       );
@@ -104,7 +103,7 @@ useEffect(() => {
       //Si le tag est déjà sélectionné
     } else {
       const tagsArticlesActifsModified = tagsArticlesActifs.map(current => 
-        current.tag == e.tag
+        current.tag === e.tag
           ? {...current, filtreActif: !current.filtreActif}
           : current
       );
@@ -131,7 +130,7 @@ useEffect(() => {
     });
 
     setArticlesFiltered(tempoArticlesFiltered);
-  }, [tagsSelectForFilter, inputRecherche]);
+  }, [articles, tagsSelectForFilter, inputRecherche]);
 
   return (
     <div className="container-xl mt-4">{isLargeScreen ? "" : ""}
@@ -163,6 +162,7 @@ useEffect(() => {
                           texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')} 
                           key={currentArticles.CodeArticle}
                           slugArticle={currentArticles.Slug}
+                          tags={currentArticles.tags}
                           />
                       ))}
                   </>
@@ -183,9 +183,9 @@ useEffect(() => {
                   <>
                     {articlesFiltered.slice(3, 999).map((currentArticles, index) => (
                       isLargeScreen ? (
-                        <CardLarge classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} />
+                        <CardLarge classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} tags={currentArticles.tags}/>
                       ) : (
-                        <Card classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} />
+                        <Card classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} tags={currentArticles.tags}/>
                       )
                     ))}
                   </>

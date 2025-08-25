@@ -1,7 +1,8 @@
 import express from 'express';
 import { pool } from '../db.js';
 import bcrypt from 'bcrypt';
-import pg from 'pg';
+import { checkSiCurrentUserGetGradeRequis } from '../middleware/checkSiUserGradeOK.js';
+
 const router = express.Router();
 
 // Exemple de route GET pour lister les utilisateurs
@@ -107,6 +108,15 @@ router.post('/logout', (req, res) => {
 
     res.status(200).json({ message: 'Déconnexion réussie' });
   });
+});
+
+router.get('/userGradeIsOk', checkSiCurrentUserGetGradeRequis('Administrateur'), async (req, res) => {
+  try {
+    res.json(true);
+  } catch (error) {
+    console.error('Erreur récupération des données admin:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
 });
   
   export default router;

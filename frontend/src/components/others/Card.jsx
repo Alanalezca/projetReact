@@ -1,5 +1,6 @@
 import styles from './Card.module.css';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from  'react';
 
 const Card = ({
     classCSSColorBackground,
@@ -11,8 +12,15 @@ const Card = ({
     classCSSColorTxtBottom,
     texteBottom,
     tailleCol,
-    slugArticle
+    slugArticle,
+    tags
 }) => {
+
+      const [tagsArray, setTagsArray] = useState([]);
+
+    useEffect(() => {
+      setTagsArray(tags?.split(","));
+    }, []);
 
     return (
             <div className={`col-${tailleCol} text-center`}>
@@ -27,6 +35,11 @@ const Card = ({
                   </div>
                   <div className="card-footer">
                     <small className="text-body-secondary"><span className={classCSSColorTxtBottom}>{texteBottom}</span></small>
+                      <div className="ps-2 d-inline-block">
+                        {tagsArray?.map((currentTag, index) => (
+                          <div className="d-inline-block me-1" key={currentTag}><span className="badge badge-custom">{currentTag}</span></div>
+                        ))}
+                      </div>
                   </div>
                 </div>
               </Link>

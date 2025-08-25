@@ -41,6 +41,7 @@ a {
   --backgroundColorDRGB: rgba(051, 052, 057);
   --backgroundColorE: #70757b;
   --backgroundColorERGB: rgba(112, 117, 123);
+  --backgroundColorERGBTrans: rgba(112, 117, 123, 0.75);
   --backgroundColorF: #adb5bd;
   --backgroundColorFRGB: rgba(173, 181, 189);
 
@@ -53,8 +54,11 @@ a {
   --backgroundColorDanger: #96242F;
   --backgroundColorDangerRGB: rgba(150, 36, 47);
 
-  --backgroundColorDangerLight: #B92D3A;
-  --backgroundColorDangerLightRGB: rgba(185, 45, 58);
+  --backgroundColorDangerSmoothLight: #b84450;
+  --backgroundColorDangerSmoothLightRGB: rgb(184, 68, 80);
+
+  --backgroundColorDangerLight: #bb6c74;
+  --backgroundColorDangerLightRGB: rgb(187, 108, 116);
 
   --backgroundColorCaution: #AD8305;
   --backgroundColorCautionRGB: rgba(173, 131, 5);
@@ -97,6 +101,12 @@ a {
 
   --txtColorDark: #343a40;
   --txtColorDarkRGB: rgba(052, 058, 064);
+
+  --txtColorDarkBis: #444444;
+  --txtColorDarkBisRGB: rgba(068, 068, 068);
+
+  --txtColorDarkBisLight: #6E6E6E;
+  --txtColorDarkBisLightRGB: rgba(110, 110, 110);
 }
 
 .bxNormalOrange {
@@ -123,6 +133,30 @@ a {
   animation: tada 1s;
 }
 
+.bxNormalOrangeToRed {
+  color: #FF9901;
+  font-size: 32px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxNormalOrangeToRed:hover {
+  color: var(--backgroundColorDangerLight);
+  font-size: 32px;
+  animation: tada 1s;
+}
+
+.bxNormalRedSmoothLight {
+  color: var(--backgroundColorDangerSmoothLight);
+  font-size: 32px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxNormalRedSmoothLight:hover {
+  color: var(--backgroundColorDangerLight);
+  font-size: 32px;
+  animation: tada 1s;
+}
+
 .bxEnabledToDisabled {
   color: var(--backgroundColorSuccess);
   font-size: 32px;
@@ -132,6 +166,7 @@ a {
 .bxEnabledToDisabled:hover {
   color: var(--backgroundColorDangerRGB);
   font-size: 32px;
+  animation: tada 1s;
 }
 
 .bxDisabledToEnabled {
@@ -143,6 +178,7 @@ a {
 .bxDisabledToEnabled:hover {
   color: var(--backgroundColorSuccess);
   font-size: 32px;
+  animation: tada 1s;
 }
 
 .bxNormalColorE {
