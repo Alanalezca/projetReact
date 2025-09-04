@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM tab_users');
-    res.json(result.rows);  // Retourne tous les utilisateurs
+    res.status(200).json(result.rows);  // Retourne tous les utilisateurs
   } catch (error) {
     console.error('Erreur récupération des utilisateurs:', error);
     res.status(500).json({ error: 'Erreur serveur' });
@@ -72,7 +72,7 @@ router.post('/register', async (req, res) => {
       req.session.user = user;
       //res.json({ user: req.session.user });
       console.log("Session set côté serveur:", req.session);
-      res.json({ message: 'Connexion réussie', user: req.session.user });
+      res.status(200).json({ message: 'Connexion réussie', user: req.session.user });
     } catch (error) {
       console.error('Erreur lors de la connexion :', error);
       res.status(500).json({ message: 'Erreur serveur' });
@@ -82,7 +82,7 @@ router.post('/register', async (req, res) => {
   router.get('/session', async (req, res) => {
     try {
       if (req.session && req.session.user) {
-        res.json({ user: req.session.user });
+        res.status(200).json({ user: req.session.user });
       } else {
         res.status(401).json({ message: 'Aucune session active' });
       }
@@ -112,7 +112,7 @@ router.post('/logout', (req, res) => {
 
 router.get('/userGradeIsOk', checkSiCurrentUserGetGradeRequis('Administrateur'), async (req, res) => {
   try {
-    res.json(true);
+    res.status(200).json(true);
   } catch (error) {
     console.error('Erreur récupération des données admin:', error);
     res.status(500).json({ error: 'Erreur serveur' });
