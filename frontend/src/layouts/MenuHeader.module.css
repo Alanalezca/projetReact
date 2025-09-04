@@ -5,7 +5,7 @@
     top: 0;
     justify-content: space-between;
     align-items: center;
-    background: var(--backgroundColorB);
+    background-color: var(--backgroundColorB);
     color: white;
     border-bottom: 2px solid #FF9901;
     height: 45px;
@@ -15,6 +15,10 @@
 }
 
 /* --- Menu Principal --- */
+.burger {
+    display: none;
+}
+
 .MenuHeader {
     display: flex;
     list-style: none;
@@ -138,30 +142,59 @@
     margin-top: 0px;
 }
 
+/* --- Menu Principal en mode mini --- */
 /* --- Responsive Mobile --- */
-.menuToggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-}
-
 @media (max-width: 768px) {
-    .menuToggle {
-        display: block;
+    .burger {
+        display: inline-block;
     }
 
     .MenuHeader {
-        flex-direction: column;
         display: none;
-        width: 100%;
-        text-align: center;
-        background: #333;
+    }
+    
+    .MenuHeaderMini {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: -100%; /* caché par défaut */
+        width: 85%; /* largeur du panneau sur mobile */
+        max-width: 85%;
+        height: 100vh;
+        background-color: var(--txtColorDarkBis);
+        transition: right 0.1s ease-in-out;
+        padding-top: 60px; /* espace sous le burger */
+        padding-left: 0px;
+        z-index: 1000;
     }
 
-    .MenuHeader.active {
+        /* état ouvert */
+        .MenuHeaderMini.open {
+            right: 0%;
+        }
+
+        .MenuHeaderMini li {
+            list-style: none;
+            padding: 15px 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+            .MenuHeaderMini li a {
+                color: white;
+                text-decoration: none;
+                display: block;
+            }
+
+    /* sous-menu */
+    .subMenusMini {
+        display: none;
+        flex-direction: column;
+        padding-left: 20px;
+    }
+
+    .MenuHeaderMini li:hover .subMenusMini {
         display: flex;
     }
 }
