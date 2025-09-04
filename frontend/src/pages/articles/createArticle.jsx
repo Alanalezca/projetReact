@@ -9,6 +9,9 @@ import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import Code from "@tiptap/extension-code";
+import TextStyle from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import { Node } from '@tiptap/core';
 import styles from './createArticle.module.css';
 import convertDateToDateLong from '../../functions/getDateLong';
 import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
@@ -40,12 +43,32 @@ const CreateArticle = () => {
     );
   };
 
+  const insertAnchor = () => {
+    const tag = prompt("Nom de l'ancre :");
+    if (!tag) return;
+
+    const { state, commands } = editor;
+    const { selection } = state;
+    const parentNode = selection.$from.parent; // nœud actuel
+    const nodeType = parentNode.type;
+
+    // Vérifie si le nœud accepte un attribut `id`
+    if (nodeType.spec.attrs && 'id' in nodeType.spec.attrs) {
+      commands.updateAttributes(nodeType.name, { ...parentNode.attrs, id: tag });
+    } 
+    // Sinon, essaye de transformer le nœud en paragraph (optionnel)
+    else if (editor.can().setNode('paragraph')) {
+      commands.setNode('paragraph', { id: tag });
+    } 
+    else {
+      alert("Impossible d'ajouter une ancre ici (nœud incompatible).");
+    }
+  };
+
   useEffect(() => {
     if (sessionUser) {
     const splitTags = (tagsString) => {
-      if (tagsString) {
-        return tagsString.split(",");
-      }
+      if (tagsString) return tagsString.split(",");
     };
 
     setLoadingFinish(false);
@@ -134,46 +157,70 @@ useEffect(() => {
     }));
   };
 
-const handleCreateNewArticle = async () => {
-    const dateNow = new Date();
-    const dateFormated = convertDateToDateLong(dateNow);
-    const tagsToInsert = tags.filter(currentArticle => 
-      currentArticle.checked == true
-    );
-  try {
-    const response = await fetch("/api/articles/validationCreation", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ parCodeArticle: (sessionUser.id.toString() + "-" + dateFormated), parTitre: inputForm.titre, parResume: inputForm.resume, parSlug: inputForm.slug, parContenu: htmlContent, parDateCreation: dateNow, parDateMaj: dateNow, parCreePar: sessionUser.id, parLienImg: inputForm.lienImg, parTags: tagsToInsert})
-    });
+  const handleCreateNewArticle = async () => {
+      const dateNow = new Date();
+      const dateFormated = convertDateToDateLong(dateNow);
+      const tagsToInsert = tags.filter(currentArticle => 
+        currentArticle.checked == true
+      );
+    try {
+      const response = await fetch("/api/articles/validationCreation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ parCodeArticle: (sessionUser.id.toString() + "-" + dateFormated), parTitre: inputForm.titre, parResume: inputForm.resume, parSlug: inputForm.slug, parContenu: htmlContent, parDateCreation: dateNow, parDateMaj: dateNow, parCreePar: sessionUser.id, parLienImg: inputForm.lienImg, parTags: tagsToInsert})
+      });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(`Erreur HTTP ${response.status} : ${errText}`);
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Erreur HTTP ${response.status} : ${errText}`);
+      }
+
+      const result = await response.json();
+      showOngletAlerte('success', '(Création article)', '', `L'article "` + inputForm.titre + `" a bien été créé !`);
+    } catch (err) {
+      console.error("Erreur lors de la création de l'article :", err);
     }
+  };
 
-    const result = await response.json();
-    console.log("Création réussie :", result);
-    showOngletAlerte('success', '(Création article)', '', `L'article "` + inputForm.titre + `" a bien été créé !`);
-  } catch (err) {
-    console.error("Erreur lors de la création de l'article :", err);
-  }
-};
+  const CustomParagraph = Node.create({
+    name: 'paragraph',
+
+    group: 'block',
+    content: 'inline*',
+    parseHTML() {
+      return [{ tag: 'p' }];
+    },
+    renderHTML({ HTMLAttributes }) {
+      return ['p', HTMLAttributes, 0];
+    },
+
+    addAttributes() {
+      return {
+        id: {
+          default: null,
+          parseHTML: element => element.getAttribute('id'),
+          renderHTML: attributes => {
+            if (!attributes.id) return {};
+            return { id: attributes.id };
+          },
+        },
+      };
+    },
+  });
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Underline,
-      Link.configure({
-        openOnClick: false,
-      }),
-      Image,
-      TextAlign.configure({
-        types: ["heading", "paragraph"],
-      }),
-      Code,
+    StarterKit.configure({ paragraph: false }), // remplace le paragraph standard
+    CustomParagraph,
+    Underline,
+    Link.configure({ openOnClick: false }),
+    Image,
+    TextAlign.configure({ types: ["heading", "paragraph"] }),
+    Code,
+    TextStyle,
+    Color.configure({ types: ['textStyle'] }),
     ],
     content: "<p>Commence à écrire ici...</p>",
     onUpdate({ editor }) {
@@ -258,6 +305,24 @@ const handleCreateNewArticle = async () => {
               </div>
               <div className={`${styles.breakerTitre} mt-4 mb-4`}></div>
               <div style={{ marginBottom: "1em", display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const color = prompt("Choisis une couleur (ex: red, #ff0000, rgb(255,0,0)) :");
+                    if (color) {
+                      editor.chain().focus().setColor(color).run();
+                    }
+                  }}
+                >
+                  Couleur texte
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().unsetColor().run()}
+                >
+                  Supprimer couleur
+                </button>
+
                 <button className={styles.button}
                   type="button"
                   onClick={() => editor.chain().focus().toggleBold().run()}
@@ -397,27 +462,20 @@ const handleCreateNewArticle = async () => {
                   Ajouter / Modifier lien
                 </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  const tag = prompt("Nom de l'ancre :");
-                  if (tag) {
-                    editor.chain().focus().insertContent(` #$${tag}$# `).run();
-                  }
-                }}
-                style={{ fontWeight: "normal" }}
-              >
-                Insérer ancre
-              </button>
+                <button
+                  type="button"
+                  onClick={insertAnchor}
+                >
+                  Insérer ancre
+                </button>
               </div>
 
           <EditorContent editor={editor} style={{ border: "1px solid #ccc", padding: "1em", minHeight: "300px" }} />
 
           {!article ? 
-          <button
+          <button className="mb-5"
             type="button"
             onClick={() => {
-              console.log("Contenu HTML sauvegardé:", htmlContent);
               handleCreateNewArticle();
             }}
             style={{ marginTop: "1em" }}
@@ -425,10 +483,9 @@ const handleCreateNewArticle = async () => {
             Sauvegarder l’article
           </button>
           :
-          <button
+          <button className="mb-5"
             type="button"
             onClick={() => {
-              console.log("Contenu HTML modifié et sauvegardé:", htmlContent);
               handleEditCurrentArticle();
             }}
             style={{ marginTop: "1em" }}

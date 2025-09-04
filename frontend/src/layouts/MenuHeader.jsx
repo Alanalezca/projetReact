@@ -18,7 +18,6 @@ import Subscribe from '../components/modals/Subscribe';
     const [isAdmin, setIsAdmin] = useState(false);
 
       const logoutUser = async () => {
-      console.log("cookies", document.cookie);
       const response = await fetch('/api/users/logout', {
         method: 'POST',
         credentials: 'include', // IMPORTANT pour envoyer les cookies
@@ -45,7 +44,6 @@ import Subscribe from '../components/modals/Subscribe';
           const data = await response.json();
           if (data) {
             setSessionUser(data.user);
-            console.log("cookies", document.cookie);
           }
         } catch (error) {
           console.error('Erreur lors de la récupération de la session:', error);
@@ -54,21 +52,26 @@ import Subscribe from '../components/modals/Subscribe';
     
       checkSession();
     }, []);
-    console.log('test', sessionUser);
+
     return (
     <><Subscribe show={showModalSubscribe} handleClose={setShowModalSubscribe} handleShowLogin={setShowModalLogin}/><Login show={showModalLogin} handleClose={setShowModalLogin} handleShowSubscribe={setShowModalSubscribe}/>
       <nav className={`txt-base ${styles.navbar}`}>
-        {/* Menu Burger Mobile */} 
-        <button className={styles.menuToggle} onClick={() => setMenuOpen(!menuOpen)}>
-                  ☰
-        </button>
+            {/* bouton burger */}
+            <button
+                className={styles.burger}
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Menu"
+            >
+                ☰
+            </button>
+
 
         {/* Menu Principal */}
-        <ul className={`${styles.MenuHeader} ${menuOpen ? "active" : ""}`}>
+        <ul className={`${styles.MenuHeaderMini} ${!menuOpen && styles.MenuHeader} ${menuOpen && styles.open}`}>
           <li><Link to="/">Articles</Link></li>
           <li>
               <a href="#">Drafters</a>
-                <ul className={styles.subMenus}>
+                <ul className={menuOpen ? styles.subMenusMini : styles.subMenus}>
                   <li><Link to="/">Smash Up</Link></li>
                   <li><Link to="/">Dice Throne</Link></li>
                 </ul>

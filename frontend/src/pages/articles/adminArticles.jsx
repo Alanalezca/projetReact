@@ -3,6 +3,8 @@ import styles from './adminArticles.module.css';
 import Loader from '../../components/others/Loader';
 import { Link } from 'react-router-dom';
 import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
+import { handleDeleteArticle } from '../../functions/callAPIx/articleDelete';
+import { handleReversePublished } from '../../functions/callAPIx/articleReversePublish';
   
 const ArticlePage = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -28,54 +30,6 @@ const ArticlePage = () => {
         })
         .catch(error => console.error('Erreur fetch articles:', error));
     }, [forceRefresh]);
-
-    const handleDeleteArticle = async (codeArticle, titreArticle) => {
-
-    try {
-        const response = await fetch("/api/articles/delete", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ parCodeArticle: codeArticle})
-        });
-
-        if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Erreur HTTP ${response.status} : ${errText}`);
-        }
-
-        const result = await response.json();
-        showOngletAlerte('success', '(Suppression article)', '', `L'article "` + titreArticle + `" a bien été supprimé.`);
-        setForceRefresh(prevForceRefresh => prevForceRefresh + 1);
-    } catch (err) {
-        console.error("Erreur lors de la suppression de l'article :", err);
-    }
-    };
-
-    const handleReversePublished = async (codeArticle, titreArticle, articlePublieOuiNon) => {
-
-    try {
-        const response = await fetch("/api/articles/reverseCurrentShow", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ parCodeArticle: codeArticle})
-        });
-
-        if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(`Erreur HTTP ${response.status} : ${errText}`);
-        }
-
-        const result = await response.json();
-        showOngletAlerte('success', '(Publication article)', '', `L'article "` + titreArticle + `" a bien été ${articlePublieOuiNon == true ? "dépublié." : "publié."}`);
-        setForceRefresh(prevForceRefresh => prevForceRefresh + 1);
-    } catch (err) {
-        console.error("Erreur lors de l'update du publish de l'article :", err);
-    }
-    };
 
     console.log(articles);
     return (
@@ -123,15 +77,15 @@ const ArticlePage = () => {
                         </div>
                         <div className="col-2">
                         {currentArticles.Publie ? 
-                            <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie)}></i></div> :
-                            <div className="d-inline"><i className="bx bx-cloud-upload bxDisabledToEnabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie)}></i></div>
+                            <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div> :
+                            <div className="d-inline"><i className="bx bx-cloud-upload bxDisabledToEnabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div>
                         }
                         </div>
                         <div className="col-2">
                         <Link to={`/article/create/${currentArticles.Slug}`}>
                             <div className="d-inline"><i className="bx bx-edit bxNormalOrange topMinus3 cPointer"></i></div>
                         </Link>
-                            <div className="d-inline"><i className="bx bx-message-square-x bxNormalOrange topMinus3 cPointer" onClick={() => handleDeleteArticle(currentArticles.CodeArticle, currentArticles.Titre)}></i></div>
+                            <div className="d-inline"><i className="bx bx-message-square-x bxNormalOrange topMinus3 cPointer" onClick={() => handleDeleteArticle(currentArticles.CodeArticle, currentArticles.Titre, showOngletAlerte, setForceRefresh)}></i></div>
                         </div>
                     </div>
                     ))
