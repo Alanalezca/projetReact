@@ -1,0 +1,27 @@
+.active {
+    background-color: var(--ColorA) !important;
+}
+
+.active:focus {
+  box-shadow: none !important;
+}
+
+.nonActive {
+    background-color: var(--backgroundColorC) !important;
+}
+
+.nonActive:hover {
+    background-color: var(--backgroundColorHalo) !important;
+}
+
+.nonActive:focus {
+  box-shadow: none !important;
+}
+
+.inactive {
+  background-color: var(--backgroundColorC) !important;
+}
+
+.inactive:hover {
+  background-color: var(--backgroundColorC) !important;
+}
