@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
 import { handleDeleteArticle } from '../../functions/callAPIx/articleDelete';
 import { handleReversePublished } from '../../functions/callAPIx/articleReversePublish';
+import Pagination from '../../components/others/Pagination';
   
 const ArticlePage = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -12,6 +13,14 @@ const ArticlePage = () => {
     const [articles, setArticles] = useState([]);
     const [forceRefresh, setForceRefresh] = useState(0);
     const { showOngletAlerte } = useOngletAlerteContext();
+
+    // Pagination : Début //
+    const nbElementsParPage = 10;
+    const [numCurrentPagePaginationActive, setNumCurrentPagePaginationActive] = useState(1);
+    // Pagination : Fin //
+
+    const indiceFirstElement = (nbElementsParPage * numCurrentPagePaginationActive) - nbElementsParPage;
+    const indiceLastElement = ((nbElementsParPage * numCurrentPagePaginationActive));
 
     useEffect(() => {
         const checkScreenSize = () => setIsLargeScreen(window.innerWidth >= 992);
@@ -31,7 +40,7 @@ const ArticlePage = () => {
         .catch(error => console.error('Erreur fetch articles:', error));
     }, [forceRefresh]);
 
-    console.log(articles);
+    console.log('Articles', articles);
     return (
         //<div className="container-xl mt-4">{isLargeScreen ? "large" : "pas large"}
         <div className={`container-xl mt-4 ${!isLoading && "txtColorWhite"}`}>
@@ -59,10 +68,10 @@ const ArticlePage = () => {
                 </div>
             </div>
             <div className={`${styles.breakerTitre} mt-3`}></div>
-            <div className="row d-flex align-items-center">
+            <div className="row d-flex align-items-center mb-4">
                 <div className="col-12 mt-3">
                 {articles.length > 0 ? (
-                    articles.map((currentArticles) => (
+                    articles.slice(indiceFirstElement, indiceLastElement).map((currentArticles) => (
                     <div key={currentArticles.Slug} className="row mt-1">
                         <div className="col-4">
                         <Link to={`/article/${currentArticles.Slug}`}>
@@ -93,7 +102,7 @@ const ArticlePage = () => {
                     <p>Aucun article disponible</p>
                 )}
                 </div>
-            </div>
+            </div><Pagination centrer="true" totalNbElement={articles.length} nbElementParPage={nbElementsParPage} numCurrentPageActive={numCurrentPagePaginationActive} setterCurrentNumPageActive={setNumCurrentPagePaginationActive}/>
         </>}
         </div>
     )

@@ -506,3 +506,18 @@ html body {
 }
 
 /* Pointers : fin */
+
+/* Pagination : début */
+
+.pagination .page-link {
+  background-color: #212529; /* gris sombre */
+  color: #f8f9fa; /* texte clair */
+  border-color: #495057; /* bordure */
+}
+
+.pagination .page-link:hover {
+  background-color: #343a40;
+  color: #fff;
+}
+
+/* Pagination : Fin */
