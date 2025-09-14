@@ -90,7 +90,10 @@ useEffect(() => {
 
   useEffect(() => {
     if (article) {
-        setSanitizedHtml(DOMPurify.sanitize(article[0].Contenu));
+        setSanitizedHtml(DOMPurify.sanitize(article[0].Contenu, {
+          ADD_TAGS: ['div'],
+          ADD_ATTR: ['class']
+        }));
     }
   }, [article]);
   console.log(article);
@@ -138,6 +141,7 @@ useEffect(() => {
                               </div>
                           </div>
                       </div>
+                    </div>
                       <div className="row">
                           <div className="mb-5 col-12 col-lg-10 offset-lg-1 txtColorWhite">
                             {/* Mini menu admin */}
@@ -168,10 +172,10 @@ useEffect(() => {
                               </div>
                             </div>
                             : null}
-                              <div className="mt-4" dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+                              <div className={`mt-4 ${styles.articleInsered}`} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
                           </div>
-                      </div>
-                  </div>
+                    </div>
+
               </div>
               <div id={styles.btnGoTop} className="btn-ColorA" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <i className={`bx bxs-up-arrow bx-sm`}></i>

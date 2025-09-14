@@ -43,6 +43,18 @@ const CreateArticle = () => {
     );
   };
 
+  const ArticleBox = Node.create({
+    name: 'articleBox',
+    group: 'block',
+    content: 'paragraph+',
+    parseHTML() {
+      return [{ tag: 'div.article-box' }];
+    },
+    renderHTML({ HTMLAttributes }) {
+      return ['div', { ...HTMLAttributes, class: 'article-box' }, 0];
+    },
+  });
+
   const insertAnchor = () => {
     const tag = prompt("Nom de l'ancre :");
     if (!tag) return;
@@ -215,6 +227,7 @@ useEffect(() => {
     StarterKit.configure({ paragraph: false }), // remplace le paragraph standard
     CustomParagraph,
     Underline,
+    ArticleBox,
     Link.configure({ openOnClick: false }),
     Image,
     TextAlign.configure({ types: ["heading", "paragraph"] }),
@@ -227,6 +240,20 @@ useEffect(() => {
       setHtmlContent(editor.getHTML());
     },
   });
+
+  const insertArticleBox = () => {
+    if (!editor) return;
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to, "\n");
+
+    if (!selectedText) {
+      editor.chain().focus().insertContent('<div class="article-box"><p>Ton texte ici</p></div>').run();
+      return;
+    }
+
+    // Supprime la sélection et insère le custom node
+    editor.chain().focus().deleteRange({ from, to }).wrapIn('articleBox').run();
+  };
 
 
   useEffect(() => {
@@ -256,6 +283,8 @@ useEffect(() => {
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
+
+
 
   return (
     <div className="container-xl mt-4">
@@ -468,6 +497,28 @@ useEffect(() => {
                 >
                   Insérer ancre
                 </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const { from, to } = editor.state.selection;
+                  const selectedText = editor.state.doc.textBetween(from, to, "\n");
+
+                  if (!selectedText) {
+                    // rien de sélectionné → on insère un cadre vide
+                    editor.chain().focus().insertContent('<div class="article-box"><p>Ton texte ici</p></div>').run();
+                    return;
+                  }
+
+                  // on supprime la sélection
+                  editor.chain().focus().deleteRange({ from, to }).run();
+
+                  // on insère le texte sélectionné dans le cadre
+                  editor.chain().focus().insertContent(`<div class="article-box"><p>${selectedText}</p></div>`).run();
+                }}
+              >
+                Cadre
+              </button>
               </div>
 
           <EditorContent editor={editor} style={{ border: "1px solid #ccc", padding: "1em", minHeight: "300px" }} />
