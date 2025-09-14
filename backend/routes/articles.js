@@ -116,19 +116,19 @@ router.post('/delete', checkSiCurrentUserGetGradeRequis('Administrateur'), async
   const { parCodeArticle } = req.body;
   
   try {
-    await pool.query(`DELETE FROM tab_affectations_tags_articles WHERE "CodeArticle" = $1 RETURNING *`,
-      [parCodeArticle]);
-
     const result = await pool.query(
       `DELETE FROM tab_articles WHERE "CodeArticle" = $1 RETURNING *`,
       [parCodeArticle]
     );
 
+    await pool.query(`DELETE FROM tab_affectations_tags_articles WHERE "CodeArticle" = $1 RETURNING *`,
+      [parCodeArticle]);
+
     if (result.rows.length === 0) {
       return res.status(500).json({ error: "Échec de la suppression de l'article" });
     }
 
-    res.status(204).json(result.rows[0]);
+    res.status(200             ).json(result.rows[0]);
   } catch (err) {
     console.error(`Erreur lors de la suppression de l'article :`, err);
     res.status(500).json({ error: 'Erreur serveur' });

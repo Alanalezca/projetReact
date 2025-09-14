@@ -17,7 +17,7 @@ const Articles = () => {
     const [activeGridTags, setActiveGridTag] = useState(false);
 
     // Pagination : Début //
-    const nbElementsParPage = 3;
+    const nbElementsParPage = 10;
     const [numCurrentPagePaginationActive, setNumCurrentPagePaginationActive] = useState(1);
     // Pagination : Fin //
 
