@@ -134,6 +134,8 @@ useEffect(() => {
       contenu:objectData[0].Contenu,
       lienImg: objectData[0].LienImg
     }));
+
+    setHtmlContent(objectData[0].Contenu);
   };
 
   const handleEditCurrentArticle = async () => {
@@ -283,8 +285,6 @@ useEffect(() => {
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
-
-
 
   return (
     <div className="container-xl mt-4">
