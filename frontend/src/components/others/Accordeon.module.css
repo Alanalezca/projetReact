@@ -1,0 +1,104 @@
+.accordeonHeader {
+  padding: 0.75rem 1rem; /* espace interne */
+  font-size: 1rem;
+  display: flex;
+  align-items: center; /* centre le contenu verticalement */
+  cursor: pointer;
+  background-color: var(--backgroundColorC);
+  color: white;
+  font-weight: bold;
+  border: 1px solid var(--backgroundColorF);
+}
+
+.accordeonHeaderSolo {
+  border-radius: 8px;
+}
+
+.accordeonHeaderSolo.open {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.accordeonHeaderTop {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.accordeonHeaderMid {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.accordeonHeaderBot {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.accordeonHeaderBot.open {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.accordeonMain {
+  padding: 0rem 0rem; /* espace interne */
+  display: flex;
+  align-items: center; /* centre le contenu verticalement */
+  background-color: var(--backgroundColorD);
+  overflow: hidden;
+  max-height: 0; /* hauteur fermée */
+  transition: max-height 0.2s ease, padding 0.2s ease;
+  border-top: 0px;
+}
+
+.accordeonMainSolo {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.accordeonMainTop {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.accordeonMainMid {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.accordeonMainBot {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.accordeonMainBot.open {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.accordeonMain.open {
+  border: 1px solid var(--backgroundColorF); 
+  padding: 0.75rem 1rem; /* espace interne */
+  max-height: 500px; /* doit être plus grande que le contenu réel */
+}
+
+
+.textMain {
+  color: var(--backgroundColorF);
+  font-size: 1rem;
+  display: inline-block; /* nécessaire pour transformer */
+  opacity: 1;
+  transform: scaleX(1);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.textMain.hidden {
+  opacity: 0;
+  transform: scaleX(0);
+}
+

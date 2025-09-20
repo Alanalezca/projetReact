@@ -1,0 +1,32 @@
+.piano {
+    background-color: var(--backgroundColorB);
+    border: 1px solid white; 
+}
+
+.piano button {
+    border: 1px solid white;
+    color: var(--backgroundColorF);
+}
+
+.piano button:hover {
+    border: 1px solid white;
+    color: white; 
+}
+
+.piano button:active {
+    border: 1px solid white;
+    color: white;
+    background-color: var(--ColorB) !important;
+}
+
+.piano button.selected {
+    border: 1px solid white;
+    color: white; 
+    background-color: var(--ColorA);
+}
+
+.piano button.selected:hover {
+    border: 1px solid white;
+    color: white; 
+    background-color: var(--ColorA);
+}
