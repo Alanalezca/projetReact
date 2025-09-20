@@ -74,6 +74,7 @@ a {
 
   --ColorB: #FFB300;
   --ColorARGB: rgba(255, 179, 0);
+  --ColorARGBHalo: rgba(255, 179, 0, 0.55);
 
   --ColorC: #C47215;
   --ColorCRGB: rgba(196, 114, 21);
@@ -107,6 +108,18 @@ a {
 
   --txtColorDarkBisLight: #6E6E6E;
   --txtColorDarkBisLightRGB: rgba(110, 110, 110);
+
+  --txtColorPlayerRed: #E53935;
+  --txtColorPlayerRedRGB: rgba(229, 57, 53);
+
+  --txtColorPlayerBlue: #1E88E5;
+  --txtColorPlayerBlueRGB: rgba(30, 136, 229);
+
+  --txtColorPlayerGreen: #66BB6A;
+  --txtColorPlayerGreenRGB: rgba(102, 187, 106);
+
+  --txtColorPlayerYellow: #FDD835;
+  --txtColorPlayerYellowRGB: rgba(253, 216, 53);
 }
 
 .bxNormalOrange {

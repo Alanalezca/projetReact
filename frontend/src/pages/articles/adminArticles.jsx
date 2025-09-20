@@ -48,7 +48,8 @@ const ArticlePage = () => {
             <Loader/> : <>
             <div className="row">
                 <div className="col-12 mt-4">
-                    <div className="row">
+                    <h2 className="text-center txtColorWhite">Administration des articles</h2>
+                    <div className="row mt-5">
                         <div className="col-4">
                             <b>Titre</b>
                         </div>
