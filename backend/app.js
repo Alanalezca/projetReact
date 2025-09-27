@@ -12,6 +12,7 @@ import connectPgSimple from 'connect-pg-simple';
 import articlesRoutes from './routes/articles.js';
 import tagsArticlesRoutes from './routes/tagsArticles.js';
 import usersRoutes from './routes/users.js';
+import smashupRoutes from './routes/smashup.js';
 
 dotenv.config(); // À placer tôt
 
@@ -66,6 +67,7 @@ console.log('Frontend Build Path:', frontendBuildPath);
 app.use('/api/users', usersRoutes);
 app.use('/api/articles', articlesRoutes);
 app.use('/api/tagsArticles', tagsArticlesRoutes);
+app.use('/api/smashup', smashupRoutes);
 
 // Fallback React
 app.use((req, res, next) => {

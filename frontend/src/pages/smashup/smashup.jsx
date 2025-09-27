@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './smashup.module.css';
 import Loader from '../../components/others/Loader';
 import Accordeon from '../../components/others/Accordeon';
@@ -11,10 +11,18 @@ const Smashup = () => {
     const contenuPianoNbJoueurs = ['2 joueurs', '3 joueurs', '4 joueurs'];
     const [nbJoueursSelected, setNbJoueursSelected] = useState(99);
     const inputsRef = useRef({});
+    const [listeBoites, setListeBoite] = useState();
 
-    const test = () => {
-        console.log('toto',inputsRef.current["pseudoPlayerA"].value);
-    }
+    useEffect(() => {
+        fetch('/api/smashup/boites')
+        .then(response => response.json())
+        .then(data => {
+          console.log('boites', data);
+          setListeBoite(data);
+          setIsLoading(false);
+        })
+        .catch(error => console.error('Erreur fetch smashup boites:', error));
+    }, [])
 
     return (
         <div className="container-xl mt-4">
@@ -50,23 +58,40 @@ const Smashup = () => {
                 </div>
             </div>
             <div className="row">             
-                <div className="col-4 offset-4 mt-2 d-flex justify-content-center">
+                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
                     <InputStandard strType={"text"} strColor={"var(--txtColorPlayerRed)"} intMaxLength={50} strValeurByDef={"Joueur A"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerA"] = e)}/>
                 </div>
             </div>
             <div className="row">             
-                <div className="col-4 offset-4 mt-2 d-flex justify-content-center">
+                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
                     <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strValeurByDef={"Joueur B"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
                 </div>
             </div>
             <div className="row">             
-                <div className="col-4 offset-4 mt-2 d-flex justify-content-center">
+                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
                     <InputStandard strType={"text"} strColor={"var(--txtColorPlayerYellow)"} intMaxLength={50} strValeurByDef={"Joueur C"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerC"] = e)}/>
                 </div>
             </div>
             <div className="row">             
-                <div className="col-4 offset-4 mt-2 d-flex justify-content-center">
+                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
                     <InputStandard strType={"text"} strColor={"var(--txtColorPlayerGreen)"} intMaxLength={50} strValeurByDef={"Joueur D"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerD"] = e)}/>
+                </div>
+            </div>
+            <div className="row">             
+                <div className="col-12 mt-3 d-flex justify-content-center">
+                        <h6 className="mt-4 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
+                </div>
+            </div>
+            <div className="row">             
+                <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
+                    {listeBoites.map((currentBoite, index) => (
+                        <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <img src="/images/smashup/BigBox.png" className={`rounded float-start ${styles.responsiveImgListeX5}`} alt="..."></img>
+                        </div>
+                    ))}
+                                            <div className={`${styles.conteneurImgSelected} me-3 mb-3`}>
+                            <img src="/images/smashup/BigBox.png" className={`rounded float-start ${styles.responsiveImgListeX5}`} alt="..."></img>
+                        </div>
                 </div>
             </div>
         </div>
