@@ -272,6 +272,10 @@ html body {
   color: var(--backgroundColorSuccessLight);
 }
 
+.txtColorDangerLight {
+  color: var(--backgroundColorDangerLight);
+}
+
 .txtBold {
   font-weight: bold;
 }
@@ -284,6 +288,7 @@ html body {
 .txtColorWhiteToTxtColorB:hover {
   color: var(--txtColorB);
 }
+
 
  /* Textes : Fin */
 

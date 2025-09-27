@@ -12,6 +12,7 @@ const Smashup = () => {
     const [nbJoueursSelected, setNbJoueursSelected] = useState(99);
     const inputsRef = useRef({});
     const [listeBoites, setListeBoite] = useState();
+    const [compteurNbFactionsSelonBoitesSelected, setCompteurNbFactionsSelonBoitesSelected] = useState(15);
 
     useEffect(() => {
         fetch('/api/smashup/boites')
@@ -23,6 +24,16 @@ const Smashup = () => {
         })
         .catch(error => console.error('Erreur fetch smashup boites:', error));
     }, [])
+
+    const handleClickOnBox = (codeBoite) => {
+        setListeBoite(prevListeBoites => 
+            prevListeBoites?.map(prevBoite =>
+                prevBoite.CodeBox === codeBoite
+                ? {...prevBoite, Selected: true}
+                : prevBoite
+            ))
+        console.log('boite update', listeBoites);
+    };
 
     return (
         <div className="container-xl mt-4">
@@ -78,20 +89,18 @@ const Smashup = () => {
                 </div>
             </div>
             <div className="row">             
-                <div className="col-12 mt-3 d-flex justify-content-center">
+                <div className="col-12 mt-3 justify-content-center">
                         <h6 className="mt-4 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
+                        <h6 className={`mt-1 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h6>
                 </div>
             </div>
             <div className="row">             
                 <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
-                    {listeBoites.map((currentBoite, index) => (
-                        <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
-                            <img src="/images/smashup/BigBox.png" className={`rounded float-start ${styles.responsiveImgListeX5}`} alt="..."></img>
+                    {listeBoites?.map((currentBoite, index) => (
+                        <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onClick={() => handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
                         </div>
                     ))}
-                                            <div className={`${styles.conteneurImgSelected} me-3 mb-3`}>
-                            <img src="/images/smashup/BigBox.png" className={`rounded float-start ${styles.responsiveImgListeX5}`} alt="..."></img>
-                        </div>
                 </div>
             </div>
         </div>
