@@ -31,7 +31,6 @@ const Articles = () => {
         .then(response => response.json())
         .then(data => {
           console.log('articles', data);
-          //const filteredResult = data.filter(article => article.Tags?.includes('Keyforge'));
           setArticles(data);
           setArticlesFiltered(data);
           setIsLoading(false);
