@@ -10,7 +10,7 @@
         width: 25%;
         border: 2px solid white;
         border-radius: 10px;
-        transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
     }
 }
 
@@ -20,18 +20,15 @@
         width: 15%;
         border: 2px solid white;
         border-radius: 10px;
-        transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
     }
 }
 
 .conteneurImgX5:hover {
     border: 2px solid var(--ColorA);
     box-shadow: 0 0 10px 1px var(--ColorA);
-    filter: brightness(1.2);
 }
 
 .conteneurImgSelected {
-    border: 2px solid var(--txtColorPlayerGreen);
     box-shadow: 0 0 10px 5px var(--txtColorPlayerGreen);
-    filter: brightness(1.2);
 }
