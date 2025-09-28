@@ -29,7 +29,7 @@ const Smashup = () => {
         setListeBoite(prevListeBoites => 
             prevListeBoites?.map(prevBoite =>
                 prevBoite.CodeBox === codeBoite
-                ? {...prevBoite, Selected: true}
+                ? {...prevBoite, Selected: !prevBoite?.Selected}
                 : prevBoite
             ))
         console.log('boite update', listeBoites);
