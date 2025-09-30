@@ -10,7 +10,8 @@
         width: 25%;
         border: 2px solid white;
         border-radius: 10px;
-        transition: border 0.3s ease, box-shadow 0.3s ease;
+        transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        filter: brightness(0.75);
     }
 }
 
@@ -20,8 +21,14 @@
         width: 15%;
         border: 2px solid white;
         border-radius: 10px;
-        transition: border 0.3s ease, box-shadow 0.3s ease;
+        transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        filter: brightness(0.75);
     }
+}
+
+.conteneurImgX5:has(.conteneurImgSelected) {
+    filter: brightness(1);
+    box-shadow: 0 0 3px 7px var(--txtColorPlayerGreen);
 }
 
 .conteneurImgX5:hover {
@@ -29,6 +36,11 @@
     box-shadow: 0 0 10px 1px var(--ColorA);
 }
 
+.conteneurImgX5:focus {
+    border: 0px;
+    box-shadow: 0 0 0px 0px;
+}
+
 .conteneurImgSelected {
-    box-shadow: 0 0 10px 5px var(--txtColorPlayerGreen);
+    box-shadow: 0 0 3px 7px var(--txtColorPlayerGreen);
 }
