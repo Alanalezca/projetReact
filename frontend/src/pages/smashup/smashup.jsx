@@ -12,7 +12,7 @@ const Smashup = () => {
     const [nbJoueursSelected, setNbJoueursSelected] = useState(99);
     const inputsRef = useRef({});
     const [listeBoites, setListeBoite] = useState();
-    const [compteurNbFactionsSelonBoitesSelected, setCompteurNbFactionsSelonBoitesSelected] = useState(15);
+    const [compteurNbFactionsSelonBoitesSelected, setCompteurNbFactionsSelonBoitesSelected] = useState(0);
 
     useEffect(() => {
         fetch('/api/smashup/boites')
@@ -24,6 +24,14 @@ const Smashup = () => {
         })
         .catch(error => console.error('Erreur fetch smashup boites:', error));
     }, [])
+
+    useEffect(() => {
+        let nbFactions = 0;
+        listeBoites?.map((currentBoite) => {
+            currentBoite.Selected && (nbFactions += parseInt(currentBoite.nbfactions));
+        });
+        setCompteurNbFactionsSelonBoitesSelected(isNaN(nbFactions) ? 0 : nbFactions);
+    }, [listeBoites])
 
     const handleClickOnBox = (codeBoite) => {
         setListeBoite(prevListeBoites => 
@@ -70,28 +78,28 @@ const Smashup = () => {
             </div>
             <div className="row">             
                 <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerRed)"} intMaxLength={50} strValeurByDef={"Joueur A"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerA"] = e)}/>
+                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerRed)"} intMaxLength={50} strPlaceholder={"Joueur A"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerA"] = e)}/>
                 </div>
             </div>
             <div className="row">             
                 <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strValeurByDef={"Joueur B"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
+                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
                 </div>
             </div>
             <div className="row">             
                 <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerYellow)"} intMaxLength={50} strValeurByDef={"Joueur C"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerC"] = e)}/>
+                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerYellow)"} intMaxLength={50} strPlaceholder={"Joueur C"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerC"] = e)}/>
                 </div>
             </div>
             <div className="row">             
                 <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerGreen)"} intMaxLength={50} strValeurByDef={"Joueur D"} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerD"] = e)}/>
+                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerGreen)"} intMaxLength={50} strPlaceholder={"Joueur D"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerD"] = e)}/>
                 </div>
             </div>
             <div className="row">             
-                <div className="col-12 mt-3 justify-content-center">
-                        <h6 className="mt-4 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
-                        <h6 className={`mt-1 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h6>
+                <div className="col-12 mt-1 justify-content-center">
+                        <h6 className="mt-5 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
+                        <h6 className={`mt-2 mb-4 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h6>
                 </div>
             </div>
             <div className="row">             
@@ -101,6 +109,11 @@ const Smashup = () => {
                             <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onClick={() => handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
                         </div>
                     ))}
+                </div>
+            </div>
+            <div className="row">             
+                <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
+                    <button type="button" className={`btn btn-primary btn-ColorA`}>Valider la sélection</button>
                 </div>
             </div>
         </div>
