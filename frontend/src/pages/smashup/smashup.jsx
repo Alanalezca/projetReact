@@ -9,16 +9,30 @@ const Smashup = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const contenuPianoNbJoueurs = ['2 joueurs', '3 joueurs', '4 joueurs'];
-    const [nbJoueursSelected, setNbJoueursSelected] = useState(99);
+    const [currentEtapeDraft, setCurrentEtapeDraft] = useState(0);
+    const [nbJoueursSelected, setNbJoueursSelected] = useState(0);
     const inputsRef = useRef({});
     const [listeBoites, setListeBoite] = useState();
+    const [listeFactions, setListeFactions] = useState();
     const [compteurNbFactionsSelonBoitesSelected, setCompteurNbFactionsSelonBoitesSelected] = useState(0);
+    const [namePlayers, setNamePlayers] = useState([
+        { J1: "Joueur A", J2: "Joueur B", J3: "Joueur C", J4: "Joueur D" }
+    ]);
+    const [factionsPickBanByPlayer, setFactionsPickBanByPlayer] = useState([
+        { ID: 1, FactionBanA: "-", FactionBanB: "-", FactionPickA: "-", FactionPickB: "-" },
+        { ID: 2, FactionBanA: "-", FactionBanB: "-", FactionPickA: "-", FactionPickB: "-" },
+        { ID: 3, FactionBanA: "-", FactionBanB: "-", FactionPickA: "-", FactionPickB: "-" },
+        { ID: 4, FactionBanA: "-", FactionBanB: "-", FactionPickA: "-", FactionPickB: "-" }
+    ]);
+    const [txtCurrentInstruction, setTxtCurrentInstruction] = useState("XXX");
+    const [txtCurrentInstructionColor, setTxtCurrentInstructionColor] = useState("XXX");
+    const [txtCurrentPlayer, setTxtCurrentPlayer] = useState("XXX");
+    const [txtCurrentPlayerColor, setTxtCurrentPlayerColor] = useState("XXX");
 
     useEffect(() => {
         fetch('/api/smashup/boites')
         .then(response => response.json())
         .then(data => {
-          console.log('boites', data);
           setListeBoite(data);
           setIsLoading(false);
         })
@@ -33,6 +47,23 @@ const Smashup = () => {
         setCompteurNbFactionsSelonBoitesSelected(isNaN(nbFactions) ? 0 : nbFactions);
     }, [listeBoites])
 
+    const handleBuildFiltreFactions = (boxes) => {
+        let filtreFactions = "";
+        boxes?.map((currentBox, index) => {
+            currentBox?.Selected && (filtreFactions += (filtreFactions !== "" ? "$" : "") + currentBox?.CodeBox);
+        });
+        getFactionsFromBoxesSelected(filtreFactions);
+    };
+
+    const getFactionsFromBoxesSelected = (filtre) => {
+        fetch('/api/smashup/factions?filtreBoxes=' + filtre)
+        .then(response => response.json())
+        .then(data => {
+          setListeFactions(data);
+        })
+        .catch(error => console.error('Erreur fetch smashup factions:', error));
+    };
+
     const handleClickOnBox = (codeBoite) => {
         setListeBoite(prevListeBoites => 
             prevListeBoites?.map(prevBoite =>
@@ -40,7 +71,151 @@ const Smashup = () => {
                 ? {...prevBoite, Selected: !prevBoite?.Selected}
                 : prevBoite
             ))
-        console.log('boite update', listeBoites);
+    };
+
+    const handleLoadNamePlayers = () => {
+        setNamePlayers((prev) =>({
+            ...prev,
+            J1: inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A",
+            J2: inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B",
+            J3: inputsRef?.current["pseudoPlayerC"]?.value || "Joueur C",
+            J4: inputsRef?.current["pseudoPlayerD"]?.value || "Joueur D"
+        }));
+    };
+
+    useEffect(() => {
+        handleLoadTxtCurrentInstruction();
+        handleLoadTxtPlayer();
+        handleLoadColorPlayer();
+        handleLoadColorInstruction();
+    }, [currentEtapeDraft])
+
+    const handleLoadTxtCurrentInstruction = () => {
+        if(nbJoueursSelected == 0) {
+            switch (currentEtapeDraft) {
+            case 2:
+                setTxtCurrentInstruction("doit BANNIR une faction");
+                break;
+            case 3:
+                setTxtCurrentInstruction("doit BANNIR une faction");
+                break;
+            case 4:
+                setTxtCurrentInstruction("doit SELECTIONNER sa première faction");
+                break;
+            case 5:
+                setTxtCurrentInstruction("doit SELECTIONNER sa première faction");
+                break;
+            case 6:
+                setTxtCurrentInstruction("doit BANNIR une faction");
+                break;
+            case 7:
+                setTxtCurrentInstruction("doit BANNIR une faction");
+                break;
+            case 8:
+                setTxtCurrentInstruction("doit SELECTIONNER sa seconde faction");
+                break;
+            case 9:
+                setTxtCurrentInstruction("doit SELECTIONNER sa seconde faction");
+                break;
+            }
+        } 
+    };
+
+    const handleLoadTxtPlayer = () => {
+        if(nbJoueursSelected == 0) {
+            switch (currentEtapeDraft) {
+            case 2:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+                break;
+            case 3:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                break;
+            case 4:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+                break;
+            case 5:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                break;
+            case 6:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                break;
+            case 7:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+                break;
+            case 8:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                break;
+            case 9:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+                break;
+            }
+        } 
+    };
+
+    const handleLoadColorPlayer = () => {
+        if(nbJoueursSelected == 0) {
+            switch (currentEtapeDraft) {
+            case 2:
+                setTxtCurrentPlayerColor("txtColorPlayerRed");
+                break;
+            case 3:
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                break;
+            case 4:
+                setTxtCurrentPlayerColor("txtColorPlayerRed");
+                break;
+            case 5:
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                break;
+            case 6:
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                break;
+            case 7:
+                setTxtCurrentPlayerColor("txtColorPlayerRed");
+                break;
+            case 8:
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                break;
+            case 9:
+                setTxtCurrentPlayerColor("txtColorPlayerRed");
+                break;
+            }
+        } 
+    };
+
+    const handleLoadColorInstruction = () => {
+        if(nbJoueursSelected == 0) {
+            switch (currentEtapeDraft) {
+            case 2:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                break;
+            case 3:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                break;
+            case 4:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                break;
+            case 5:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                break;
+            case 6:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                break;
+            case 7:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                break;
+            case 8:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                break;
+            case 9:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                break;
+            }
+        } 
+    };
+
+    const handleTest = () => {
+        setCurrentEtapeDraft(prev => prev +1);
     };
 
     return (
@@ -68,7 +243,7 @@ const Smashup = () => {
             </div>
             <div className="row">             
                 <div className="col-12 mt-2 d-flex justify-content-center">
-                        <ButtonPiano arrayLibelleOccurences={contenuPianoNbJoueurs} currentOccurenceInFocus={nbJoueursSelected} setterCurrentOccurenceInFocus={setNbJoueursSelected}/>
+                        <ButtonPiano arrayLibelleOccurences={contenuPianoNbJoueurs} currentOccurenceInFocus={nbJoueursSelected} setterCurrentOccurenceInFocus={currentEtapeDraft == 0 && setNbJoueursSelected}/>
                 </div>
             </div>
             <div className="row">             
@@ -78,44 +253,148 @@ const Smashup = () => {
             </div>
             <div className="row">             
                 <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerRed)"} intMaxLength={50} strPlaceholder={"Joueur A"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerA"] = e)}/>
+                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerRed)"} intMaxLength={50} strPlaceholder={"Joueur A"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerA"] = e)}/>
                 </div>
             </div>
             <div className="row">             
                 <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
+                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
                 </div>
             </div>
+            {nbJoueursSelected > 0 &&
+                <div className="row">             
+                    <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
+                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerYellow)"} intMaxLength={50} strPlaceholder={"Joueur C"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerC"] = e)}/>
+                    </div>
+                </div>
+            }
+            {nbJoueursSelected > 1 &&
+                <div className="row">             
+                    <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
+                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerGreen)"} intMaxLength={50} strPlaceholder={"Joueur D"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerD"] = e)}/>
+                    </div>
+                </div>
+            }
+            {currentEtapeDraft == 0 &&
             <div className="row">             
-                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerYellow)"} intMaxLength={50} strPlaceholder={"Joueur C"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerC"] = e)}/>
+                <div className="col-12 mt-5 mb-5 d-flex justify-content-center">
+                    <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => setCurrentEtapeDraft(1)}>Valider le nombre de joueurs</button>
                 </div>
             </div>
-            <div className="row">             
-                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerGreen)"} intMaxLength={50} strPlaceholder={"Joueur D"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" ref={(e) => (inputsRef.current["pseudoPlayerD"] = e)}/>
+            }
+
+            {currentEtapeDraft == 1 &&
+            <>
+                <div className="row">             
+                    <div className="col-12 mt-1 justify-content-center">
+                            <h6 className="mt-5 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
+                            <h6 className={`mt-2 mb-4 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h6>
+                    </div>
                 </div>
-            </div>
-            <div className="row">             
-                <div className="col-12 mt-1 justify-content-center">
-                        <h6 className="mt-5 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
-                        <h6 className={`mt-2 mb-4 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h6>
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
+                        {listeBoites?.map((currentBoite, index) => (
+                            <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onClick={() => handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
-            <div className="row">             
-                <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
-                    {listeBoites?.map((currentBoite, index) => (
-                        <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
-                            <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onClick={() => handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
-                        </div>
-                    ))}
+                
+                <div className="row">           
+                    <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
+                        <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +4)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider les sets sélectionnés</button>
+                    </div>
                 </div>
-            </div>
-            <div className="row">             
-                <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
-                    <button type="button" className={`btn btn-primary btn-ColorA`}>Valider la sélection</button>
+            </>
+            }
+
+            {currentEtapeDraft >= 2 && 
+
+            <>
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex justify-content-center">
+                            <h6 className="mt-4 text-center txtColorWhite">Le draft porte sur les sets suivants :</h6>
+                    </div>
                 </div>
-            </div>
+                <div className="row">             
+                    <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
+                        <ul className="list-group">
+                            {listeBoites?.map((currentBoite, index) => (
+                                currentBoite.Selected == true &&
+                                    <li key={"boxResume-" + index} className="list-group-item static">{currentBoite.Libelle}</li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex justify-content-center">
+                            <h6 className="mt-4 text-center txtColorWhite">{namePlayers.J1}</h6>
+                    </div>
+                </div>
+
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
+                        {listeFactions?.map((currentFaction, index) => (
+                            <div key={"faction-" + index} className={`${styles.conteneurImgX5} me-3 mb-3`} onClick={() => handleTest()}>
+                                <div className={styles.blocFaction}>
+                                    <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction} ${currentFaction?.Selected && styles.conteneurImgSelected}`} onClick={() => handleClickOnBox(currentFaction?.CodeFaction)} alt="..."></img>
+                                </div>
+                                <div className={styles.overlayText}>
+                                    {currentFaction.Libelle}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex justify-content-center">
+                            <h6 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h6>&nbsp;<h6 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h6>
+                    </div>
+                </div>
+
+                <div className="row mb-5">             
+                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                        <ul className="list-group w-100 text-center">
+                            <li className="list-group-item staticHeader">{namePlayers.J1}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[0].FactionBanA}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[0].FactionBanB}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[0].FactionPickA}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[0].FactionPickB}</li>
+                        </ul>
+                    </div>
+                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                        <ul className="list-group w-100 text-center">
+                            <li className="list-group-item staticHeader">{namePlayers.J2}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[1].FactionBanA}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[1].FactionBanB}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[1].FactionPickA}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[1].FactionPickB}</li>
+                        </ul>
+                    </div>
+                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                        <ul className="list-group w-100 text-center">
+                            <li className="list-group-item staticHeader">{namePlayers.J3}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[2].FactionBanA}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[2].FactionBanB}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[2].FactionPickA}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[2].FactionPickB}</li>
+                        </ul>
+                    </div>
+                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                        <ul className="list-group w-100 text-center">
+                            <li className="list-group-item staticHeader">{namePlayers.J4}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[3].FactionBanA}</li>
+                            <li className="list-group-item staticRed">{factionsPickBanByPlayer[3].FactionBanB}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[3].FactionPickA}</li>
+                            <li className="list-group-item staticGreen">{factionsPickBanByPlayer[3].FactionPickB}</li>
+                        </ul>
+                    </div>
+                </div>
+            </>
+            }
         </div>
     );
 }

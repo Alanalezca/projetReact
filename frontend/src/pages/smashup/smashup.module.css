@@ -4,6 +4,35 @@
   height: auto; /* conserve les proportions */
 }
 
+.responsiveImgFaction {
+  display: block; /* évite l’espace blanc en dessous */
+  width: 100%; /* ne dépasse jamais son conteneur */
+  height: 100%; /* conserve les proportions */
+}
+
+.blocFaction {
+    position: relative;
+}
+
+.overlayText {
+    position: absolute;
+    bottom: 0; /* en bas */
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.6);
+    opacity: 0; /* invisible par défaut */
+    transition: opacity 0.3s ease-in-out;
+    border-radius: 0 0 10px 10px;
+}
+
+.conteneurImgX5:hover .overlayText {
+  opacity: 1; /* devient visible au survol */
+}
+
 /* Mini devices */
 @media (max-width: 992px) {
     .conteneurImgX5 {
