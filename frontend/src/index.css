@@ -51,6 +51,9 @@ a {
   --backgroundColorSuccessLight: #228C3A;
   --backgroundColorSuccessLightRGB: rgba(34, 140, 58);
 
+  --backgroundColorSuccessDark: #051B11;
+  --backgroundColorSuccessDarkRGB: rgba(5, 27, 17);
+
   --backgroundColorDanger: #96242F;
   --backgroundColorDangerRGB: rgba(150, 36, 47);
 
@@ -59,6 +62,9 @@ a {
 
   --backgroundColorDangerLight: #bb6c74;
   --backgroundColorDangerLightRGB: rgb(187, 108, 116);
+
+  --backgroundColorDangerDark: #2C0B0E;
+  --backgroundColorDangerDarkRGB: rgb(44, 11, 14);
 
   --backgroundColorCaution: #AD8305;
   --backgroundColorCautionRGB: rgba(173, 131, 5);
@@ -112,11 +118,17 @@ a {
   --txtColorPlayerRed: #E53935;
   --txtColorPlayerRedRGB: rgba(229, 57, 53);
 
+  --txtColorPlayerRedLight: #E7848D;
+  --txtColorPlayerRedLightRGB: rgba(231, 132, 141);
+
   --txtColorPlayerBlue: #1E88E5;
   --txtColorPlayerBlueRGB: rgba(30, 136, 229);
 
   --txtColorPlayerGreen: #66BB6A;
   --txtColorPlayerGreenRGB: rgba(102, 187, 106);
+
+  --txtColorPlayerGreenLight: #74B596;
+  --txtColorPlayerGreenLightRGB: rgba(116, 181, 150);
 
   --txtColorPlayerYellow: #FDD835;
   --txtColorPlayerYellowRGB: rgba(253, 216, 53);
@@ -287,6 +299,26 @@ html body {
 
 .txtColorWhiteToTxtColorB:hover {
   color: var(--txtColorB);
+}
+
+.txtColorPlayerRed {
+  color: var(--txtColorPlayerRed);
+}
+
+.txtColorPlayerBlue {
+  color: var(--txtColorPlayerBlue);
+}
+
+.txtColorPlayerYellow {
+  color: var(--txtColorPlayerYellow);
+}
+
+.txtColorPlayerGreen {
+  color: var(--txtColorPlayerGreen);
+}
+
+.text-center {
+  text-align: center;
 }
 
 
@@ -472,6 +504,31 @@ html body {
   background-color: var(--backgroundColorA) !important;
   border-color: var(--backgroundColorF) !important;
   color: var(--txtColorDark) !important;
+}
+
+.list-group-item.static {
+  background-color: var(--backgroundColorA) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorWhite) !important;
+}
+
+.list-group-item.staticHeader {
+  background-color: var(--backgroundColorC) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorWhite) !important;
+  font-weight: bold;
+}
+
+.list-group-item.staticGreen {
+  background-color: var(--backgroundColorSuccessDark) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorPlayerGreenLight) !important;
+}
+
+.list-group-item.staticRed {
+  background-color: var(--backgroundColorDangerDark) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorPlayerRedLight) !important;
 }
 
 /* List-group-item : fin */
