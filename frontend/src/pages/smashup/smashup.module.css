@@ -12,6 +12,13 @@
 
 .blocFaction {
     position: relative;
+    filter: grayscale(0%);
+    transition: filter 0.5s ease;
+}
+
+.blocFaction.grayscale {
+    filter: 0.3s ease;
+    filter: grayscale(100%);
 }
 
 .overlayText {
@@ -70,6 +77,10 @@
     box-shadow: 0 0 0px 0px;
 }
 
-.conteneurImgSelected {
+.conteneurImgFactionSelectedPicked {
     box-shadow: 0 0 3px 7px var(--txtColorPlayerGreen);
+}
+
+.conteneurImgFactionSelectedBanned {
+    box-shadow: 0 0 3px 7px var(--txtColorPlayerRed);
 }
