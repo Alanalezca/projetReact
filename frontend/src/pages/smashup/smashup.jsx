@@ -73,6 +73,93 @@ const Smashup = () => {
             ))
     };
 
+    const handleClickOnFaction = (codeFaction, libelleFaction, selectedOrNot) => {
+        setListeFactions(prevListeFactions => 
+            prevListeFactions?.map(prevFaction =>
+                prevFaction.CodeFaction === codeFaction
+                ? {...prevFaction, Selected: !prevFaction?.Selected}
+                : prevFaction
+            ));
+        
+        if(nbJoueursSelected == 0) {
+        switch (currentEtapeDraft) {
+            case 2:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, FactionBanA: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 3:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, FactionBanA: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 4:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, FactionPickA: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 5:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, FactionPickA: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 6:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, FactionBanB: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 7:
+                setTxtCurrentInstructionColor("txtColorPlayerRed");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, FactionBanB: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 8:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, FactionPickB: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 9:
+                setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
+                    prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, FactionPickB: libelleFaction}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            }
+        }
+        setCurrentEtapeDraft(prev => prev + 1);
+    };
+
     const handleLoadNamePlayers = () => {
         setNamePlayers((prev) =>({
             ...prev,
@@ -214,10 +301,7 @@ const Smashup = () => {
         } 
     };
 
-    const handleTest = () => {
-        setCurrentEtapeDraft(prev => prev +1);
-    };
-
+    console.log(listeFactions);
     return (
         <div className="container-xl mt-4">
             <div className="row">
@@ -327,19 +411,12 @@ const Smashup = () => {
                         </ul>
                     </div>
                 </div>
-
                 <div className="row">             
-                    <div className="col-12 mt-3 d-flex justify-content-center">
-                            <h6 className="mt-4 text-center txtColorWhite">{namePlayers.J1}</h6>
-                    </div>
-                </div>
-
-                <div className="row">             
-                    <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
+                    <div className="col-12 mt-5 d-flex flex-wrap justify-content-center">
                         {listeFactions?.map((currentFaction, index) => (
-                            <div key={"faction-" + index} className={`${styles.conteneurImgX5} me-3 mb-3`} onClick={() => handleTest()}>
-                                <div className={styles.blocFaction}>
-                                    <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction} ${currentFaction?.Selected && styles.conteneurImgSelected}`} onClick={() => handleClickOnBox(currentFaction?.CodeFaction)} alt="..."></img>
+                            <div key={"faction-" + index} className={`${styles.conteneurImgX5} me-3 mb-3 ${currentFaction?.Selected && styles.conteneurImgFactionSelected}`}>
+                                <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
+                                    <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
                                 </div>
                                 <div className={styles.overlayText}>
                                     {currentFaction.Libelle}
@@ -350,13 +427,13 @@ const Smashup = () => {
                 </div>
 
                 <div className="row">             
-                    <div className="col-12 mt-3 d-flex justify-content-center">
+                    <div className="col-12 mt-3 mb-3 d-flex justify-content-center">
                             <h6 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h6>&nbsp;<h6 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h6>
                     </div>
                 </div>
 
                 <div className="row mb-5">             
-                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                    <div className={`col-6 col-lg-3 mt-2 d-flex justify-content-center`}>
                         <ul className="list-group w-100 text-center">
                             <li className="list-group-item staticHeader">{namePlayers.J1}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[0].FactionBanA}</li>
@@ -374,6 +451,7 @@ const Smashup = () => {
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[1].FactionPickB}</li>
                         </ul>
                     </div>
+                    {nbJoueursSelected >= 1 && 
                     <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
                             <li className="list-group-item staticHeader">{namePlayers.J3}</li>
@@ -383,6 +461,8 @@ const Smashup = () => {
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[2].FactionPickB}</li>
                         </ul>
                     </div>
+                    }
+                    {nbJoueursSelected >= 2 && 
                     <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
                             <li className="list-group-item staticHeader">{namePlayers.J4}</li>
@@ -392,6 +472,7 @@ const Smashup = () => {
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[3].FactionPickB}</li>
                         </ul>
                     </div>
+                    }
                 </div>
             </>
             }
