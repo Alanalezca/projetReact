@@ -2,7 +2,7 @@ import React from 'react';
 import { useSessionUserContext } from '../components/contexts/sessionUserContext';
 import { useOngletAlerteContext } from '../components/contexts/ToastContext';
 //import { useTracker } from "meteor/react-meteor-data";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
 //import { useHistory } from "react-router-dom";
 import styles from './MenuHeader.module.css';
@@ -12,10 +12,32 @@ import Subscribe from '../components/modals/Subscribe';
   const MenuHeader = ({}) => {
     const { showOngletAlerte } = useOngletAlerteContext();
     const {sessionUser, setSessionUser} = useSessionUserContext();
+    const menuRef = useRef(null);
+    const burgerRef = useRef(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [showModalLogin, setShowModalLogin] = useState(false);
     const [showModalSubscribe, setShowModalSubscribe] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+
+    // Détection du clic hors menu mini pour déclencher sa close
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (
+          menuOpen && 
+          menuRef.current &&
+          !menuRef.current.contains(event.target) &&
+          burgerRef.current &&
+          !burgerRef.current.contains(event.target)
+        ) {
+          setMenuOpen(false);
+        }
+      }
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [menuOpen]);
 
       const logoutUser = async () => {
       const response = await fetch('/api/users/logout', {
@@ -54,10 +76,12 @@ import Subscribe from '../components/modals/Subscribe';
     }, []);
 
     return (
-    <><Subscribe show={showModalSubscribe} handleClose={setShowModalSubscribe} handleShowLogin={setShowModalLogin}/><Login show={showModalLogin} handleClose={setShowModalLogin} handleShowSubscribe={setShowModalSubscribe}/>
+    <><Subscribe show={showModalSubscribe} handleClose={setShowModalSubscribe} handleShowLogin={setShowModalLogin}/>
+    <Login show={showModalLogin} handleClose={setShowModalLogin} handleShowSubscribe={setShowModalSubscribe}/>
       <nav className={`txt-base ${styles.navbar}`}>
             {/* bouton burger */}
             <button
+                ref={burgerRef}
                 className={styles.burger}
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label="Menu"
@@ -67,7 +91,7 @@ import Subscribe from '../components/modals/Subscribe';
 
 
         {/* Menu Principal */}
-        <ul className={`${styles.MenuHeaderMini} ${!menuOpen && styles.MenuHeader} ${menuOpen && styles.open}`}>
+        <ul ref={menuRef} className={`${styles.MenuHeaderMini} ${!menuOpen && styles.MenuHeader} ${menuOpen && styles.open}`}>
           <li><Link to="/">Articles</Link></li>
           <li>
               <a href="#">Drafters</a>
