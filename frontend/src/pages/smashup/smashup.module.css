@@ -69,7 +69,17 @@
 
 .conteneurImgX5:hover {
     border: 2px solid var(--ColorA);
-    box-shadow: 0 0 10px 1px var(--ColorA);
+    box-shadow: 0 0 10px 3px var(--ColorA);
+}
+
+.conteneurImgX5.toPick:hover {
+    border: 2px solid var(--txtColorPlayerGreen);
+    box-shadow: 0 0 3px 3px var(--txtColorPlayerGreen);
+}
+
+.conteneurImgX5.toBan:hover {
+    border: 2px solid var(--txtColorPlayerRed);
+    box-shadow: 0 0 3px 3px var(--txtColorPlayerRed);
 }
 
 .conteneurImgX5:focus {
@@ -77,10 +87,22 @@
     box-shadow: 0 0 0px 0px;
 }
 
-.conteneurImgFactionSelectedPicked {
-    box-shadow: 0 0 3px 7px var(--txtColorPlayerGreen);
+.factionPicked {
+    border: 2px solid var(--txtColorPlayerGreen);
+    box-shadow: 0 0 3px 4px var(--txtColorPlayerGreen);
 }
 
-.conteneurImgFactionSelectedBanned {
-    box-shadow: 0 0 3px 7px var(--txtColorPlayerRed);
+.factionBanned {
+    border: 2px solid var(--txtColorPlayerRed);
+    box-shadow: 0 0 3px 4px var(--txtColorPlayerRed);
+}
+
+.conteneurImgX5.factionPicked:hover {
+    border: 2px solid var(--txtColorPlayerGreen);
+    box-shadow: 0 0 3px 4px var(--txtColorPlayerGreen);
+}
+
+.conteneurImgX5.factionBanned:hover {
+    border: 2px solid var(--txtColorPlayerRed);
+    box-shadow: 0 0 3px 4px var(--txtColorPlayerRed);
 }

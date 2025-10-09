@@ -28,6 +28,14 @@ const Smashup = () => {
     const [txtCurrentInstructionColor, setTxtCurrentInstructionColor] = useState("XXX");
     const [txtCurrentPlayer, setTxtCurrentPlayer] = useState("XXX");
     const [txtCurrentPlayerColor, setTxtCurrentPlayerColor] = useState("XXX");
+    const [phasePickOrBan, setPhasePickOrBan] = useState("");
+    const [draftTermine, setDraftTermine] = useState(false);
+
+    useEffect(() => {
+        if(nbJoueursSelected === 0) {
+            currentEtapeDraft === 2 || currentEtapeDraft === 3 || currentEtapeDraft === 6 || currentEtapeDraft === 7 ? setPhasePickOrBan("Ban") : setPhasePickOrBan("Pick")   
+        }
+    }, [currentEtapeDraft])
 
     useEffect(() => {
         fetch('/api/smashup/boites')
@@ -68,16 +76,22 @@ const Smashup = () => {
         setListeBoite(prevListeBoites => 
             prevListeBoites?.map(prevBoite =>
                 prevBoite.CodeBox === codeBoite
-                ? {...prevBoite, Selected: !prevBoite?.Selected}
+                ? {...prevBoite, 
+                    Selected: !prevBoite?.Selected}
                 : prevBoite
             ))
     };
 
     const handleClickOnFaction = (codeFaction, libelleFaction, selectedOrNot) => {
+        if (selectedOrNot || (nbJoueursSelected == 0 && currentEtapeDraft > 9)) {
+            return;
+        }
         setListeFactions(prevListeFactions => 
             prevListeFactions?.map(prevFaction =>
                 prevFaction.CodeFaction === codeFaction
-                ? {...prevFaction, Selected: !prevFaction?.Selected}
+                ? {...prevFaction, 
+                    Selected: true,
+                    TypeSelected: phasePickOrBan}
                 : prevFaction
             ));
         
@@ -88,7 +102,8 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 1
-                    ? {...draftFromCurrentPlayer, FactionBanA: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionBanA: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
                 break;
@@ -97,7 +112,8 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 2
-                    ? {...draftFromCurrentPlayer, FactionBanA: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionBanA: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
                 break;
@@ -106,7 +122,8 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 1
-                    ? {...draftFromCurrentPlayer, FactionPickA: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionPickA: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
                 break;
@@ -115,7 +132,8 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 2
-                    ? {...draftFromCurrentPlayer, FactionPickA: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionPickA: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
                 break;
@@ -124,7 +142,8 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 2
-                    ? {...draftFromCurrentPlayer, FactionBanB: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionBanB: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
                 break;
@@ -133,7 +152,8 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 1
-                    ? {...draftFromCurrentPlayer, FactionBanB: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionBanB: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
                 break;
@@ -142,7 +162,8 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 2
-                    ? {...draftFromCurrentPlayer, FactionPickB: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionPickB: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
                 break;
@@ -151,9 +172,11 @@ const Smashup = () => {
                 setFactionsPickBanByPlayer(prevFactionsPickBanByPlayer => 
                     prevFactionsPickBanByPlayer?.map(draftFromCurrentPlayer =>
                     draftFromCurrentPlayer.ID === 1
-                    ? {...draftFromCurrentPlayer, FactionPickB: libelleFaction}
+                    ? {...draftFromCurrentPlayer, 
+                        FactionPickB: libelleFaction}
                     : draftFromCurrentPlayer
                 ));
+                setDraftTermine(true);
                 break;
             }
         }
@@ -300,8 +323,9 @@ const Smashup = () => {
             }
         } 
     };
-
+    console.log(phasePickOrBan);
     console.log(listeFactions);
+    console.log(currentEtapeDraft);
     return (
         <div className="container-xl mt-4">
             <div className="row">
@@ -411,29 +435,40 @@ const Smashup = () => {
                         </ul>
                     </div>
                 </div>
-                <div className="row">             
-                    <div className="col-12 mt-5 d-flex flex-wrap justify-content-center">
-                        {listeFactions?.map((currentFaction, index) => (
-                            <div key={"faction-" + index} className={`${styles.conteneurImgX5} me-3 mb-3 ${currentFaction?.Selected && styles.conteneurImgFactionSelected}`}>
-                                <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
-                                    <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
+                {!draftTermine && 
+                    <div className="row">        
+                        <div className="col-12 mt-5 d-flex flex-wrap justify-content-center">
+                            {listeFactions?.map((currentFaction, index) => (
+                                <div key={"faction-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentFaction.TypeSelected == "Pick" ? styles.factionPicked : (currentFaction.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
+                                    <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
+                                        <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
+                                    </div>
+                                    <div className={styles.overlayText}>
+                                        {currentFaction.Libelle}
+                                    </div>
                                 </div>
-                                <div className={styles.overlayText}>
-                                    {currentFaction.Libelle}
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
+                }
 
-                <div className="row">             
-                    <div className="col-12 mt-3 mb-3 d-flex justify-content-center">
-                            <h6 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h6>&nbsp;<h6 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h6>
+                <div className="row">
+                    <div className="col-12 mt-5 d-flex justify-content-center">
+                            {!draftTermine ?
+                                <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
+                                :
+                                <h6 className={`text-center txtColorWhite`}>Le draft est à présent terminé, voici le résultat :</h6>
+                            }
+                    </div>          
+                    <div className="col-12 mb-3 d-flex justify-content-center">
+                            {!draftTermine &&
+                                <h6 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h6>
+                            }
                     </div>
                 </div>
 
                 <div className="row mb-5">             
-                    <div className={`col-6 col-lg-3 mt-2 d-flex justify-content-center`}>
+                    <div className="col-12 col-lg-6 mt-2 mb-3 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
                             <li className="list-group-item staticHeader">{namePlayers.J1}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[0].FactionBanA}</li>
@@ -442,7 +477,7 @@ const Smashup = () => {
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[0].FactionPickB}</li>
                         </ul>
                     </div>
-                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                    <div className="col-12 col-lg-6 mt-2 mb-3 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
                             <li className="list-group-item staticHeader">{namePlayers.J2}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[1].FactionBanA}</li>
@@ -452,7 +487,7 @@ const Smashup = () => {
                         </ul>
                     </div>
                     {nbJoueursSelected >= 1 && 
-                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                    <div className="col-12 col-lg-6 mt-2 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
                             <li className="list-group-item staticHeader">{namePlayers.J3}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[2].FactionBanA}</li>
@@ -463,7 +498,7 @@ const Smashup = () => {
                     </div>
                     }
                     {nbJoueursSelected >= 2 && 
-                    <div className="col-6 col-lg-3 mt-2 d-flex justify-content-center">
+                    <div className="col-12 col-lg-6 mt-2 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
                             <li className="list-group-item staticHeader">{namePlayers.J4}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[3].FactionBanA}</li>
