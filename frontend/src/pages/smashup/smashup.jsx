@@ -443,7 +443,7 @@ const Smashup = () => {
                                     <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
                                         <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
                                     </div>
-                                    <div className={styles.overlayText}>
+                                    <div className={styles.overlayText} onClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)}>
                                         {currentFaction.Libelle}
                                     </div>
                                 </div>
