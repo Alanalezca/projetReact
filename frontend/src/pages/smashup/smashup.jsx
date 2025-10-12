@@ -4,7 +4,6 @@ import Loader from '../../components/others/Loader';
 import Accordeon from '../../components/others/Accordeon';
 import ButtonPiano from '../../components/others/ButtonPiano';
 import InputStandard from '../../components/inputs/InputStandard';
-import { handleHoldStart, handleHoldEnd } from '../../functions/onHold';
 
 const Smashup = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -14,7 +13,6 @@ const Smashup = () => {
     const [nbJoueursSelected, setNbJoueursSelected] = useState(0);
     const inputsRef = useRef({});
     const [listeBoites, setListeBoite] = useState();
-    const timerRefHold = useRef(null);
     const [listeFactions, setListeFactions] = useState();
     const [compteurNbFactionsSelonBoitesSelected, setCompteurNbFactionsSelonBoitesSelected] = useState(0);
     const [namePlayers, setNamePlayers] = useState([
@@ -410,13 +408,7 @@ const Smashup = () => {
                     <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
                         {listeBoites?.map((currentBoite, index) => (
                             <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
-                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} 
-                                    onMouseDown={() => handleHoldStart(timerRefHold, () => handleClickOnBox(currentBoite?.CodeBox), 333)}
-                                    onMouseUp={() => handleHoldEnd(timerRefHold)}
-                                    onMouseLeave={() => handleHoldEnd(timerRefHold)}
-                                    onTouchStart={() => handleHoldStart(timerRefHold, () => handleClickOnBox(currentBoite?.CodeBox), 333)}
-                                    onTouchEnd={() => handleHoldEnd(timerRefHold)}
-                                     alt="..."></img>
+                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
                             </div>
                         ))}
                     </div>
@@ -481,20 +473,9 @@ const Smashup = () => {
                             {listeFactions?.map((currentFaction, index) => (
                                 <div key={"faction-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentFaction.TypeSelected == "Pick" ? styles.factionPicked : (currentFaction.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
                                     <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
-                                        <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} 
-                                            onMouseDown={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
-                                            onMouseUp={() => handleHoldEnd(timerRefHold)}
-                                            onMouseLeave={() => handleHoldEnd(timerRefHold)}
-                                            onTouchStart={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
-                                            onTouchEnd={() => handleHoldEnd(timerRefHold)}
-                                        alt="..."></img>
+                                        <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onDoubleClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
                                     </div>
-                                    <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`}
-                                            onMouseDown={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
-                                            onMouseUp={() => handleHoldEnd(timerRefHold)}
-                                            onMouseLeave={() => handleHoldEnd(timerRefHold)}
-                                            onTouchStart={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
-                                            onTouchEnd={() => handleHoldEnd(timerRefHold)}>
+                                    <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onDoubleClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)}>
                                         {currentFaction.Libelle}
                                     </div>
                                 </div>
