@@ -4,6 +4,7 @@ import Loader from '../../components/others/Loader';
 import Accordeon from '../../components/others/Accordeon';
 import ButtonPiano from '../../components/others/ButtonPiano';
 import InputStandard from '../../components/inputs/InputStandard';
+import { handleHoldStart, handleHoldEnd } from '../../functions/onHold';
 
 const Smashup = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +14,7 @@ const Smashup = () => {
     const [nbJoueursSelected, setNbJoueursSelected] = useState(0);
     const inputsRef = useRef({});
     const [listeBoites, setListeBoite] = useState();
+    const timerRefHold = useRef(null);
     const [listeFactions, setListeFactions] = useState();
     const [compteurNbFactionsSelonBoitesSelected, setCompteurNbFactionsSelonBoitesSelected] = useState(0);
     const [namePlayers, setNamePlayers] = useState([
@@ -24,6 +26,7 @@ const Smashup = () => {
         { ID: 3, FactionBanA: "-", FactionBanB: "-", FactionPickA: "-", FactionPickB: "-" },
         { ID: 4, FactionBanA: "-", FactionBanB: "-", FactionPickA: "-", FactionPickB: "-" }
     ]);
+    const [showOverlayFactions, setShowOverlayFactions] = useState(false);
     const [txtCurrentInstruction, setTxtCurrentInstruction] = useState("XXX");
     const [txtCurrentInstructionColor, setTxtCurrentInstructionColor] = useState("XXX");
     const [txtCurrentPlayer, setTxtCurrentPlayer] = useState("XXX");
@@ -407,13 +410,19 @@ const Smashup = () => {
                     <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
                         {listeBoites?.map((currentBoite, index) => (
                             <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
-                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onClick={() => handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
+                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} 
+                                    onMouseDown={() => handleHoldStart(timerRefHold, () => handleClickOnBox(currentBoite?.CodeBox), 333)}
+                                    onMouseUp={() => handleHoldEnd(timerRefHold)}
+                                    onMouseLeave={() => handleHoldEnd(timerRefHold)}
+                                    onTouchStart={() => handleHoldStart(timerRefHold, () => handleClickOnBox(currentBoite?.CodeBox), 333)}
+                                    onTouchEnd={() => handleHoldEnd(timerRefHold)}
+                                     alt="..."></img>
                             </div>
                         ))}
                     </div>
                 </div>
                 
-                <div className="row">           
+                <div className="row mb-5">           
                     <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
                         <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +4)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider les sets sélectionnés</button>
                     </div>
@@ -439,7 +448,7 @@ const Smashup = () => {
                         </ul>
                     </div>
                 </div>
-
+                
                 <div className="row">
                     <div className="col-12 mt-4 d-flex justify-content-center">
                             {!draftTermine ?
@@ -456,20 +465,43 @@ const Smashup = () => {
                 </div>
 
                 {!draftTermine && 
+                <>
+                    <div className="row">
+                        <div className="col-12 mt-2 d-flex justify-content-center">
+                                {showOverlayFactions ? 
+                                    <i className={`bx bx-image-alt bxNormalOrange`} onClick={() => setShowOverlayFactions(false)}></i> :
+                                    <i className={`bx bx-detail bxNormalOrange`} onClick={() => setShowOverlayFactions(true)}></i>
+                                }
+                        </div>
+                    </div>
+
+
                     <div className="row">        
                         <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
                             {listeFactions?.map((currentFaction, index) => (
                                 <div key={"faction-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentFaction.TypeSelected == "Pick" ? styles.factionPicked : (currentFaction.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
                                     <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
-                                        <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
+                                        <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} 
+                                            onMouseDown={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
+                                            onMouseUp={() => handleHoldEnd(timerRefHold)}
+                                            onMouseLeave={() => handleHoldEnd(timerRefHold)}
+                                            onTouchStart={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
+                                            onTouchEnd={() => handleHoldEnd(timerRefHold)}
+                                        alt="..."></img>
                                     </div>
-                                    <div className={styles.overlayText} onClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)}>
+                                    <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`}
+                                            onMouseDown={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
+                                            onMouseUp={() => handleHoldEnd(timerRefHold)}
+                                            onMouseLeave={() => handleHoldEnd(timerRefHold)}
+                                            onTouchStart={() => handleHoldStart(timerRefHold, () => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected), 333)}
+                                            onTouchEnd={() => handleHoldEnd(timerRefHold)}>
                                         {currentFaction.Libelle}
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+                </>
                 }
 
                 <div className="row">             
@@ -519,6 +551,9 @@ const Smashup = () => {
                         </ul>
                     </div>
                     }
+                    <div id={styles.btnRollBack} className="btn-ColorA" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                        <i className={`bx bxs-eraser bx-sm`}></i>
+                    </div>
                 </div>
             </>
             }

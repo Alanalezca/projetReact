@@ -25,7 +25,7 @@
 @media (max-width: 992px) {
     .conteneurImgX5 {
         position: relative;
-        width: 25%;
+        width: 30%;
         border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
@@ -38,18 +38,21 @@
         position: absolute;
         bottom: 0; /* en bas */
         width: 100%;
+        height: 100%;
         padding: 10px;
         font-weight: bold;
         color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         text-align: center;
-        position: absolute;
+        flex-direction: column;
         background-color: rgba(0, 0, 0, 0.6);
         opacity: 0;
         border-radius: 0 0 10px 10px;
-        text-overflow: ellipsis;
     }
 
-    .conteneurImgX5:active .overlayText {
+    .overlayText.show {
         opacity: 1; /* devient visible au survol */
     }
 }
@@ -128,4 +131,25 @@
 .conteneurImgX5.factionBanned:hover {
     border: 2px solid var(--txtColorPlayerRed);
     box-shadow: 0 0 3px 4px var(--txtColorPlayerRed);
+}
+
+/* Bouton rollback */
+
+#btnRollBack {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 2vh;
+  right: 2vw;
+  background-color: var(--ColorA);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+#btnRollBack:hover {
+  background-color: var(--ColorA);
 }
