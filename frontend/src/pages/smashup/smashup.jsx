@@ -435,9 +435,25 @@ const Smashup = () => {
                         </ul>
                     </div>
                 </div>
+
+                <div className="row">
+                    <div className="col-12 mt-4 d-flex justify-content-center">
+                            {!draftTermine ?
+                                <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
+                                :
+                                <h6 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h6>
+                            }
+                    </div>          
+                    <div className="col-12 d-flex justify-content-center">
+                            {!draftTermine &&
+                                <h6 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h6>
+                            }
+                    </div>
+                </div>
+
                 {!draftTermine && 
                     <div className="row">        
-                        <div className="col-12 mt-5 d-flex flex-wrap justify-content-center">
+                        <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
                             {listeFactions?.map((currentFaction, index) => (
                                 <div key={"faction-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentFaction.TypeSelected == "Pick" ? styles.factionPicked : (currentFaction.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
                                     <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
@@ -452,18 +468,9 @@ const Smashup = () => {
                     </div>
                 }
 
-                <div className="row">
-                    <div className="col-12 mt-5 d-flex justify-content-center">
-                            {!draftTermine ?
-                                <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
-                                :
-                                <h6 className={`text-center txtColorWhite`}>Le draft est à présent terminé, voici le résultat :</h6>
-                            }
-                    </div>          
-                    <div className="col-12 mb-3 d-flex justify-content-center">
-                            {!draftTermine &&
-                                <h6 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h6>
-                            }
+                <div className="row">             
+                    <div className="col-12 mt-3 mb-3 d-flex justify-content-center">
+                            <h4 className="text-center txtColorWhite">Résultat du draft</h4>
                     </div>
                 </div>
 
