@@ -48,6 +48,10 @@
         border-radius: 0 0 10px 10px;
         text-overflow: ellipsis;
     }
+
+    .conteneurImgX5:active .overlayText {
+        opacity: 1; /* devient visible au survol */
+    }
 }
 
 /* Large devices */
