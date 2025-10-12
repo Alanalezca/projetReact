@@ -46,6 +46,7 @@
         background-color: rgba(0, 0, 0, 0.6);
         opacity: 1;
         border-radius: 0 0 10px 10px;
+        text-overflow: ellipsis;
     }
 }
 
@@ -72,6 +73,7 @@
         opacity: 0; /* invisible par défaut */
         transition: opacity 0.3s ease-in-out;
         border-radius: 0 0 10px 10px;
+        text-overflow: ellipsis;
     }
 
     .conteneurImgX5:hover .overlayText {
