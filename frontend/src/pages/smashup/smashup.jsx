@@ -32,8 +32,12 @@ const Smashup = () => {
     const [draftTermine, setDraftTermine] = useState(false);
 
     useEffect(() => {
-        if(nbJoueursSelected === 0) {
-            currentEtapeDraft === 2 || currentEtapeDraft === 3 || currentEtapeDraft === 6 || currentEtapeDraft === 7 ? setPhasePickOrBan("Ban") : setPhasePickOrBan("Pick")   
+        if (nbJoueursSelected === 0) {
+            if ([2, 3, 6, 7].includes(currentEtapeDraft)) {
+                setPhasePickOrBan("Ban");
+            } else {
+                setPhasePickOrBan("Pick");
+            }
         }
     }, [currentEtapeDraft])
 
@@ -351,7 +355,7 @@ const Smashup = () => {
             </div>
             <div className="row">             
                 <div className="col-12 mt-2 d-flex justify-content-center">
-                        <ButtonPiano arrayLibelleOccurences={contenuPianoNbJoueurs} currentOccurenceInFocus={nbJoueursSelected} setterCurrentOccurenceInFocus={currentEtapeDraft == 0 && setNbJoueursSelected}/>
+                        <ButtonPiano arrayLibelleOccurences={contenuPianoNbJoueurs} currentOccurenceInFocus={nbJoueursSelected} setterCurrentOccurenceInFocus={currentEtapeDraft === 0 ? setNbJoueursSelected : undefined}/>
                 </div>
             </div>
             <div className="row">             
@@ -366,20 +370,20 @@ const Smashup = () => {
             </div>
             <div className="row">             
                 <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
+                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurB"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
                 </div>
             </div>
             {nbJoueursSelected > 0 &&
                 <div className="row">             
                     <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerYellow)"} intMaxLength={50} strPlaceholder={"Joueur C"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerC"] = e)}/>
+                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerYellow)"} intMaxLength={50} strPlaceholder={"Joueur C"} strValeurByDef={""} strID={"pseudoJoueurC"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerC"] = e)}/>
                     </div>
                 </div>
             }
             {nbJoueursSelected > 1 &&
                 <div className="row">             
                     <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerGreen)"} intMaxLength={50} strPlaceholder={"Joueur D"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerD"] = e)}/>
+                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerGreen)"} intMaxLength={50} strPlaceholder={"Joueur D"} strValeurByDef={""} strID={"pseudoJoueurD"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerD"] = e)}/>
                     </div>
                 </div>
             }
