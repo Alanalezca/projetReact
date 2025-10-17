@@ -25,7 +25,7 @@
 @media (max-width: 992px) {
     .conteneurImgX5 {
         position: relative;
-        width: 30%;
+        width: 29%;
         border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
@@ -50,10 +50,6 @@
         background-color: rgba(0, 0, 0, 0.6);
         opacity: 0;
         border-radius: 0 0 10px 10px;
-    }
-
-    .overlayText.show {
-        opacity: 1; /* devient visible au survol */
     }
 }
 
@@ -86,6 +82,10 @@
     .conteneurImgX5:hover .overlayText {
         opacity: 1; /* devient visible au survol */
     }
+}
+
+.overlayText.show {
+    opacity: 1; /* devient visible au survol */
 }
 
 .conteneurImgX5:has(.conteneurImgSelected) {

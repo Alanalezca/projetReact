@@ -326,7 +326,7 @@ useEffect(() => {
               onChange={(e) => setInputForm((prev) => ({...prev, resume: e.target.value}))}
               rows={5}
             />
-              <div className="col-12 mb-2 d-flex align-items-left justify-content-left txtColorWhite">
+              <div className="col-12 mb-2 d-flex flex-wrap align-items-start justify-content-start txtColorWhite">
                 <span className="ps-1"><b>Tags : </b></span>
                 {tags && tags.map((currentTag, index) => (
                   <div className="ps-2" key={currentTag.CodeTagArticle} onClick={()=>handleChangeTagChecker(currentTag.CodeTagArticle, !currentTag.checked)}><span className={`badge ${currentTag.checked ? "badge-customOn" : "badge-customOff"} cPointer`}>{currentTag.Libelle}</span></div>
