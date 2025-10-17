@@ -26,7 +26,7 @@ const SubscribeFormV2 = ({handleClose, show, handleShowLogin}) => {
 
   useEffect(() => {
     if (pseudo !== '' && email.includes("@") && email.includes(".") && password.length >= 6) {
-      setSaisieOK(true);
+      //setSaisieOK(true); a reactiver une fois développé
     } else {
       setSaisieOK(false);
     }

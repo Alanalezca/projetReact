@@ -31,6 +31,7 @@ const Smashup = () => {
     const [txtCurrentPlayerColor, setTxtCurrentPlayerColor] = useState("XXX");
     const [phasePickOrBan, setPhasePickOrBan] = useState("");
     const [draftTermine, setDraftTermine] = useState(false);
+    const [lastFactionSaisieForRollback, setLastFactionSaisieForRollback] = useState({codeFaction: null, libelleFaction: null});
 
     useEffect(() => {
         if (nbJoueursSelected === 0) {
@@ -99,6 +100,13 @@ const Smashup = () => {
                     TypeSelected: phasePickOrBan}
                 : prevFaction
             ));
+        setLastFactionSaisieForRollback(prev => 
+            ({...prev,
+                codeFaction: codeFaction,
+                libelleFaction: libelleFaction
+            })
+        );
+        
         
         if(nbJoueursSelected == 0) {
         switch (currentEtapeDraft) {
@@ -187,6 +195,63 @@ const Smashup = () => {
         }
         setCurrentEtapeDraft(prev => prev + 1);
     };
+
+    const handleClickOnRollback = () => {
+        setCurrentEtapeDraft(prev => prev - 1);
+        setFactionsPickBanByPlayer(prev => 
+            prev?.map(prev =>
+                prev.FactionBanA === lastFactionSaisieForRollback.libelleFaction
+                ? {...prev, 
+                    FactionBanA: "-"
+                }
+                : prev
+            ));
+        
+        setFactionsPickBanByPlayer(prev => 
+            prev?.map(prev =>
+                prev.FactionBanB === lastFactionSaisieForRollback.libelleFaction
+                ? {...prev, 
+                    FactionBanB: "-"
+                }
+                : prev
+            ));
+
+                setFactionsPickBanByPlayer(prev => 
+            prev?.map(prev =>
+                prev.FactionPickA === lastFactionSaisieForRollback.libelleFaction
+                ? {...prev, 
+                    FactionPickA: "-"
+                }
+                : prev
+            ));
+
+        setFactionsPickBanByPlayer(prev => 
+            prev?.map(prev =>
+                prev.FactionPickB === lastFactionSaisieForRollback.libelleFaction
+                ? {...prev, 
+                    FactionPickB: "-"
+                }
+                : prev
+        ));
+
+        setListeFactions(prev =>
+            prev?.map(prevFaction => 
+                prevFaction.CodeFaction === lastFactionSaisieForRollback.codeFaction
+                ? {...prevFaction,
+                    Selected: null,
+                    TypeSelected: null}
+                : prevFaction
+        ));
+
+
+        setLastFactionSaisieForRollback(prev =>
+            ({ 
+                ...prev,
+                codeFaction: null,
+                libelleFaction: null
+            })
+        );
+    }
 
     const handleLoadNamePlayers = () => {
         setNamePlayers((prev) =>({
@@ -328,9 +393,7 @@ const Smashup = () => {
             }
         } 
     };
-    console.log(phasePickOrBan);
-    console.log(listeFactions);
-    console.log(currentEtapeDraft);
+    console.log(lastFactionSaisieForRollback, currentEtapeDraft);
     return (
         <div className="container-xl mt-4">
             <div className="row">
@@ -401,7 +464,8 @@ const Smashup = () => {
                 <div className="row">             
                     <div className="col-12 mt-1 justify-content-center">
                             <h6 className="mt-5 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
-                            <h6 className={`mt-2 mb-4 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h6>
+                            <h6 className="text-center txtColorDarkBisLight">(double clic requis)</h6>
+                            <h5 className={`mt-2 mb-4 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h5>
                     </div>
                 </div>
                 <div className="row">             
@@ -446,12 +510,17 @@ const Smashup = () => {
                             {!draftTermine ?
                                 <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
                                 :
-                                <h6 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h6>
+                                <h5 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h5>
                             }
                     </div>          
                     <div className="col-12 d-flex justify-content-center">
                             {!draftTermine &&
-                                <h6 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h6>
+                                <h5 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h5>
+                            }
+                    </div>
+                    <div className="col-12 d-flex justify-content-center">
+                            {!draftTermine &&
+                                <h6 className="text-center txtColorDarkBisLight">(double clic requis)</h6>
                             }
                     </div>
                 </div>
@@ -494,7 +563,7 @@ const Smashup = () => {
                 <div className="row mb-5">             
                     <div className="col-12 col-lg-6 mt-2 mb-3 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
-                            <li className="list-group-item staticHeader">{namePlayers.J1}</li>
+                            <li className="list-group-item staticHeaderTxtPlayerRed">{namePlayers.J1}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[0].FactionBanA}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[0].FactionBanB}</li>
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[0].FactionPickA}</li>
@@ -503,7 +572,7 @@ const Smashup = () => {
                     </div>
                     <div className="col-12 col-lg-6 mt-2 mb-3 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
-                            <li className="list-group-item staticHeader">{namePlayers.J2}</li>
+                            <li className="list-group-item staticHeaderTxtPlayerBlue">{namePlayers.J2}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[1].FactionBanA}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[1].FactionBanB}</li>
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[1].FactionPickA}</li>
@@ -513,7 +582,7 @@ const Smashup = () => {
                     {nbJoueursSelected >= 1 && 
                     <div className="col-12 col-lg-6 mt-2 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
-                            <li className="list-group-item staticHeader">{namePlayers.J3}</li>
+                            <li className="list-group-item staticHeaderTxtPlayerYellow">{namePlayers.J3}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[2].FactionBanA}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[2].FactionBanB}</li>
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[2].FactionPickA}</li>
@@ -524,7 +593,7 @@ const Smashup = () => {
                     {nbJoueursSelected >= 2 && 
                     <div className="col-12 col-lg-6 mt-2 d-flex justify-content-center">
                         <ul className="list-group w-100 text-center">
-                            <li className="list-group-item staticHeader">{namePlayers.J4}</li>
+                            <li className="list-group-item staticHeaderTxtPlayerGreen">{namePlayers.J4}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[3].FactionBanA}</li>
                             <li className="list-group-item staticRed">{factionsPickBanByPlayer[3].FactionBanB}</li>
                             <li className="list-group-item staticGreen">{factionsPickBanByPlayer[3].FactionPickA}</li>
@@ -532,9 +601,16 @@ const Smashup = () => {
                         </ul>
                     </div>
                     }
-                    <div id={styles.btnRollBack} className="btn-ColorA" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <i className={`bx bxs-eraser bx-sm`}></i>
-                    </div>
+                    
+                    {currentEtapeDraft >= 3 && 
+                        <div
+                        id={styles.btnRollBack}
+                        className={lastFactionSaisieForRollback?.codeFaction ? "btn-ColorA" : "btn-ColorInactif"}
+                        onClick={lastFactionSaisieForRollback?.codeFaction ? handleClickOnRollback : undefined}
+                        >
+                        <i className="bx bxs-eraser bx-sm"></i>
+                        </div>
+                    }
                 </div>
             </>
             }

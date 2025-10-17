@@ -220,7 +220,12 @@ html body {
   color: var(--txtColorA);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
 }
+
+h1 { font-size: 2.5rem; }
+p { font-size: 1rem; }
+span { font-size: 1rem; }
 
 .borderColorA {
   border: 2px solid var(--ColorA);
@@ -286,6 +291,10 @@ html body {
 
 .txtColorDangerLight {
   color: var(--backgroundColorDangerLight);
+}
+
+.txtColorDarkBisLight {
+  color: var(--txtColorDarkBisLight);
 }
 
 .txtBold {
@@ -426,13 +435,13 @@ html body {
   background-color: var(--backgroundColorE) !important;
   border: 1px solid var(--backgroundColorE) !important;
   transition: background-color 0.25s ease;  /* Transition de 0.5 seconde */
-  cursor: pointer;
+  cursor: not-allowed !important;
 }
 
 .btn-ColorInactif:hover {
-  background-color: var(--backgroundColorE) !important;
-  border: 1px solid var(--backgroundColorE) !important;
-  cursor: not-allowed;
+  background-color: var(--backgroundColorF) !important;
+  border: 1px solid var(--backgroundColorF) !important;
+  cursor: not-allowed !important;
 }
 
 /* Small devices (landscape phones, 576px and up) */
@@ -516,6 +525,34 @@ html body {
   background-color: var(--backgroundColorC) !important;
   border-color: var(--backgroundColorF) !important;
   color: var(--txtColorWhite) !important;
+  font-weight: bold;
+}
+
+.list-group-item.staticHeaderTxtPlayerRed {
+  background-color: var(--backgroundColorC) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorPlayerRed) !important;
+  font-weight: bold;
+}
+
+.list-group-item.staticHeaderTxtPlayerBlue {
+  background-color: var(--backgroundColorC) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorPlayerBlue) !important;
+  font-weight: bold;
+}
+
+.list-group-item.staticHeaderTxtPlayerYellow {
+  background-color: var(--backgroundColorC) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorPlayerYellow) !important;
+  font-weight: bold;
+}
+
+.list-group-item.staticHeaderTxtPlayerGreen {
+  background-color: var(--backgroundColorC) !important;
+  border-color: var(--backgroundColorF) !important;
+  color: var(--txtColorPlayerGreen) !important;
   font-weight: bold;
 }
 

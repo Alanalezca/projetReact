@@ -50,19 +50,19 @@ const ArticlePage = () => {
                 <div className="col-12 mt-4">
                     <h2 className="text-center txtColorWhite">Administration des articles</h2>
                     <div className="row mt-5">
-                        <div className="col-4">
+                        <div className="col-8 col-lg-4">
                             <b>Titre</b>
                         </div>
-                        <div className="col-2">
+                        <div className="d-none d-lg-block col-lg-2">
                             <b>Date création</b>
                         </div>
-                        <div className="col-2">
+                        <div className="d-none d-lg-block col-lg-2">
                             <b>Date màj</b>
                         </div>
-                        <div className="col-2">
+                        <div className="d-none d-lg-block col-lg-2">
                             <b>Publié</b>
                         </div>
-                        <div className="col-2">
+                        <div className="col-4 col-lg-2">
                         
                         </div>
                     </div>
@@ -74,24 +74,24 @@ const ArticlePage = () => {
                 {articles.length > 0 ? (
                     articles.slice(indiceFirstElement, indiceLastElement).map((currentArticles) => (
                     <div key={currentArticles.Slug} className="row mt-1">
-                        <div className="col-4">
+                        <div className="col-8 col-lg-4">
                         <Link to={`/article/${currentArticles.Slug}`}>
                             <span className="cPointer txtColorWhiteToTxtColorB">{currentArticles?.Titre}</span>
                         </Link>
                         </div>
-                        <div className="col-2">
+                        <div className="d-none d-lg-block col-lg-2">
                         <span>{new Date(currentArticles?.DateCreation).toLocaleDateString('fr-FR')}</span>
                         </div>
-                        <div className="col-2">
+                        <div className="d-none d-lg-block col-lg-2">
                         <span>{new Date(currentArticles?.DateMaj).toLocaleDateString('fr-FR')}</span>
                         </div>
-                        <div className="col-2">
+                        <div className="col-1 col-lg-2">
                         {currentArticles.Publie ? 
                             <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div> :
                             <div className="d-inline"><i className="bx bx-cloud-upload bxDisabledToEnabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div>
                         }
                         </div>
-                        <div className="col-2">
+                        <div className="col-3 col-lg-2">
                         <Link to={`/article/create/${currentArticles.Slug}`}>
                             <div className="d-inline"><i className="bx bx-edit bxNormalOrange topMinus3 cPointer"></i></div>
                         </Link>
