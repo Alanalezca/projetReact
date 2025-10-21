@@ -32,6 +32,7 @@ const Smashup = () => {
     const [phasePickOrBan, setPhasePickOrBan] = useState("");
     const [draftTermine, setDraftTermine] = useState(false);
     const [lastFactionSaisieForRollback, setLastFactionSaisieForRollback] = useState({codeFaction: null, libelleFaction: null});
+    const [modeSelectByDoubleClic, setModeSelectByDoubleClic] = useState(false);
 
     useEffect(() => {
         if (nbJoueursSelected === 0) {
@@ -1124,7 +1125,17 @@ const Smashup = () => {
                 <div className="row">             
                     <div className="col-12 mt-1 justify-content-center">
                             <h6 className="mt-5 text-center txtColorWhite">Sélectionnez les boites à utiliser pour le draft</h6>
-                            <h6 className="text-center txtColorDarkBisLight">(double clic requis)</h6>
+                    </div>
+                </div>
+                <div className="row">
+                        <div className="col-12 mt-2 d-flex justify-content-center">
+                                <i className={`bx bx-check ${modeSelectByDoubleClic ? "bxInactiveToActive" : "bxActive"}`} onClick={() => modeSelectByDoubleClic && setModeSelectByDoubleClic(false)}></i>
+                                <i className={`bx bx-check-double ${modeSelectByDoubleClic ? "bxActive" : "bxInactiveToActive"} ms-3`} onClick={() => !modeSelectByDoubleClic && setModeSelectByDoubleClic(true)}></i>
+                        </div>
+                </div>
+                <div className="row">             
+                    <div className="col-12 mt-1 justify-content-center">
+                            <h6 className="text-center txtColorDarkBisLight">{modeSelectByDoubleClic ? "(sélection par double clic)" : <>&nbsp;</>}</h6>
                             <h5 className={`mt-2 mb-4 text-center ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "txtColorSuccessLight" : "txtColorDangerLight"}`}>{compteurNbFactionsSelonBoitesSelected} factions sélectionnées (sur {(parseInt(nbJoueursSelected) +2) *4 +4} minimum)</h5>
                     </div>
                 </div>
@@ -1132,7 +1143,7 @@ const Smashup = () => {
                     <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
                         {listeBoites?.map((currentBoite, index) => (
                             <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
-                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
+                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox)} onClick={() => !modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox)} alt="..."></img>
                             </div>
                         ))}
                     </div>
@@ -1164,29 +1175,23 @@ const Smashup = () => {
                         </ul>
                     </div>
                 </div>
-                
-                <div className="row">
-                    <div className="col-12 mt-4 d-flex justify-content-center">
-                            {!draftTermine ?
-                                <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
-                                :
-                                <h5 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h5>
-                            }
-                    </div>          
-                    <div className="col-12 d-flex justify-content-center">
-                            {!draftTermine &&
-                                <h5 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h5>
-                            }
-                    </div>
-                    <div className="col-12 d-flex justify-content-center">
-                            {!draftTermine &&
-                                <h6 className="text-center txtColorDarkBisLight">(double clic requis)</h6>
-                            }
-                    </div>
-                </div>
+            
 
                 {!draftTermine && 
                 <>
+                    <div className="row">
+                        <div className="col-12 mt-3 d-flex justify-content-center">
+                                <i className={`bx bx-check ${modeSelectByDoubleClic ? "bxInactiveToActive" : "bxActive"}`} onClick={() => modeSelectByDoubleClic && setModeSelectByDoubleClic(false)}></i>
+                                <i className={`bx bx-check-double ${modeSelectByDoubleClic ? "bxActive" : "bxInactiveToActive"} ms-3`} onClick={() => !modeSelectByDoubleClic && setModeSelectByDoubleClic(true)}></i>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12 d-flex justify-content-center">
+                                    {!draftTermine &&
+                                        <h6 className="text-center txtColorDarkBisLight">{modeSelectByDoubleClic ? "(sélection par double clic)" : <>&nbsp;</>}</h6>
+                                    }
+                        </div>
+                    </div>
                     <div className="row">
                         <div className="col-12 mt-2 d-flex justify-content-center">
                                 {showOverlayFactions ? 
@@ -1196,15 +1201,28 @@ const Smashup = () => {
                         </div>
                     </div>
 
-
+                    <div className="row">
+                        <div className="col-12 mt-4 d-flex justify-content-center">
+                                {!draftTermine ?
+                                    <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
+                                    :
+                                    <h5 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h5>
+                                }
+                        </div>          
+                        <div className="col-12 d-flex justify-content-center">
+                                {!draftTermine &&
+                                    <h5 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h5>
+                                }
+                        </div>
+                    </div>
                     <div className="row">        
                         <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
                             {listeFactions?.map((currentFaction, index) => (
                                 <div key={"faction-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentFaction.TypeSelected == "Pick" ? styles.factionPicked : (currentFaction.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
                                     <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
-                                        <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onDoubleClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
+                                        <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
                                     </div>
-                                    <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onDoubleClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)}>
+                                    <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} onDoubleClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)}>
                                         {currentFaction.Libelle}
                                     </div>
                                 </div>

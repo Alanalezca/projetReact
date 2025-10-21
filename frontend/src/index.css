@@ -206,6 +206,25 @@ a {
   animation: tada 1s;
 }
 
+.bxInactiveToActive {
+  color: var(--backgroundColorE);
+  font-size: 32px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxInactiveToActive:hover {
+  color: var(--ColorA);
+  font-size: 32px;
+  animation: tada 1s;
+  cursor: pointer;
+}
+
+.bxActive {
+  color: var(--ColorA);
+  font-size: 32px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
 .bxNormalColorE {
   color: var(--backgroundColorE);
   font-size: 32px;
