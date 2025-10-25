@@ -42,7 +42,6 @@ const ArticlePage = () => {
 
     console.log('Articles', articles);
     return (
-        //<div className="container-xl mt-4">{isLargeScreen ? "large" : "pas large"}
         <div className={`container-xl mt-4 ${!isLoading && "txtColorWhite"}`}>
             {isLoading ?
             <Loader/> : <>
