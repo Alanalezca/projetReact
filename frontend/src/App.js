@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Articles from '../src/pages/articles/articles';
 import ArticlePage from '../src/pages/articles/articlePage';
 import Smashup from '../src/pages/smashup/smashup';
+import DiceThrone from '../src/pages/dicethrone/dicethrone';
 import ArticleCreate from '../src/pages/articles/createArticle';
 import ArticleAdmin from '../src/pages/articles/adminArticles';
 
@@ -17,6 +18,7 @@ function App() {
       <Route path="/article/create" element={<ArticleCreate />} />
       <Route path="/article/create/:slug" element={<ArticleCreate />} />
       <Route path="/smashup" element={<Smashup />} />
+      <Route path="/dicethrone" element={<DiceThrone />} />
       <Route path="*" element={<Articles />} />
     </Routes>
   )

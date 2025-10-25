@@ -97,7 +97,7 @@ import Subscribe from '../components/modals/Subscribe';
               <a href="#">Drafters</a>
                 <ul className={menuOpen ? styles.subMenusMini : styles.subMenus}>
                   <li><Link to="/smashup">Smash Up</Link></li>
-                  <li><Link to="/">Dice Throne</Link></li>
+                  <li><Link to="/dicethrone">Dice Throne</Link></li>
                 </ul>
           </li>
         </ul>

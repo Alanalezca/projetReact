@@ -203,7 +203,7 @@ const Articles = () => {
           <div className="p-3">
             <div className={`list-group ${styles.shadow}`}>
                 {tagsArticlesActifs?.map((currentTags, index) => (
-                  <a href="#" key={index} className={`list-group-item list-group-item-action ${!currentTags.filtreActif ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickFilterTagOnOff(currentTags)}>{currentTags.tag}<span className="badge text-bg-primary rounded-pill ms-2">{currentTags.nb}</span></a>
+                  <a href="#" key={index} className={`list-group-item list-group-item-action ${!currentTags.filtreActif ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickFilterTagOnOff(currentTags)}>{currentTags.tag}<span className="badge pillColorA rounded-pill ms-2 bgcolorA">{currentTags.nb}</span></a>
                 ))}
             </div>
           </div>

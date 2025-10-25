@@ -670,3 +670,9 @@ span { font-size: 1rem; }
 }
 
 /* TipTap : Fin */
+
+/* Pill : Début */
+.pillColorA {
+  background-color: #6B4FA3 !important;
+}
+/* Pill : Fin */

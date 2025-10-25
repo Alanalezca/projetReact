@@ -1066,8 +1066,8 @@ const Smashup = () => {
                 <div className="col-12 mt-5">   
                     <Accordeon blocSoloOrTopOrMidOrBot="Solo" textTitre="Un module de draft pour Smash Up ?" textMain={`Ce module permet de réaliser un draft de type <b>"Snake Draft avec bans/picks"</b> pour le jeu <b>Smash Up</b>.<br /><br />
                         Voici le déroulement :<br />
-                        1. Choisir <b>le nombre de joueurs</b> participant à la partie.<br />
-                        2. Sélectionner <b>les boîtes de jeu</b> qui seront utilisées.<br />
+                        1. Choisissez <b>le nombre de joueurs</b> participant à la partie.<br />
+                        2. Sélectionnez <b>les boîtes de jeu</b> qui seront utilisées.<br />
                         3. La liste des <b>factions</b> correspondant aux boîtes choisies sera alors proposée.<br />
                         4. Chaque joueur procédera ensuite à la <b>phase de pick/ban</b> dans l’ordre indiqué.<br />
                         5. Prêt à <b>jouer</b> !`}/>
