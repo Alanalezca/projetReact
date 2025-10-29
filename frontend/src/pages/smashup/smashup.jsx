@@ -1056,10 +1056,15 @@ const Smashup = () => {
     console.log(lastFactionSaisieForRollback, currentEtapeDraft);
     console.log(factionsPickBanByPlayer);
     return (
-        <div className="container-xl mt-4">
-            <div className="row">
+        <div className="container-xl mt-3">
+            <div className="row mb-4">
                 <div className="col-12">
                     <h2 className="mt-4 text-center txtColorWhite">Smash Up : Module de draft</h2>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-12 col-lg-8 offset-2 d-flex justify-content-center ">
+                    <img src="\images\smashup\Banniere.png" className="img-fluid rounded-2" alt="..."></img>
                 </div>
             </div>
             <div className="row">

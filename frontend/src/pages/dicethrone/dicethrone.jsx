@@ -8,21 +8,93 @@ const DiceThroneDrafter = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [currentEtapeDraft, setCurrentEtapeDraft] = useState(0);
     const inputsRef = useRef({});
+    const [listeBoites, setListeBoite] = useState();
+    const [listeSets, setListeSets] = useState();
+    const [listeHeros, setListeHeros] = useState();
+    const [modeSelectByDoubleClic, setModeSelectByDoubleClic] = useState(false);
+    const [phasePickOrBan, setPhasePickOrBan] = useState("");
+    const [showOverlayFactions, setShowOverlayFactions] = useState(false);
 
+    useEffect(() => {
+        fetch('/api/dicethrone/boites')
+        .then(response => response.json())
+        .then(data => {
+          setListeBoite(data);
+          setIsLoading(false);
+          const vaguesGroup = [...new Set(data.map(item => item.Vague))];
+          setListeSets(vaguesGroup.map(v => ({ Numero: v })));
+        })
+        .catch(error => console.error('Erreur fetch dice throne boites:', error));
+    }, [])
 
+    useEffect(() => {
+        fetch('/api/dicethrone/heros?filtreBoxes=')
+        .then(response => response.json())
+        .then(data => {
+          setListeHeros(data);
+        })
+        .catch(error => console.error('Erreur fetch dice throne héros :', error));
+    }, [])
 
+    const handleClickOnBox = (codeBoite, numWave) => {
+        setListeBoite(prevListeBoites => 
+            prevListeBoites?.map(prevBoite =>
+                prevBoite.CodeBox === codeBoite
+                ? {...prevBoite, 
+                    Selected: !prevBoite?.Selected}
+                : prevBoite,
+            ));
+        console.log(numWave);
+        setListeSets(prevListeSets => 
+            prevListeSets?.map(prevSet =>
+                prevSet.Numero === numWave
+                ? {...prevSet,
+                    Selected: false}
+                : prevSet
+            ))
+    };
 
+    const handleClickOnSet = (numWave, selectedOrNot) => {
+        console.log(numWave);
+        setListeBoite(prevListeBoites => 
+            prevListeBoites?.map(prevBoite =>
+                prevBoite.Vague === numWave
+                ? {...prevBoite, 
+                    Selected: selectedOrNot}
+                : prevBoite
+            ))
 
+        setListeSets(prevListeSets => 
+            prevListeSets?.map(prevSet =>
+                prevSet.Numero === numWave
+                ? {...prevSet,
+                    Selected: !prevSet.Selected}
+                : prevSet
+            ))
+    };
 
+    const handleBuildFiltreHeros = (boxes) => {
+        let filtreHeros = "";
+        boxes?.map((currentBox, index) => {
+            currentBox?.Selected && (filtreHeros += (filtreHeros !== "" ? "$" : "") + currentBox?.CodeBox);
+        });
+        getHerosFromBoxesSelected(filtreHeros);
+    };
 
+    const getHerosFromBoxesSelected = (filtre) => {
+        fetch('/api/dicethrone/heros?filtreBoxes=' + filtre)
+        .then(response => response.json())
+        .then(data => {
+          setListeHeros(data);
+        })
+        .catch(error => console.error('Erreur fetch dice throne héros :', error));
+    };
 
+    const handleClickOnFaction = (codeFaction, libelleFaction, selectedOrNot) => {
+    };
 
-
-
-
-
-
-
+    console.log('boites', listeBoites);
+    console.log('heros', listeHeros);
 
     return (
         <div className="container-xl mt-3">
@@ -32,8 +104,8 @@ const DiceThroneDrafter = () => {
                 </div>
             </div>
             <div className="row">
-                <div className="col-12 col-lg-8 offset-2 d-flex justify-content-center">
-                    <img src="\images\dicethrone\DiceThrone.png" class="img-fluid" alt="..."></img>
+                <div className="col-12 col-lg-8 offset-2 d-flex justify-content-center ">
+                    <img src="\images\dicethrone\DiceThrone.png" className="img-fluid rounded-2" alt="..."></img>
                 </div>
             </div>
             <div className="row">
@@ -63,6 +135,69 @@ const DiceThroneDrafter = () => {
                     <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurB"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
                 </div>
             </div>
+            <div className="row">             
+                <div className="col-12 mt-3 d-flex justify-content-center">
+                        <h6 className="mt-4 text-center txtColorWhite">Sélectionnez une saison ...</h6>
+                </div>
+            </div> 
+            <div className="row">             
+                <div className="col-12 d-flex justify-content-center">
+                    <div className="p-3">
+                        <div className={`list-group ${styles.shadow}`}>
+                            {listeSets?.map((current, index) => (
+                                <button type="button" key={index} className={`list-group-item list-group-item-action ${!current.Selected ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickOnSet(current.Numero, true)}>Vague {current.Numero}</button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="row">             
+                <div className="col-12 mt-2 d-flex justify-content-center">
+                        <h6 className="text-center txtColorWhite">ou sélectionnez les boites à utiliser pour le draft</h6>
+                </div>
+            </div> 
+            <div className="row">
+                <div className="col-12 mt-2 d-flex justify-content-center">
+                    <i className={`bx bx-check ${modeSelectByDoubleClic ? "bxInactiveToActive" : "bxActive"}`} onClick={() => modeSelectByDoubleClic && setModeSelectByDoubleClic(false)}></i>
+                    <i className={`bx bx-check-double ${modeSelectByDoubleClic ? "bxActive" : "bxInactiveToActive"} ms-3`} onClick={() => !modeSelectByDoubleClic && setModeSelectByDoubleClic(true)}></i>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-12 mt-2 d-flex justify-content-center">
+                    {showOverlayFactions ? 
+                        <i className={`bx bx-image-alt bxNormalOrange`} onClick={() => setShowOverlayFactions(false)}></i> :
+                        <i className={`bx bx-detail bxNormalOrange`} onClick={() => setShowOverlayFactions(true)}></i>
+                    }
+                </div>
+            </div>
+            <div className="row">             
+                <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
+                    {listeBoites?.map((currentBoite, index) => (
+                        <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} onClick={() => !modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} alt="..."></img>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div className="row">             
+                <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
+                    <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => handleBuildFiltreHeros(listeBoites)}>Valider la sélection de boites</button>
+                </div>
+            </div>
+                <div className="row">        
+                    <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
+                        {listeHeros?.map((currentHeros, index) => (
+                            <div key={"heros-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentHeros.TypeSelected == "Pick" ? styles.factionPicked : (currentHeros.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
+                                <div className={`${styles.blocFaction} ${currentHeros?.Selected && styles.grayscale}`}>
+                                    <img src={currentHeros.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)} alt="..."></img>
+                                </div>
+                                <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)} onDoubleClick={() => handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)}>
+                                    {currentHeros.Libelle}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
         </div>
     );
 }

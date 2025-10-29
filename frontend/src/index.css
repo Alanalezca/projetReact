@@ -676,3 +676,29 @@ span { font-size: 1rem; }
   background-color: #6B4FA3 !important;
 }
 /* Pill : Fin */
+
+/* Button list group (les interpreter comme des a list group : début */
+
+button.list-group-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 0;
+  background-color: #fff;
+}
+
+button.list-group-item:first-child {
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+}
+
+button.list-group-item:last-child {
+  border-bottom-left-radius: .25rem;
+  border-bottom-right-radius: .25rem;
+}
+
+button.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Button list group : Fin */
