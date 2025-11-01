@@ -104,7 +104,7 @@ const DiceThroneDrafter = () => {
                 </div>
             </div>
             <div className="row">
-                <div className="col-12 col-lg-8 offset-2 d-flex justify-content-center ">
+                <div className="col-12 col-lg-8 offset-lg-2 d-flex justify-content-center ">
                     <img src="\images\dicethrone\DiceThrone.png" className="img-fluid rounded-2" alt="..."></img>
                 </div>
             </div>
