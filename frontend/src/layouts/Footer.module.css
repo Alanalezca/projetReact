@@ -1,0 +1,7 @@
+.Footer {
+  background: var(--backgroundColorB);
+  border-top: 2px solid #FF9901;
+  color: #f0f0f0;
+  padding: 40px 20px 20px;
+  align-items: center;
+}

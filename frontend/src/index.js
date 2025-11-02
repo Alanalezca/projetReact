@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import MenuHeader from './layouts/MenuHeader';
+import Footer from './layouts/Footer';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -15,7 +16,10 @@ root.render(
       <SessionUserContextProvider>
         <OngletAlerteProvider>
           <MenuHeader />
-          <App />
+            <main>
+              <App />
+            </main>
+          <Footer />
         </OngletAlerteProvider>
       </SessionUserContextProvider>
     </BrowserRouter>
