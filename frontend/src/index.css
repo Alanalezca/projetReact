@@ -23,6 +23,18 @@ a {
   font-family: 'boxicons' !important;
 }
 
+/* Pousser le footer vers le bas : Début */
+main {
+  flex: 1;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+/* Pousser le footer vers le bas : Fin */
+
 :root {
   --font-xs: clamp(0.75rem, 2vw, 0.875rem); /* Texte très petit */
   --font-sm: clamp(0.875rem, 2.5vw, 1rem); /* Petit texte */
@@ -134,6 +146,12 @@ a {
   --txtColorPlayerYellowRGB: rgba(253, 216, 53);
 }
 
+.alignIconText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .bxNormalOrange {
   color: #FF9901;
   font-size: 32px;
@@ -155,6 +173,30 @@ a {
 .bxNormalGrey:hover {
   color: var(--backgroundColorF);
   font-size: 32px;
+  animation: tada 1s;
+}
+
+.bxSmallGrey {
+  color: var(--backgroundColorE);
+  font-size: 24px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxSmallGrey:hover {
+  color: var(--backgroundColorF);
+  font-size: 24px;
+  animation: tada 1s;
+}
+
+.bxMiniGrey {
+  color: var(--backgroundColorE);
+  font-size: 16px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxMiniGrey:hover {
+  color: var(--backgroundColorF);
+  font-size: 16px;
   animation: tada 1s;
 }
 
@@ -240,6 +282,8 @@ html body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
+  height: 100%;
+  margin: 0;
 }
 
 h1 { font-size: 2.5rem; }
