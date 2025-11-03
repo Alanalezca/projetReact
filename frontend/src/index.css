@@ -188,16 +188,10 @@ main {
   animation: tada 1s;
 }
 
-.bxMiniGrey {
+.bxMiniGreyWithoutAnim {
   color: var(--backgroundColorE);
   font-size: 16px;
   transition: color 0.25s ease;  /* Transition de 0.5 seconde */
-}
-
-.bxMiniGrey:hover {
-  color: var(--backgroundColorF);
-  font-size: 16px;
-  animation: tada 1s;
 }
 
 .bxNormalOrangeToRed {

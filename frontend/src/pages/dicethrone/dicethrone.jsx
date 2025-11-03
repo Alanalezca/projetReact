@@ -14,6 +14,11 @@ const DiceThroneDrafter = () => {
     const [modeSelectByDoubleClic, setModeSelectByDoubleClic] = useState(false);
     const [phasePickOrBan, setPhasePickOrBan] = useState("");
     const [showOverlayFactions, setShowOverlayFactions] = useState(false);
+    const [draftTermine, setDraftTermine] = useState(false);
+    const [filtreOnAllBoxes, setFiltreOnAllBoxes] = useState(true);
+    const [namePlayers, setNamePlayers] = useState([
+        { J1: "Joueur A", J2: "Joueur B"}
+    ]);
 
     useEffect(() => {
         fetch('/api/dicethrone/boites')
@@ -73,13 +78,26 @@ const DiceThroneDrafter = () => {
             ))
     };
 
-    const handleBuildFiltreHeros = (boxes) => {
-        let filtreHeros = "";
-        boxes?.map((currentBox, index) => {
-            currentBox?.Selected && (filtreHeros += (filtreHeros !== "" ? "$" : "") + currentBox?.CodeBox);
-        });
-        getHerosFromBoxesSelected(filtreHeros);
+    const handleLoadNamePlayers = () => {
+        setNamePlayers((prev) =>({
+            ...prev,
+            J1: inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A",
+            J2: inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B",
+            J3: inputsRef?.current["pseudoPlayerC"]?.value || "Joueur C",
+            J4: inputsRef?.current["pseudoPlayerD"]?.value || "Joueur D"
+        }));
     };
+
+const handleBuildFiltreHeros = (boxes) => {
+    const selectedBoxes = boxes?.filter(b => b?.Selected);
+    const filtreHeros = selectedBoxes.map(b => b.CodeBox).join("$");
+
+    if (selectedBoxes.length > 0) {
+        setFiltreOnAllBoxes(false);
+    }
+
+    getHerosFromBoxesSelected(filtreHeros);
+};
 
     const getHerosFromBoxesSelected = (filtre) => {
         fetch('/api/dicethrone/heros?filtreBoxes=' + filtre)
@@ -135,27 +153,53 @@ const DiceThroneDrafter = () => {
                     <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurB"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
                 </div>
             </div>
-            <div className="row">             
-                <div className="col-12 mt-3 d-flex justify-content-center">
-                        <h6 className="mt-4 text-center txtColorWhite">Sélectionnez une saison ...</h6>
-                </div>
-            </div> 
-            <div className="row">             
-                <div className="col-12 d-flex justify-content-center">
-                    <div className="p-3">
-                        <div className={`list-group ${styles.shadow}`}>
-                            {listeSets?.map((current, index) => (
-                                <button type="button" key={index} className={`list-group-item list-group-item-action ${!current.Selected ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickOnSet(current.Numero, true)}>Vague {current.Numero}</button>
-                            ))}
+            {currentEtapeDraft === 0 &&
+            <>
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex justify-content-center">
+                            <h6 className="mt-4 text-center txtColorWhite">Sélectionnez une saison ...</h6>
+                    </div>
+                </div> 
+                <div className="row">             
+                    <div className="col-12 d-flex justify-content-center">
+                        <div className="p-3">
+                            <div className={`list-group ${styles.shadow}`}>
+                                {listeSets?.map((current, index) => (
+                                    <button type="button" key={index} className={`list-group-item list-group-item-action ${!current.Selected ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickOnSet(current.Numero, true)}>Vague {current.Numero}</button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="row">             
-                <div className="col-12 mt-2 d-flex justify-content-center">
-                        <h6 className="text-center txtColorWhite">ou sélectionnez les boites à utiliser pour le draft</h6>
+                <div className="row">             
+                    <div className="col-12 mt-2 d-flex justify-content-center">
+                            <h6 className="text-center txtColorWhite">ou sélectionnez les boites à utiliser pour le draft</h6>
+                    </div>
+                </div> 
+            </>
+            }
+
+            {currentEtapeDraft >= 1 &&
+            <>
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex justify-content-center">
+                        <h6 className="mt-4 text-center txtColorWhite">Le draft porte sur les sets suivants :</h6>
+                    </div>
                 </div>
-            </div> 
+                <div className="row">             
+                    <div className="col-12 mb-2 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
+                        <ul className="list-group">
+                            {listeBoites?.map((currentBoite, index) => (
+                                currentBoite.Selected == true &&
+                                <li key={"boxResume-" + index} className="list-group-item static">{currentBoite.Libelle}</li>
+                            ))}
+                            {filtreOnAllBoxes && <li className="list-group-item static">Collection complète</li>}
+                        </ul>
+                    </div>
+                </div>
+            </>
+            }
+
             <div className="row">
                 <div className="col-12 mt-2 d-flex justify-content-center">
                     <i className={`bx bx-check ${modeSelectByDoubleClic ? "bxInactiveToActive" : "bxActive"}`} onClick={() => modeSelectByDoubleClic && setModeSelectByDoubleClic(false)}></i>
@@ -163,27 +207,43 @@ const DiceThroneDrafter = () => {
                 </div>
             </div>
             <div className="row">
-                <div className="col-12 mt-2 d-flex justify-content-center">
-                    {showOverlayFactions ? 
-                        <i className={`bx bx-image-alt bxNormalOrange`} onClick={() => setShowOverlayFactions(false)}></i> :
-                        <i className={`bx bx-detail bxNormalOrange`} onClick={() => setShowOverlayFactions(true)}></i>
-                    }
+                <div className="col-12 d-flex justify-content-center">
+                        {!draftTermine &&
+                            <h6 className="text-center txtColorDarkBisLight">{modeSelectByDoubleClic ? "(sélection par double clic)" : <>&nbsp;</>}</h6>
+                        }
                 </div>
             </div>
-            <div className="row">             
-                <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
-                    {listeBoites?.map((currentBoite, index) => (
-                        <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
-                            <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} onClick={() => !modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} alt="..."></img>
-                        </div>
-                    ))}
+
+            {currentEtapeDraft === 0 &&
+            <>
+                <div className="row">             
+                    <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
+                        {listeBoites?.map((currentBoite, index) => (
+                            <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} onClick={() => !modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} alt="..."></img>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            </>
+            }
+            {currentEtapeDraft === 0 &&
             <div className="row">             
                 <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
-                    <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => handleBuildFiltreHeros(listeBoites)}>Valider la sélection de boites</button>
+                    <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => {handleBuildFiltreHeros(listeBoites); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers()}}>Valider la sélection de boites</button>
                 </div>
             </div>
+            }
+            {currentEtapeDraft >= 1 &&
+            <>
+                <div className="row">
+                    <div className="col-12 mt-2 d-flex justify-content-center">
+                        {showOverlayFactions ? 
+                            <i className={`bx bx-image-alt bxNormalOrange`} onClick={() => setShowOverlayFactions(false)}></i> :
+                            <i className={`bx bx-detail bxNormalOrange`} onClick={() => setShowOverlayFactions(true)}></i>
+                        }
+                    </div>
+                </div>
                 <div className="row">        
                     <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
                         {listeHeros?.map((currentHeros, index) => (
@@ -198,6 +258,50 @@ const DiceThroneDrafter = () => {
                         ))}
                     </div>
                 </div>
+
+                <div className="row">             
+                    <div className="col-12 mt-5 mb-2 d-flex justify-content-center">
+                            <h4 className="text-center txtColorWhite">Résultat du draft</h4>
+                    </div>
+                </div>
+                <div className="row">        
+                    <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
+                        <div className="col-6 d-flex flex-wrap justify-content-center">{namePlayers.J1}</div>
+                        <div className="col-6 d-flex flex-wrap justify-content-center">{namePlayers.J2}</div>
+                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <div className={`${styles.blocFaction}`}>
+                                    <img src="\images\dicethrone\NCRed.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                </div>
+                            </div>
+                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <div className={`${styles.blocFaction}`}>
+                                    <img src="\images\dicethrone\NCRed.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                </div>
+                            </div>
+                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <div className={`${styles.blocFaction}`}>
+                                    <img src="\images\dicethrone\NCRed.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                </div>
+                            </div>
+                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <div className={`${styles.blocFaction}`}>
+                                    <img src="\images\dicethrone\NCBlue.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                </div>
+                            </div>
+                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <div className={`${styles.blocFaction}`}>
+                                    <img src="\images\dicethrone\NCBlue.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                </div>
+                            </div>
+                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                                <div className={`${styles.blocFaction}`}>
+                                    <img src="\images\dicethrone\NCBlue.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </>
+            }
         </div>
     );
 }

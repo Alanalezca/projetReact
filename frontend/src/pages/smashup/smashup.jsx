@@ -1064,7 +1064,7 @@ const Smashup = () => {
             </div>
             <div className="row">
                 <div className="col-12 col-lg-8 offset-2 d-flex justify-content-center ">
-                    <img src="\images\smashup\Banniere.png" className="img-fluid rounded-2" alt="..."></img>
+                    <img src="\images\smashup\banniere.png" className="img-fluid rounded-2" alt="..."></img>
                 </div>
             </div>
             <div className="row">
