@@ -383,6 +383,14 @@ span { font-size: 1rem; }
   color: var(--txtColorPlayerGreen);
 }
 
+.txtColorRed {
+  color: var(--txtColorPlayerRed);
+}
+
+.txtColorBlue {
+  color: var(--txtColorPlayerBlue);
+}
+
 .text-center {
   text-align: center;
 }

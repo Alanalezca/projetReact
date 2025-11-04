@@ -23,9 +23,20 @@
 
 /* Mini devices */
 @media (max-width: 992px) {
-    .conteneurImgX5 {
+    .conteneurImgX6 {
         position: relative;
         width: 45%;
+        border: 2px solid white;
+        border-radius: 10px;
+        transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        filter: brightness(0.75);
+        cursor: pointer;
+        overflow: hidden; 
+    }
+
+    .conteneurImgResultatDraft {
+        position: relative;
+        width: 29%;
         border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
@@ -55,7 +66,15 @@
 
 /* Large devices */
 @media (min-width: 993px) {
-    .conteneurImgX5 {
+    .conteneurImgX6 {
+        width: 15%;
+        border: 2px solid white;
+        border-radius: 10px;
+        transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        filter: brightness(0.75);
+    }
+
+    .conteneurImgResultatDraft {
         width: 15%;
         border: 2px solid white;
         border-radius: 10px;
@@ -79,7 +98,7 @@
         text-overflow: ellipsis;
     }
 
-    .conteneurImgX5:hover .overlayText {
+    .conteneurImgX6:hover .overlayText {
         opacity: 1; /* devient visible au survol */
     }
 }
@@ -88,27 +107,27 @@
     opacity: 1; /* devient visible au survol */
 }
 
-.conteneurImgX5:has(.conteneurImgSelected) {
+.conteneurImgX6:has(.conteneurImgSelected) {
     filter: brightness(1);
     box-shadow: 0 0 3px 7px var(--txtColorPlayerGreen);
 }
 
-.conteneurImgX5:hover {
+.conteneurImgX6:hover {
     border: 2px solid var(--ColorA);
     box-shadow: 0 0 10px 3px var(--ColorA);
 }
 
-.conteneurImgX5.toPick:hover {
+.conteneurImgX6.toPick:hover {
     border: 2px solid var(--txtColorPlayerGreen);
     box-shadow: 0 0 3px 3px var(--txtColorPlayerGreen);
 }
 
-.conteneurImgX5.toBan:hover {
+.conteneurImgX6.toBan:hover {
     border: 2px solid var(--txtColorPlayerRed);
     box-shadow: 0 0 3px 3px var(--txtColorPlayerRed);
 }
 
-.conteneurImgX5:focus {
+.conteneurImgX6:focus {
     border: 0px;
     box-shadow: 0 0 0px 0px;
 }
@@ -123,14 +142,24 @@
     box-shadow: 0 0 3px 4px var(--txtColorPlayerRed);
 }
 
-.conteneurImgX5.factionPicked:hover {
+.conteneurImgX6.factionPicked:hover {
     border: 2px solid var(--txtColorPlayerGreen);
     box-shadow: 0 0 3px 4px var(--txtColorPlayerGreen);
 }
 
-.conteneurImgX5.factionBanned:hover {
+.conteneurImgX6.factionBanned:hover {
     border: 2px solid var(--txtColorPlayerRed);
     box-shadow: 0 0 3px 4px var(--txtColorPlayerRed);
+}
+
+.factionPickedRed {
+    border: 2px solid var(--txtColorPlayerRed);
+    box-shadow: 0 0 3px 4px var(--txtColorPlayerRed);
+}
+
+.factionPickedBlue {
+    border: 2px solid var(--txtColorPlayerBlue);
+    box-shadow: 0 0 3px 4px var(--txtColorPlayerBlue);
 }
 
 /* Bouton rollback */
