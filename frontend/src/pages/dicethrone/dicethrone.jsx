@@ -19,6 +19,16 @@ const DiceThroneDrafter = () => {
     const [namePlayers, setNamePlayers] = useState([
         { J1: "Joueur A", J2: "Joueur B"}
     ]);
+    const [herosPickBanByPlayer, setHerosPickBanByPlayer] = useState([
+        { ID: 1, HerosPickA: null, HerosPickB: null, HerosPickC: null, HerosBan: null },
+        { ID: 2, HerosPickA: null, HerosPickB: null, HerosPickC: null, HerosBan: null }
+    ]);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [txtCurrentPlayer, setTxtCurrentPlayer] = useState("XXX");
+    const [txtCurrentPlayerColor, setTxtCurrentPlayerColor] = useState("XXX");
+    const [txtCurrentInstruction, setTxtCurrentInstruction] = useState("XXX");
+    const [txtCurrentInstructionColor, setTxtCurrentInstructionColor] = useState("XXX");
+    const [lastHerosSaisieForRollback, setLastHerosSaisieForRollback] = useState({codeHeros: null, libelleHeros: null});
 
     useEffect(() => {
         fetch('/api/dicethrone/boites')
@@ -40,6 +50,14 @@ const DiceThroneDrafter = () => {
         })
         .catch(error => console.error('Erreur fetch dice throne héros :', error));
     }, [])
+
+    useEffect(() => {
+      const checkScreenSize = () => setIsLargeScreen(window.innerWidth >= 992);
+      checkScreenSize();
+
+      window.addEventListener('resize', checkScreenSize);
+      return () => window.removeEventListener('resize', checkScreenSize);
+    }, []);
 
     const handleClickOnBox = (codeBoite, numWave) => {
         setListeBoite(prevListeBoites => 
@@ -108,7 +126,115 @@ const handleBuildFiltreHeros = (boxes) => {
         .catch(error => console.error('Erreur fetch dice throne héros :', error));
     };
 
-    const handleClickOnFaction = (codeFaction, libelleFaction, selectedOrNot) => {
+    const handleClickOnHeros = (codeHeros, libelleHeros, LienImg, selectedOrNot) => {
+        if (selectedOrNot) {
+            return;
+        }
+        setListeHeros(prevListeHeros => 
+            prevListeHeros?.map(prevHeros =>
+                prevHeros.CodeHeros === codeHeros
+                ? {...prevHeros, 
+                    Selected: true,
+                    TypeSelected: phasePickOrBan}
+                : prevHeros
+            ));
+        setLastHerosSaisieForRollback(prev => 
+            ({...prev,
+                codeHeros: codeHeros,
+                libelleHeros: libelleHeros
+            })
+        );
+        
+        
+            switch (currentEtapeDraft) {
+                case 1:
+                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 1
+                        ? {...draftFromCurrentPlayer, 
+                            HerosPickA: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    break;
+                case 2:
+                    setTxtCurrentInstructionColor("txtColorPlayerRed");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 2
+                        ? {...draftFromCurrentPlayer, 
+                            HerosPickA: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    break;
+                case 3:
+                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 1
+                        ? {...draftFromCurrentPlayer, 
+                            HerosPickB: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    break;
+                case 4:
+                    setTxtCurrentInstructionColor("txtColorPlayerRed");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 2
+                        ? {...draftFromCurrentPlayer, 
+                            HerosPickB: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    break;
+                case 5:
+                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 1
+                        ? {...draftFromCurrentPlayer, 
+                            HerosPickC: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    break;
+                case 6:
+                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 2
+                        ? {...draftFromCurrentPlayer, 
+                            HerosPickC: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    break;
+                case 7:
+                    setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 1
+                        ? {...draftFromCurrentPlayer, 
+                            HerosBanA: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    break;
+                case 8:
+                    setTxtCurrentInstructionColor("txtColorPlayerGreen");
+                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                        draftFromCurrentPlayer.ID === 2
+                        ? {...draftFromCurrentPlayer, 
+                            HerosBanA: LienImg}
+                        : draftFromCurrentPlayer
+                    ));
+                    setDraftTermine(true);
+                    break;
+            }
+
+        setCurrentEtapeDraft(prev => prev + 1);
+    };
+
+    const handleLoadtxtDebutPhaseDraft = () => {
+        setTxtCurrentInstructionColor("txtColorPlayerRed");
     };
 
     console.log('boites', listeBoites);
@@ -219,7 +345,7 @@ const handleBuildFiltreHeros = (boxes) => {
                 <div className="row">             
                     <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
                         {listeBoites?.map((currentBoite, index) => (
-                            <div key={index} className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <div key={index} className={`${styles.conteneurImgX6} me-3 mb-3`}>
                                 <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} onClick={() => !modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} alt="..."></img>
                             </div>
                         ))}
@@ -230,7 +356,7 @@ const handleBuildFiltreHeros = (boxes) => {
             {currentEtapeDraft === 0 &&
             <div className="row">             
                 <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
-                    <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => {handleBuildFiltreHeros(listeBoites); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers()}}>Valider la sélection de boites</button>
+                    <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => {handleBuildFiltreHeros(listeBoites); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider la sélection de boites</button>
                 </div>
             </div>
             }
@@ -244,14 +370,28 @@ const handleBuildFiltreHeros = (boxes) => {
                         }
                     </div>
                 </div>
+                <div className="row">
+                    <div className="col-12 mt-4 d-flex justify-content-center">
+                            {!draftTermine ?
+                                <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
+                                :
+                                <h5 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h5>
+                            }
+                    </div>          
+                    <div className="col-12 d-flex justify-content-center">
+                            {!draftTermine &&
+                                <h5 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h5>
+                            }
+                    </div>
+                </div>
                 <div className="row">        
                     <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
                         {listeHeros?.map((currentHeros, index) => (
-                            <div key={"heros-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentHeros.TypeSelected == "Pick" ? styles.factionPicked : (currentHeros.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
+                            <div key={"heros-" + index} className={`${styles.conteneurImgX6} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentHeros.TypeSelected == "Pick" ? styles.factionPicked : (currentHeros.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
                                 <div className={`${styles.blocFaction} ${currentHeros?.Selected && styles.grayscale}`}>
-                                    <img src={currentHeros.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)} alt="..."></img>
+                                    <img src={currentHeros.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} alt="..."></img>
                                 </div>
-                                <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)} onDoubleClick={() => handleClickOnFaction(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.Selected)}>
+                                <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} onDoubleClick={() => handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)}>
                                     {currentHeros.Libelle}
                                 </div>
                             </div>
@@ -265,37 +405,38 @@ const handleBuildFiltreHeros = (boxes) => {
                     </div>
                 </div>
                 <div className="row">        
-                    <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
-                        <div className="col-6 d-flex flex-wrap justify-content-center">{namePlayers.J1}</div>
-                        <div className="col-6 d-flex flex-wrap justify-content-center">{namePlayers.J2}</div>
-                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                    <div className="col-12 mt-2 mb-5 d-flex flex-wrap justify-content-center">
+                        <div className={`col-12 col-lg-6 mb-2 ${isLargeScreen ? "ps-3" : "pe-3"} d-flex flex-wrap justify-content-center txtColorRed`}><b>{namePlayers.J1}</b></div>
+                            {isLargeScreen && <div className="col-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
+                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
                                 <div className={`${styles.blocFaction}`}>
-                                    <img src="\images\dicethrone\NCRed.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                    <img src={herosPickBanByPlayer[0].HerosPickA ? herosPickBanByPlayer[0].HerosPickA : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
                                 </div>
                             </div>
-                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
                                 <div className={`${styles.blocFaction}`}>
-                                    <img src="\images\dicethrone\NCRed.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                    <img src={herosPickBanByPlayer[0].HerosPickB ? herosPickBanByPlayer[0].HerosPickB : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
                                 </div>
                             </div>
-                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
                                 <div className={`${styles.blocFaction}`}>
-                                    <img src="\images\dicethrone\NCRed.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                    <img src={herosPickBanByPlayer[0].HerosPickC ? herosPickBanByPlayer[0].HerosPickC : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
                                 </div>
                             </div>
-                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            {!isLargeScreen && <div className="col-12 col-lg-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
+                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
                                 <div className={`${styles.blocFaction}`}>
-                                    <img src="\images\dicethrone\NCBlue.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                    <img src={herosPickBanByPlayer[1].HerosPickA ? herosPickBanByPlayer[1].HerosPickA : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
                                 </div>
                             </div>
-                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
                                 <div className={`${styles.blocFaction}`}>
-                                    <img src="\images\dicethrone\NCBlue.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                    <img src={herosPickBanByPlayer[1].HerosPickB ? herosPickBanByPlayer[1].HerosPickB : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
                                 </div>
                             </div>
-                            <div className={`${styles.conteneurImgX5} me-3 mb-3`}>
+                            <div className={`${styles.conteneurImgResultatDraft} ${!isLargeScreen && "me-3"} mb-3`}>
                                 <div className={`${styles.blocFaction}`}>
-                                    <img src="\images\dicethrone\NCBlue.png" className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
+                                    <img src={herosPickBanByPlayer[1].HerosPickC ? herosPickBanByPlayer[1].HerosPickC : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
                                 </div>
                             </div>
                     </div>
