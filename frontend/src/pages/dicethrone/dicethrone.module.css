@@ -29,7 +29,7 @@
         border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
-        filter: brightness(0.75);
+        filter: brightness(0.9);
         cursor: pointer;
         overflow: hidden; 
     }
@@ -40,7 +40,7 @@
         border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
-        filter: brightness(0.75);
+        filter: brightness(0.9);
         cursor: pointer;
         overflow: hidden; 
     }
@@ -71,7 +71,7 @@
         border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
-        filter: brightness(0.75);
+        filter: brightness(0.9);
     }
 
     .conteneurImgResultatDraft {
@@ -79,7 +79,7 @@
         border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
-        filter: brightness(0.75);
+        filter: brightness(0.9);
     }
 
     .overlayText {
@@ -108,7 +108,7 @@
 }
 
 .conteneurImgX6:has(.conteneurImgSelected) {
-    filter: brightness(1);
+    filter: brightness(1.1);
     box-shadow: 0 0 3px 7px var(--txtColorPlayerGreen);
 }
 
@@ -197,4 +197,19 @@
 
 .bandeauTagFocus:hover {
   background-color: var(--backgroundColorHalo) !important;
+}
+
+.bandeauInstructionDraft {
+  position: fixed;
+  width: 100%;
+  height: 60px;
+  padding-top: 8px;
+  bottom: 2vh;
+  background-color: var(--ColorA);
+  border-top: 2px solid var(--backgroundColorE);
+  border-bottom: 2px solid var(--backgroundColorE);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

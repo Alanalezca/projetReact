@@ -106,16 +106,16 @@ const DiceThroneDrafter = () => {
         }));
     };
 
-const handleBuildFiltreHeros = (boxes) => {
-    const selectedBoxes = boxes?.filter(b => b?.Selected);
-    const filtreHeros = selectedBoxes.map(b => b.CodeBox).join("$");
+    const handleBuildFiltreHeros = (boxes) => {
+        const selectedBoxes = boxes?.filter(b => b?.Selected);
+        const filtreHeros = selectedBoxes.map(b => b.CodeBox).join("$");
 
-    if (selectedBoxes.length > 0) {
-        setFiltreOnAllBoxes(false);
-    }
+        if (selectedBoxes.length > 0) {
+            setFiltreOnAllBoxes(false);
+        }
 
-    getHerosFromBoxesSelected(filtreHeros);
-};
+        getHerosFromBoxesSelected(filtreHeros);
+    };
 
     const getHerosFromBoxesSelected = (filtre) => {
         fetch('/api/dicethrone/heros?filtreBoxes=' + filtre)
@@ -146,304 +146,329 @@ const handleBuildFiltreHeros = (boxes) => {
         );
         
         
-            switch (currentEtapeDraft) {
-                case 1:
-                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 1
-                        ? {...draftFromCurrentPlayer, 
-                            HerosPickA: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    break;
-                case 2:
-                    setTxtCurrentInstructionColor("txtColorPlayerRed");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 2
-                        ? {...draftFromCurrentPlayer, 
-                            HerosPickA: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    break;
-                case 3:
-                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 1
-                        ? {...draftFromCurrentPlayer, 
-                            HerosPickB: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    break;
-                case 4:
-                    setTxtCurrentInstructionColor("txtColorPlayerRed");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 2
-                        ? {...draftFromCurrentPlayer, 
-                            HerosPickB: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    break;
-                case 5:
-                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 1
-                        ? {...draftFromCurrentPlayer, 
-                            HerosPickC: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    break;
-                case 6:
-                    setTxtCurrentInstructionColor("txtColorPlayerBlue");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 2
-                        ? {...draftFromCurrentPlayer, 
-                            HerosPickC: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    break;
-                case 7:
-                    setTxtCurrentInstructionColor("txtColorPlayerGreen");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 1
-                        ? {...draftFromCurrentPlayer, 
-                            HerosBanA: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    break;
-                case 8:
-                    setTxtCurrentInstructionColor("txtColorPlayerGreen");
-                    setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
-                        prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
-                        draftFromCurrentPlayer.ID === 2
-                        ? {...draftFromCurrentPlayer, 
-                            HerosBanA: LienImg}
-                        : draftFromCurrentPlayer
-                    ));
-                    setDraftTermine(true);
-                    break;
+        switch (currentEtapeDraft) {
+            case 1:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                setTxtCurrentInstructionColor("txtClignoteGreen");
+                setTxtCurrentInstruction("doit SELECTIONNER un héros");
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, 
+                        HerosPickA: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 2:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+                setTxtCurrentPlayerColor("txtColorPlayerRed");
+                setTxtCurrentInstructionColor("txtClignoteGreen");
+                setTxtCurrentInstruction("doit SELECTIONNER un héros");
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, 
+                        HerosPickA: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 3:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                setTxtCurrentInstructionColor("txtClignoteGreen");
+                setTxtCurrentInstruction("doit SELECTIONNER un héros");
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, 
+                        HerosPickB: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 4:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+                setTxtCurrentPlayerColor("txtColorPlayerRed");
+                setTxtCurrentInstructionColor("txtClignoteGreen");
+                setTxtCurrentInstruction("doit SELECTIONNER un héros");
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, 
+                        HerosPickB: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 5:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                setTxtCurrentInstructionColor("txtClignoteGreen");
+                setTxtCurrentInstruction("doit SELECTIONNER un héros");
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, 
+                        HerosPickC: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 6:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
+                setTxtCurrentPlayerColor("txtColorPlayerBlue");
+                setTxtCurrentInstructionColor("txtClignoteRed");
+                setTxtCurrentInstruction("doit BANNIR un héros");
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, 
+                        HerosPickC: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 7:
+                setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+                setTxtCurrentPlayerColor("txtColorPlayerRed");
+                setTxtCurrentInstructionColor("txtClignoteRed");
+                setTxtCurrentInstruction("doit BANNIR un héros");
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 1
+                    ? {...draftFromCurrentPlayer, 
+                        HerosBanA: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                break;
+            case 8:
+                setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
+                    prevHerosPickBanByPlayer?.map(draftFromCurrentPlayer =>
+                    draftFromCurrentPlayer.ID === 2
+                    ? {...draftFromCurrentPlayer, 
+                        HerosBanA: LienImg}
+                    : draftFromCurrentPlayer
+                ));
+                setDraftTermine(true);
+                break;
             }
 
         setCurrentEtapeDraft(prev => prev + 1);
     };
 
     const handleLoadtxtDebutPhaseDraft = () => {
-        setTxtCurrentInstructionColor("txtColorPlayerRed");
+        setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
+        setTxtCurrentPlayerColor("txtColorPlayerRed");
+        setTxtCurrentInstructionColor("txtClignoteGreen");
+        setTxtCurrentInstruction("doit SELECTIONNER un héros");
     };
 
     console.log('boites', listeBoites);
     console.log('heros', listeHeros);
 
     return (
-        <div className="container-xl mt-3">
-            <div className="row mb-4">
-                <div className="col-12">
-                    <h2 className="mt-4 text-center txtColorWhite">Dice Throne : Module de draft</h2>
+        <>
+            <div className="container-xl mt-3">
+                <div className="row mb-4">
+                    <div className="col-12">
+                        <h2 className="mt-4 text-center txtColorWhite">Dice Throne : Module de draft</h2>
+                    </div>
                 </div>
-            </div>
-            <div className="row">
-                <div className="col-12 col-lg-8 offset-lg-2 d-flex justify-content-center ">
-                    <img src="\images\dicethrone\DiceThrone.png" className="img-fluid rounded-2" alt="..."></img>
+                <div className="row">
+                    <div className="col-12 col-lg-8 offset-lg-2 d-flex justify-content-center ">
+                        <img src="\images\dicethrone\DiceThrone.png" className="img-fluid rounded-2" alt="..."></img>
+                    </div>
                 </div>
-            </div>
-            <div className="row">
-                <div className="col-12 mt-5">   
-                    <Accordeon blocSoloOrTopOrMidOrBot="Solo" textTitre="Un module de draft pour Dice Throne ?" textMain={`Ce module permet de réaliser un draft de type <b>"Snake Draft avec bans/picks"</b> pour le jeu <b>Dice Throne</b>.<br /><br />
-                        Voici le déroulement :<br />
-                        1. Commencez par sélectionner les boîtes de jeu que vous souhaitez utiliser.<br />
-                        2. Une liste de héros issus de ces boîtes vous sera alors proposée.<br />
-                        3. Les joueurs entament ensuite la phase de sélection (pick) pour choisir 3 héros chacun.<br />
-                        4. Chaque joueur peut alors bannir un héros parmi ceux de son adversaire.<br />
-                        5. Enfin, chacun valide le héros avec lequel il disputera la partie.<br />
-                        6. Il ne reste plus qu’à jouer</b> !`}/>       
+                <div className="row">
+                    <div className="col-12 mt-5">   
+                        <Accordeon blocSoloOrTopOrMidOrBot="Solo" textTitre="Un module de draft pour Dice Throne ?" textMain={`Ce module permet de réaliser un draft de type <b>"Snake Draft avec bans/picks"</b> pour le jeu <b>Dice Throne</b>.<br /><br />
+                            Voici le déroulement :<br />
+                            1. Commencez par sélectionner les boîtes de jeu que vous souhaitez utiliser.<br />
+                            2. Une liste de héros issus de ces boîtes vous sera alors proposée.<br />
+                            3. Les joueurs entament ensuite la phase de sélection (pick) pour choisir 3 héros chacun.<br />
+                            4. Chaque joueur peut alors bannir un héros parmi ceux de son adversaire.<br />
+                            5. Enfin, chacun valide le héros avec lequel il disputera la partie.<br />
+                            6. Il ne reste plus qu’à jouer</b> !`}/>       
+                    </div>
                 </div>
-            </div>
-            <div className="row">             
-                <div className="col-12 mt-3 d-flex justify-content-center">
-                        <h6 className="mt-4 text-center txtColorWhite">Pseudos</h6>
-                </div>
-            </div>
-            <div className="row">             
-                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerRed)"} intMaxLength={50} strPlaceholder={"Joueur A"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerA"] = e)}/>
-                </div>
-            </div>
-            <div className="row">             
-                <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                    <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurB"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
-                </div>
-            </div>
-            {currentEtapeDraft === 0 &&
-            <>
                 <div className="row">             
                     <div className="col-12 mt-3 d-flex justify-content-center">
-                            <h6 className="mt-4 text-center txtColorWhite">Sélectionnez une saison ...</h6>
+                            <h6 className="mt-4 text-center txtColorWhite">Pseudos</h6>
                     </div>
-                </div> 
+                </div>
                 <div className="row">             
-                    <div className="col-12 d-flex justify-content-center">
-                        <div className="p-3">
-                            <div className={`list-group ${styles.shadow}`}>
-                                {listeSets?.map((current, index) => (
-                                    <button type="button" key={index} className={`list-group-item list-group-item-action ${!current.Selected ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickOnSet(current.Numero, true)}>Vague {current.Numero}</button>
-                                ))}
+                    <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
+                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerRed)"} intMaxLength={50} strPlaceholder={"Joueur A"} strValeurByDef={""} strID={"pseudoJoueurA"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerA"] = e)}/>
+                    </div>
+                </div>
+                <div className="row">             
+                    <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
+                        <InputStandard strType={"text"} strColor={"var(--txtColorPlayerBlue)"} intMaxLength={50} strPlaceholder={"Joueur B"} strValeurByDef={""} strID={"pseudoJoueurB"} strTxtAlign="center" disabled={currentEtapeDraft > 0 && true} ref={(e) => (inputsRef.current["pseudoPlayerB"] = e)}/>
+                    </div>
+                </div>
+                {currentEtapeDraft === 0 &&
+                <>
+                    <div className="row">             
+                        <div className="col-12 mt-3 d-flex justify-content-center">
+                                <h6 className="mt-4 text-center txtColorWhite">Sélectionnez une saison ...</h6>
+                        </div>
+                    </div> 
+                    <div className="row">             
+                        <div className="col-12 d-flex justify-content-center">
+                            <div className="p-3">
+                                <div className={`list-group ${styles.shadow}`}>
+                                    {listeSets?.map((current, index) => (
+                                        <button type="button" key={index} className={`list-group-item list-group-item-action ${!current.Selected ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickOnSet(current.Numero, true)}>Vague {current.Numero}</button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="row">             
-                    <div className="col-12 mt-2 d-flex justify-content-center">
-                            <h6 className="text-center txtColorWhite">ou sélectionnez les boites à utiliser pour le draft</h6>
-                    </div>
-                </div> 
-            </>
-            }
+                    <div className="row">             
+                        <div className="col-12 mt-2 d-flex justify-content-center">
+                                <h6 className="text-center txtColorWhite">ou sélectionnez les boites à utiliser pour le draft</h6>
+                        </div>
+                    </div> 
+                </>
+                }
 
-            {currentEtapeDraft >= 1 &&
-            <>
-                <div className="row">             
-                    <div className="col-12 mt-3 d-flex justify-content-center">
-                        <h6 className="mt-4 text-center txtColorWhite">Le draft porte sur les sets suivants :</h6>
+                {currentEtapeDraft >= 1 &&
+                <>
+                    <div className="row">             
+                        <div className="col-12 mt-3 d-flex justify-content-center">
+                            <h6 className="mt-4 text-center txtColorWhite">Le draft porte sur les sets suivants :</h6>
+                        </div>
                     </div>
-                </div>
-                <div className="row">             
-                    <div className="col-12 mb-2 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
-                        <ul className="list-group">
-                            {listeBoites?.map((currentBoite, index) => (
-                                currentBoite.Selected == true &&
-                                <li key={"boxResume-" + index} className="list-group-item static">{currentBoite.Libelle}</li>
-                            ))}
-                            {filtreOnAllBoxes && <li className="list-group-item static">Collection complète</li>}
-                        </ul>
+                    <div className="row">             
+                        <div className="col-12 mb-2 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
+                            <ul className="list-group">
+                                {listeBoites?.map((currentBoite, index) => (
+                                    currentBoite.Selected == true &&
+                                    <li key={"boxResume-" + index} className="list-group-item static">{currentBoite.Libelle}</li>
+                                ))}
+                                {filtreOnAllBoxes && <li className="list-group-item static">Collection complète</li>}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            </>
-            }
+                </>
+                }
 
-            <div className="row">
-                <div className="col-12 mt-2 d-flex justify-content-center">
-                    <i className={`bx bx-check ${modeSelectByDoubleClic ? "bxInactiveToActive" : "bxActive"}`} onClick={() => modeSelectByDoubleClic && setModeSelectByDoubleClic(false)}></i>
-                    <i className={`bx bx-check-double ${modeSelectByDoubleClic ? "bxActive" : "bxInactiveToActive"} ms-3`} onClick={() => !modeSelectByDoubleClic && setModeSelectByDoubleClic(true)}></i>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-12 d-flex justify-content-center">
-                        {!draftTermine &&
-                            <h6 className="text-center txtColorDarkBisLight">{modeSelectByDoubleClic ? "(sélection par double clic)" : <>&nbsp;</>}</h6>
-                        }
-                </div>
-            </div>
-
-            {currentEtapeDraft === 0 &&
-            <>
-                <div className="row">             
-                    <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
-                        {listeBoites?.map((currentBoite, index) => (
-                            <div key={index} className={`${styles.conteneurImgX6} me-3 mb-3`}>
-                                <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} onClick={() => !modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} alt="..."></img>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </>
-            }
-            {currentEtapeDraft === 0 &&
-            <div className="row">             
-                <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
-                    <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => {handleBuildFiltreHeros(listeBoites); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider la sélection de boites</button>
-                </div>
-            </div>
-            }
-            {currentEtapeDraft >= 1 &&
-            <>
                 <div className="row">
                     <div className="col-12 mt-2 d-flex justify-content-center">
-                        {showOverlayFactions ? 
-                            <i className={`bx bx-image-alt bxNormalOrange`} onClick={() => setShowOverlayFactions(false)}></i> :
-                            <i className={`bx bx-detail bxNormalOrange`} onClick={() => setShowOverlayFactions(true)}></i>
-                        }
+                        <i className={`bx bx-check ${modeSelectByDoubleClic ? "bxInactiveToActive" : "bxActive"}`} onClick={() => modeSelectByDoubleClic && setModeSelectByDoubleClic(false)}></i>
+                        <i className={`bx bx-check-double ${modeSelectByDoubleClic ? "bxActive" : "bxInactiveToActive"} ms-3`} onClick={() => !modeSelectByDoubleClic && setModeSelectByDoubleClic(true)}></i>
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-12 mt-4 d-flex justify-content-center">
-                            {!draftTermine ?
-                                <h5 className={`text-center ${txtCurrentPlayerColor}`}>{txtCurrentPlayer}</h5>
-                                :
-                                <h5 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h5>
-                            }
-                    </div>          
                     <div className="col-12 d-flex justify-content-center">
+                            {!draftTermine &&
+                                <h6 className="text-center txtColorDarkBisLight">{modeSelectByDoubleClic ? "(sélection par double clic)" : <>&nbsp;</>}</h6>
+                            }
+                    </div>
+                </div>
+
+                {currentEtapeDraft === 0 &&
+                <>
+                    <div className="row">             
+                        <div className="col-12 mt-3 d-flex flex-wrap justify-content-center">
+                            {listeBoites?.map((currentBoite, index) => (
+                                <div key={index} className={`${styles.conteneurImgX6} me-3 mb-3`}>
+                                    <img src={currentBoite.LienImg} className={`rounded float-start ${styles.responsiveImgListeX5} ${currentBoite?.Selected && styles.conteneurImgSelected}`} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} onClick={() => !modeSelectByDoubleClic && handleClickOnBox(currentBoite?.CodeBox, currentBoite?.Vague)} alt="..."></img>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </>
+                }
+                {currentEtapeDraft === 0 &&
+                <div className="row">             
+                    <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
+                        <button type="button" className={`btn btn-primary btn-ColorA`} onClick={() => {handleBuildFiltreHeros(listeBoites); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider la sélection de boites</button>
+                    </div>
+                </div>
+                }
+                {currentEtapeDraft >= 1 &&
+                <>
+                    <div className="row">
+                        <div className="col-12 d-flex justify-content-center">
+                            {showOverlayFactions ? 
+                                <i className={`bx bx-image-alt bxNormalOrange`} onClick={() => setShowOverlayFactions(false)}></i> :
+                                <i className={`bx bx-detail bxNormalOrange`} onClick={() => setShowOverlayFactions(true)}></i>
+                            }
+                        </div>
+                    </div>
+                    <div className="row">        
+                        <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
+                            {listeHeros?.map((currentHeros, index) => (
+                                <div key={"heros-" + index} className={`${styles.conteneurImgX6} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentHeros.TypeSelected == "Pick" ? styles.factionPicked : (currentHeros.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
+                                    <div className={`${styles.blocFaction} ${currentHeros?.Selected && styles.grayscale}`}>
+                                        <img src={currentHeros.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} alt="..."></img>
+                                    </div>
+                                    <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} onDoubleClick={() => handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)}>
+                                        {currentHeros.Libelle}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="row">             
+                        <div className="col-12 mt-5 mb-2 d-flex justify-content-center">
+                                <h4 className="text-center txtColorWhite">Résultat du draft</h4>
+                        </div>
+                    </div>
+                    <div className="row">        
+                        <div className="col-12 mt-2 mb-5 d-flex flex-wrap justify-content-center">
+                            <div className={`col-12 col-lg-6 mb-2 ${isLargeScreen ? "ps-3" : "pe-3"} d-flex flex-wrap justify-content-center txtColorRed`}><b>{namePlayers.J1}</b></div>
+                                {isLargeScreen && <div className="col-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
+                                <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
+                                    <div className={`${styles.blocFaction}`}>
+                                        <img src={herosPickBanByPlayer[0].HerosPickA ? herosPickBanByPlayer[0].HerosPickA : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
+                                    </div>
+                                </div>
+                                <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
+                                    <div className={`${styles.blocFaction}`}>
+                                        <img src={herosPickBanByPlayer[0].HerosPickB ? herosPickBanByPlayer[0].HerosPickB : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
+                                    </div>
+                                </div>
+                                <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
+                                    <div className={`${styles.blocFaction}`}>
+                                        <img src={herosPickBanByPlayer[0].HerosPickC ? herosPickBanByPlayer[0].HerosPickC : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
+                                    </div>
+                                </div>
+                                {!isLargeScreen && <div className="col-12 col-lg-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
+                                <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
+                                    <div className={`${styles.blocFaction}`}>
+                                        <img src={herosPickBanByPlayer[1].HerosPickA ? herosPickBanByPlayer[1].HerosPickA : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
+                                    </div>
+                                </div>
+                                <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
+                                    <div className={`${styles.blocFaction}`}>
+                                        <img src={herosPickBanByPlayer[1].HerosPickB ? herosPickBanByPlayer[1].HerosPickB : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
+                                    </div>
+                                </div>
+                                <div className={`${styles.conteneurImgResultatDraft} ${!isLargeScreen && "me-3"} mb-3`}>
+                                    <div className={`${styles.blocFaction}`}>
+                                        <img src={herosPickBanByPlayer[1].HerosPickC ? herosPickBanByPlayer[1].HerosPickC : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </>
+                }
+            </div>
+            {!draftTermine ? currentEtapeDraft >= 1 && 
+                <div className={styles.bandeauInstructionDraft}>
+                    <div className="col-12 d-flex justify-content-center">
+                        {!draftTermine ?
+                            <h5 className={`text-center ${txtCurrentPlayerColor}`}><b>{txtCurrentPlayer}</b></h5>
+                                :
+                            <h5 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h5>
+                            }&nbsp;
                             {!draftTermine &&
                                 <h5 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h5>
                             }
                     </div>
                 </div>
-                <div className="row">        
-                    <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
-                        {listeHeros?.map((currentHeros, index) => (
-                            <div key={"heros-" + index} className={`${styles.conteneurImgX6} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentHeros.TypeSelected == "Pick" ? styles.factionPicked : (currentHeros.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
-                                <div className={`${styles.blocFaction} ${currentHeros?.Selected && styles.grayscale}`}>
-                                    <img src={currentHeros.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} alt="..."></img>
-                                </div>
-                                <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} onDoubleClick={() => handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)}>
-                                    {currentHeros.Libelle}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="row">             
-                    <div className="col-12 mt-5 mb-2 d-flex justify-content-center">
-                            <h4 className="text-center txtColorWhite">Résultat du draft</h4>
-                    </div>
-                </div>
-                <div className="row">        
-                    <div className="col-12 mt-2 mb-5 d-flex flex-wrap justify-content-center">
-                        <div className={`col-12 col-lg-6 mb-2 ${isLargeScreen ? "ps-3" : "pe-3"} d-flex flex-wrap justify-content-center txtColorRed`}><b>{namePlayers.J1}</b></div>
-                            {isLargeScreen && <div className="col-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
-                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
-                                <div className={`${styles.blocFaction}`}>
-                                    <img src={herosPickBanByPlayer[0].HerosPickA ? herosPickBanByPlayer[0].HerosPickA : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
-                                </div>
-                            </div>
-                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
-                                <div className={`${styles.blocFaction}`}>
-                                    <img src={herosPickBanByPlayer[0].HerosPickB ? herosPickBanByPlayer[0].HerosPickB : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
-                                </div>
-                            </div>
-                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
-                                <div className={`${styles.blocFaction}`}>
-                                    <img src={herosPickBanByPlayer[0].HerosPickC ? herosPickBanByPlayer[0].HerosPickC : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedRed}`} alt="..."></img>
-                                </div>
-                            </div>
-                            {!isLargeScreen && <div className="col-12 col-lg-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
-                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
-                                <div className={`${styles.blocFaction}`}>
-                                    <img src={herosPickBanByPlayer[1].HerosPickA ? herosPickBanByPlayer[1].HerosPickA : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
-                                </div>
-                            </div>
-                            <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3`}>
-                                <div className={`${styles.blocFaction}`}>
-                                    <img src={herosPickBanByPlayer[1].HerosPickB ? herosPickBanByPlayer[1].HerosPickB : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
-                                </div>
-                            </div>
-                            <div className={`${styles.conteneurImgResultatDraft} ${!isLargeScreen && "me-3"} mb-3`}>
-                                <div className={`${styles.blocFaction}`}>
-                                    <img src={herosPickBanByPlayer[1].HerosPickC ? herosPickBanByPlayer[1].HerosPickC : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${styles.factionPickedBlue}`} alt="..."></img>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-            </>
-            }
-        </div>
+            : <></>}
+        </>
     );
 }
 
