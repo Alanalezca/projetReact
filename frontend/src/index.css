@@ -130,14 +130,17 @@ main {
   --txtColorPlayerRed: #E53935;
   --txtColorPlayerRedRGB: rgba(229, 57, 53);
 
+  --txtColorPlayerRedMiddle: ##EC405F;
+  --txtColorPlayerRedMiddleRGB: rgba(229, 57, 53);
+
   --txtColorPlayerRedLight: #E7848D;
   --txtColorPlayerRedLightRGB: rgba(231, 132, 141);
 
   --txtColorPlayerBlue: #1E88E5;
   --txtColorPlayerBlueRGB: rgba(30, 136, 229);
 
-  --txtColorPlayerGreen: #66BB6A;
-  --txtColorPlayerGreenRGB: rgba(102, 187, 106);
+  --txtColorPlayerGreen: #42BC5A;
+  --txtColorPlayerGreenRGB: rgba(66, 188, 90);
 
   --txtColorPlayerGreenLight: #74B596;
   --txtColorPlayerGreenLightRGB: rgba(116, 181, 150);
@@ -393,6 +396,32 @@ span { font-size: 1rem; }
 
 .text-center {
   text-align: center;
+}
+
+.txtClignoteRed {
+  animation: ClignoteRed 1s infinite alternate;
+}
+
+@keyframes ClignoteRed {
+  from {
+    color: var(--txtColorDark);
+  }
+  to {
+    color: var(--txtColorPlayerRed);
+  }
+}
+
+.txtClignoteGreen {
+  animation: ClignoteGreen 1s infinite alternate;
+}
+
+@keyframes ClignoteGreen {
+  from {
+    color: var(--txtColorDark);
+  }
+  to {
+    color: var(--txtColorPlayerGreen);
+  }
 }
 
 
