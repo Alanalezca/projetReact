@@ -142,6 +142,11 @@
     box-shadow: 0 0 3px 4px var(--txtColorPlayerRed);
 }
 
+.factionSelectedFinal {
+    border: 2px solid var(--ColorB);
+    box-shadow: 0 0 30px 4px var(--ColorB);
+}
+
 .conteneurImgX6.factionPicked:hover {
     border: 2px solid var(--txtColorPlayerGreen);
     box-shadow: 0 0 3px 4px var(--txtColorPlayerGreen);
@@ -205,9 +210,9 @@
   height: 60px;
   padding-top: 8px;
   bottom: 2vh;
-  background-color: var(--ColorA);
-  border-top: 2px solid var(--backgroundColorE);
-  border-bottom: 2px solid var(--backgroundColorE);
+  background-color: var(--backgroundColorD);
+  border-top: 3px solid var(--ColorB);
+  border-bottom: 3px solid var(--ColorB);
   color: white;
   display: flex;
   align-items: center;

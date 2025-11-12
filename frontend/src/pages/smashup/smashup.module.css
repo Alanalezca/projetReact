@@ -160,7 +160,7 @@
   height: 60px;
   padding-top: 8px;
   bottom: 2vh;
-  background-color: var(--ColorA);
+  background-color: var(--backgroundColorD);
   border-top: 2px solid var(--backgroundColorE);
   border-bottom: 2px solid var(--backgroundColorE);
   color: white;
