@@ -5,7 +5,7 @@ npm run build
 cd C:\Users\alana\OneDrive\NexusRE\
 
 git add .
-git commit -m "Build complet et mise à jour 1.002d"
+git commit -m "Build complet et mise à jour 1.002e"
 git push --force
 
 
