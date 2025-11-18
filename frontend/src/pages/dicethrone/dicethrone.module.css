@@ -37,7 +37,6 @@
     .conteneurImgResultatDraft {
         position: relative;
         width: 29%;
-        border: 2px solid white;
         border-radius: 10px;
         transition: border 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
         filter: brightness(0.9);
