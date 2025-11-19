@@ -2,10 +2,14 @@ cd C:\Users\alana\OneDrive\NexusRE\frontend
 
 npm run build
 
+cd C:\Users\alana\OneDrive\NexusRE\backend
+
+node app.js
+
 cd C:\Users\alana\OneDrive\NexusRE\
 
 git add .
-git commit -m "Build complet et mise à jour 1.002h"
+git commit -m "Build complet et mise à jour 1.002j"
 git push --force
 
 
