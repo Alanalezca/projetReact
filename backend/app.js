@@ -14,6 +14,7 @@ import tagsArticlesRoutes from './routes/tagsArticles.js';
 import usersRoutes from './routes/users.js';
 import smashupRoutes from './routes/smashup.js';
 import dicethroneRoutes from './routes/dicethrone.js';
+import { SitemapStream, streamToPromise } from 'sitemap';
 
 dotenv.config(); // À placer tôt
 
@@ -63,6 +64,45 @@ const __dirname = path.dirname(__filename);
 const frontendBuildPath = path.join(__dirname, '../frontend/build');
 app.use(express.static(frontendBuildPath));
 console.log('Frontend Build Path:', frontendBuildPath);
+
+// --- Génération du sitemap ---
+const generateSitemap = async () => {
+  try {
+    const sitemap = new SitemapStream({ hostname: 'https://www.alanalezca.fr' });
+
+    const staticRoutes = [
+      { url: '/', changefreq: 'weekly', priority: 1.0 },
+      { url: '/smashup', changefreq: 'monthly', priority: 0.7 },
+      { url: '/dicethrone', changefreq: 'monthly', priority: 0.7 },
+      { url: '/article/admin', changefreq: 'monthly', priority: 0.4 },
+      { url: '/article/create', changefreq: 'monthly', priority: 0.4 },
+    ];
+    staticRoutes.forEach(route => sitemap.write(route));
+
+    const { rows: articles } = await pool.query(`
+      SELECT "Slug" FROM tab_articles
+      WHERE "Slug" IS NOT NULL
+    `);
+
+    articles.forEach(article => {
+      sitemap.write({ url: `/article/${article.Slug}`, changefreq: 'weekly', priority: 0.9 });
+    });
+
+    sitemap.end();
+
+    const xml = await streamToPromise(sitemap).then(sm => sm.toString());
+
+    fs.writeFileSync(path.join(frontendBuildPath, 'sitemap.xml'), xml);
+
+    console.log(`📄 sitemap.xml généré avec ${articles.length} articles dynamiques.`);
+
+  } catch (err) {
+    console.error('❌ Erreur génération sitemap:', err);
+  }
+};
+
+generateSitemap();
+
 
 // Routes API
 app.use('/api/users', usersRoutes);
