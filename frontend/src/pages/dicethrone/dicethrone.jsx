@@ -535,36 +535,24 @@ const DiceThroneDrafter = () => {
                             <div className="col-12 mt-2 mb-5 d-flex flex-wrap justify-content-center">
                                 <div className={`col-12 col-lg-6 mb-2 ${isLargeScreen ? "ps-3" : "pe-3"} d-flex flex-wrap justify-content-center txtColorRed`}><b>{namePlayers.J1}</b></div>
                                     {isLargeScreen && <div className="col-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${herosPickBanByPlayer[0].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                        <div className={`${styles.blocFaction}`}>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
                                             <img src={herosPickBanByPlayer[0].HerosPickA ? herosPickBanByPlayer[0].HerosPickA : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 1 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`} alt="..."></img>
-                                        </div>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${herosPickBanByPlayer[0].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                        <div className={`${styles.blocFaction}`}>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
                                             <img src={herosPickBanByPlayer[0].HerosPickB ? herosPickBanByPlayer[0].HerosPickB : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 2 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`} alt="..."></img>
-                                        </div>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${herosPickBanByPlayer[0].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                        <div className={`${styles.blocFaction}`}>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
                                             <img src={herosPickBanByPlayer[0].HerosPickC ? herosPickBanByPlayer[0].HerosPickC : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 3 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`} alt="..."></img>
-                                        </div>
                                     </div>
                                     {!isLargeScreen && <div className="col-12 col-lg-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${herosPickBanByPlayer[1].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                        <div className={`${styles.blocFaction}`}>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
                                             <img src={herosPickBanByPlayer[1].HerosPickA ? herosPickBanByPlayer[1].HerosPickA : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 1 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`} alt="..."></img>
-                                        </div>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${herosPickBanByPlayer[1].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                        <div className={`${styles.blocFaction}`}>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
                                             <img src={herosPickBanByPlayer[1].HerosPickB ? herosPickBanByPlayer[1].HerosPickB : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 2 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`} alt="..."></img>
-                                        </div>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} ${!isLargeScreen && "me-3"} mb-3 ${herosPickBanByPlayer[1].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                        <div className={`${styles.blocFaction}`}>
+                                    <div className={`${styles.conteneurImgResultatDraft} ${!isLargeScreen && "me-3"} mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
                                             <img src={herosPickBanByPlayer[1].HerosPickC ? herosPickBanByPlayer[1].HerosPickC : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 3 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`} alt="..."></img>
-                                        </div>
                                     </div>
                             </div>
                         </div>
