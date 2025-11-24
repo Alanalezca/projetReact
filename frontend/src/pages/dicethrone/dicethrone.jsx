@@ -472,10 +472,10 @@ const DiceThroneDrafter = () => {
                 {currentEtapeDraft === 0 &&
                 <div className="row mb-5">             
                     <div className="col-12 mt-4 d-flex justify-content-center">
-                        <button type="button" disabled={compteurNbHerosSelonBoitesSelected < 6} className={`btn btn-primary ${compteurNbHerosSelonBoitesSelected >= 6 ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreHeros(listeBoites, "Normal"); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider et sélection sur le pool complet</button>
+                        <button type="button" disabled={compteurNbHerosSelonBoitesSelected < 6} className={`btn btn-primary ${compteurNbHerosSelonBoitesSelected >= 6 ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreHeros(listeBoites, "Normal"); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider la sélection</button>
                     </div>
                     <div className="col-12 mt-3 d-flex justify-content-center">
-                        <button type="button" disabled={compteurNbHerosSelonBoitesSelected < 9} className={`btn btn-primary ${compteurNbHerosSelonBoitesSelected >= 6 ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreHeros(listeBoites, "Random"); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider, randomiser et sélection sur pool restreint</button>
+                        <button type="button" disabled={compteurNbHerosSelonBoitesSelected < 9} className={`btn btn-primary ${compteurNbHerosSelonBoitesSelected >= 9 ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreHeros(listeBoites, "Random"); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider et randomiser</button>
                     </div>
                 </div>
                 }
@@ -590,11 +590,8 @@ const DiceThroneDrafter = () => {
                 <div className={styles.bandeauInstructionDraft}>
                     <div className="col-12 d-flex justify-content-center txt-base">
                         {!draftTermine &&
-                            <h5 className={`text-center ${txtCurrentPlayerColor}`}><b>{txtCurrentPlayer}</b></h5>
-                            }&nbsp;
-                            {!draftTermine &&
-                                <h5 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h5>
-                            }
+                            <h5 className="text-center"><span className={`${txtCurrentPlayerColor}`}><b>{txtCurrentPlayer}</b></span>&nbsp;<span className={`${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</span></h5>
+                        }
                     </div>
                 </div>
             }

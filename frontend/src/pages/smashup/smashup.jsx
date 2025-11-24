@@ -1078,7 +1078,7 @@ const Smashup = () => {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-12 col-lg-8 offset-2 d-flex justify-content-center ">
+                    <div className="col-12 col-lg-8 offset-lg-2 d-flex justify-content-center ">
                         <img src="\images\smashup\banniere.png" className="img-fluid rounded-2" alt="..."></img>
                     </div>
                 </div>
@@ -1171,10 +1171,10 @@ const Smashup = () => {
                     
                     <div className="row mb-5">           
                         <div className="col-12 mt-4 d-flex justify-content-center">
-                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +4)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Normal"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider et sélection sur le pool complet</button>
+                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +4)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Normal"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider la sélection</button>
                         </div>
                         <div className="col-12 mt-3 mb-5 d-flex justify-content-center">
-                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +5)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected > ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Random"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider, randomiser et sélection sur pool restreint</button>
+                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +5)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected > ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Random"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider et</button>
                         </div>
                     </div>
                 </>
@@ -1320,13 +1320,10 @@ const Smashup = () => {
                 <div className={styles.bandeauInstructionDraft}>
                     <div className="col-12 d-flex justify-content-center">
                         {!draftTermine ?
-                            <h5 className={`text-center ${txtCurrentPlayerColor}`}><b>{txtCurrentPlayer}</b></h5>
+                            <h5 className="text-center"><span className={`${txtCurrentPlayerColor}`}><b>{txtCurrentPlayer}</b></span>&nbsp;<span className={`${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</span></h5>
                                 :
                             <h5 className={`text-center txtColorWhite`}>Le draft est à présent terminé !</h5>
-                            }&nbsp;
-                            {!draftTermine &&
-                                <h5 className={`text-center ${txtCurrentInstructionColor}`}>{txtCurrentInstruction}</h5>
-                            }
+                        }
                     </div>
                 </div>
             : <></>}
