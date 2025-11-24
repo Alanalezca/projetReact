@@ -16,7 +16,7 @@ router.get('/boites', async (req, res) => {
 router.get('/factions', async (req, res) => {
   const filtreBoxes = req.query.filtreBoxes ?? "";
   try {
-    const result = await pool.query(`SELECT f."CodeFaction", f."CodeBox", f."Libelle", f."LienImg", f."Classement", f."AvecTitan" FROM l_smashup_factions f WHERE f."Actif" = TRUE AND (($1::text = '') OR (('$' || $1::text || '$') LIKE '%$' || f."CodeBox" || '$%')) GROUP BY f."CodeFaction", f."CodeBox", f."Libelle", f."LienImg", f."Classement", f."AvecTitan" ORDER BY f."Classement";`,
+    const result = await pool.query(`SELECT DISTINCT f."CodeFaction", f."CodeBox", f."Libelle", f."LienImg", f."Classement", f."AvecTitan" , TRUE AS "Pickable" FROM l_smashup_factions f WHERE f."Actif" = TRUE AND (($1::text = '') OR (('$' || $1::text || '$') LIKE '%$' || f."CodeBox" || '$%')) GROUP BY f."CodeFaction", f."CodeBox", f."Libelle", f."LienImg", f."Classement", f."AvecTitan" ORDER BY f."Classement";`,
       [filtreBoxes]
     );
     if (result.rows.length === 0) {

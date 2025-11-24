@@ -3,8 +3,11 @@ import styles from './dicethrone.module.css';
 import Loader from '../../components/others/Loader';
 import Accordeon from '../../components/others/Accordeon';
 import InputStandard from '../../components/inputs/InputStandard';
+import getRandomUniqueNumbers from '../../functions/getRandomUniqueNumbers';
 
 const DiceThroneDrafter = () => {
+    const [flip, setFlip] = useState(false);
+
     const [isLoading, setIsLoading] = useState(true);
     const [currentEtapeDraft, setCurrentEtapeDraft] = useState(0);
     const inputsRef = useRef({});
@@ -31,6 +34,7 @@ const DiceThroneDrafter = () => {
     const [lastHerosSaisieForRollback, setLastHerosSaisieForRollback] = useState({codeHeros: null, libelleHeros: null});
     const [compteurNbHerosSelonBoitesSelected, setCompteurNbHerosSelonBoitesSelected] = useState(0);
     const [indiceJoueurViewedPourBan, setIndiceJoueurViewedPourBan] = useState(0);
+    const [modeHerosRandom, setModeHerosRandom] = useState(false);
 
     useEffect(() => {
     document.querySelectorAll('.noFocus').forEach(el => el.blur());
@@ -119,7 +123,7 @@ const DiceThroneDrafter = () => {
         }));
     };
 
-    const handleBuildFiltreHeros = (boxes) => {
+    const handleBuildFiltreHeros = (boxes, modeNormalOrRandom) => {
         const selectedBoxes = boxes?.filter(b => b?.Selected);
         const filtreHeros = selectedBoxes.map(b => b.CodeBox).join("$");
 
@@ -127,16 +131,28 @@ const DiceThroneDrafter = () => {
             setFiltreOnAllBoxes(false);
         }
 
-        getHerosFromBoxesSelected(filtreHeros);
+        getHerosFromBoxesSelected(filtreHeros, modeNormalOrRandom);
     };
 
-    const getHerosFromBoxesSelected = (filtre) => {
+    const getHerosFromBoxesSelected = (filtre, modeNormalOrRandom) => {
         fetch('/api/dicethrone/heros?filtreBoxes=' + filtre)
         .then(response => response.json())
         .then(data => {
-          setListeHeros(data);
+          modeNormalOrRandom == "Normal" ? setListeHeros(data) : randomisationHeros(data, 2);
         })
         .catch(error => console.error('Erreur fetch dice throne héros :', error));
+    };
+
+    const randomisationHeros = (data, nbPlayers) => {
+        let nbHerosPickable = data.length;
+        const indiceHerosGoPickableOff = getRandomUniqueNumbers(nbHerosPickable - (8), nbHerosPickable -1);
+        const newData = data.map((currentHeros, index) => 
+        indiceHerosGoPickableOff.includes(index) 
+            ?   {...currentHeros, Pickable: false}
+            : currentHeros
+        );
+        setModeHerosRandom(true);
+        setListeHeros(newData);
     };
 
     const handleClickOnHeros = (codeHeros, libelleHeros, LienImg, selectedOrNot, indiceIfBan) => {
@@ -376,7 +392,7 @@ const DiceThroneDrafter = () => {
                             <div className="p-3">
                                 <div className={`list-group ${styles.shadow}`}>
                                     {listeSets?.map((current, index) => (
-                                        <button type="button" key={index} className={`list-group-item list-group-item-action ${!current.Selected ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickOnSet(current.Numero, true)}>Vague {current.Numero}</button>
+                                        <button type="button" key={index} className={`list-group-item list-group-item-action text-center ${!current.Selected ? styles.bandeauTag : styles.bandeauTagFocus}`} onClick={() => handleClickOnSet(current.Numero, true)}>{current.Numero}</button>
                                     ))}
                                 </div>
                             </div>
@@ -397,6 +413,13 @@ const DiceThroneDrafter = () => {
                             <h6 className="mt-4 text-center txtColorWhite">Le draft porte sur les sets suivants :</h6>
                         </div>
                     </div>
+                    {modeHerosRandom && 
+                        <div className="row">
+                            <div className="col-12 mt-2 d-flex justify-content-center">
+                                        <h6 className="text-center txtColorDarkBisLight">(Héros randomisés)</h6>
+                             </div>
+                        </div>
+                    }
                     <div className="row">             
                         <div className="col-12 mb-2 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
                             <ul className="list-group">
@@ -447,9 +470,12 @@ const DiceThroneDrafter = () => {
                 </>
                 }
                 {currentEtapeDraft === 0 &&
-                <div className="row">             
-                    <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
-                        <button type="button" disabled={compteurNbHerosSelonBoitesSelected < 6} className={`btn btn-primary ${compteurNbHerosSelonBoitesSelected >= 6 ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreHeros(listeBoites); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider la sélection de boites</button>
+                <div className="row mb-5">             
+                    <div className="col-12 mt-4 d-flex justify-content-center">
+                        <button type="button" disabled={compteurNbHerosSelonBoitesSelected < 6} className={`btn btn-primary ${compteurNbHerosSelonBoitesSelected >= 6 ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreHeros(listeBoites, "Normal"); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider et sélection sur le pool complet</button>
+                    </div>
+                    <div className="col-12 mt-3 d-flex justify-content-center">
+                        <button type="button" disabled={compteurNbHerosSelonBoitesSelected < 9} className={`btn btn-primary ${compteurNbHerosSelonBoitesSelected >= 6 ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreHeros(listeBoites, "Random"); setCurrentEtapeDraft(prev => prev +1); handleLoadNamePlayers(); handleLoadtxtDebutPhaseDraft()}}>Valider, randomiser et sélection sur pool restreint</button>
                     </div>
                 </div>
                 }
@@ -467,6 +493,7 @@ const DiceThroneDrafter = () => {
                         <div className="row">        
                             <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
                                 {listeHeros?.map((currentHeros, index) => (
+                                    currentHeros?.Pickable == true && 
                                     <div key={"heros-" + index} className={`noFocus ${styles.conteneurImgX6} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentHeros.TypeSelected == "Pick" ? styles.factionPicked : (currentHeros.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
                                         <div className={` noFocus${styles.blocFaction} ${currentHeros?.Selected && styles.grayscale}`}>
                                             <img src={currentHeros.LienImg} className={`noFocus rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnHeros(currentHeros?.CodeHeros, currentHeros?.Libelle, currentHeros?.LienImg, currentHeros?.Selected)} alt="..."></img>
@@ -535,24 +562,24 @@ const DiceThroneDrafter = () => {
                             <div className="col-12 mt-2 mb-5 d-flex flex-wrap justify-content-center">
                                 <div className={`col-12 col-lg-6 mb-2 ${isLargeScreen ? "ps-3" : "pe-3"} d-flex flex-wrap justify-content-center txtColorRed`}><b>{namePlayers.J1}</b></div>
                                     {isLargeScreen && <div className="col-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                            <img src={herosPickBanByPlayer[0].HerosPickA ? herosPickBanByPlayer[0].HerosPickA : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 1 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`} alt="..."></img>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 1 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`}>
+                                            <img src={herosPickBanByPlayer[0].HerosPickA ? herosPickBanByPlayer[0].HerosPickA : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                            <img src={herosPickBanByPlayer[0].HerosPickB ? herosPickBanByPlayer[0].HerosPickB : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 2 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`} alt="..."></img>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 2 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`}>
+                                            <img src={herosPickBanByPlayer[0].HerosPickB ? herosPickBanByPlayer[0].HerosPickB : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                            <img src={herosPickBanByPlayer[0].HerosPickC ? herosPickBanByPlayer[0].HerosPickC : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 3 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`} alt="..."></img>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[0].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""} ${herosPickBanByPlayer[0].IndiceHerosSelectedFinal == 3 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedRed}`}>
+                                            <img src={herosPickBanByPlayer[0].HerosPickC ? herosPickBanByPlayer[0].HerosPickC : "/images/dicethrone/NCRed.png"} className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
                                     </div>
                                     {!isLargeScreen && <div className="col-12 col-lg-6 mb-2 pe-3 d-flex flex-wrap justify-content-center txtColorBlue"><b>{namePlayers.J2}</b></div>}
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                            <img src={herosPickBanByPlayer[1].HerosPickA ? herosPickBanByPlayer[1].HerosPickA : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 1 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`} alt="..."></img>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 1 && currentEtapeDraft > 8 ? styles.grayscale : ""} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 1 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`}>
+                                            <img src={herosPickBanByPlayer[1].HerosPickA ? herosPickBanByPlayer[1].HerosPickA : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                            <img src={herosPickBanByPlayer[1].HerosPickB ? herosPickBanByPlayer[1].HerosPickB : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 2 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`} alt="..."></img>
+                                    <div className={`${styles.conteneurImgResultatDraft} me-3 mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 2 && currentEtapeDraft > 8 ? styles.grayscale : ""} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 2 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`}>
+                                            <img src={herosPickBanByPlayer[1].HerosPickB ? herosPickBanByPlayer[1].HerosPickB : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
                                     </div>
-                                    <div className={`${styles.conteneurImgResultatDraft} ${!isLargeScreen && "me-3"} mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""}`}>
-                                            <img src={herosPickBanByPlayer[1].HerosPickC ? herosPickBanByPlayer[1].HerosPickC : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 3 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`} alt="..."></img>
+                                    <div className={`${styles.conteneurImgResultatDraft} ${!isLargeScreen && "me-3"} mb-3 ${styles.blocFaction} ${herosPickBanByPlayer[1].IndiceHerosBan == 3 && currentEtapeDraft > 8 ? styles.grayscale : ""} ${herosPickBanByPlayer[1].IndiceHerosSelectedFinal == 3 && currentEtapeDraft > 10 ? styles.factionSelectedFinal : styles.factionPickedBlue}`}>
+                                            <img src={herosPickBanByPlayer[1].HerosPickC ? herosPickBanByPlayer[1].HerosPickC : "/images/dicethrone/NCBlue.png"} className={`rounded float-start ${styles.responsiveImgFaction}`} alt="..."></img>
                                     </div>
                             </div>
                         </div>
@@ -561,7 +588,7 @@ const DiceThroneDrafter = () => {
             </div>
             {!draftTermine && currentEtapeDraft >= 1 &&
                 <div className={styles.bandeauInstructionDraft}>
-                    <div className="col-12 d-flex justify-content-center">
+                    <div className="col-12 d-flex justify-content-center txt-base">
                         {!draftTermine &&
                             <h5 className={`text-center ${txtCurrentPlayerColor}`}><b>{txtCurrentPlayer}</b></h5>
                             }&nbsp;

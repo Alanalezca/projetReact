@@ -4,6 +4,7 @@ import Loader from '../../components/others/Loader';
 import Accordeon from '../../components/others/Accordeon';
 import ButtonPiano from '../../components/others/ButtonPiano';
 import InputStandard from '../../components/inputs/InputStandard';
+import getRandomUniqueNumbers from '../../functions/getRandomUniqueNumbers';
 
 const Smashup = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +34,7 @@ const Smashup = () => {
     const [draftTermine, setDraftTermine] = useState(false);
     const [lastFactionSaisieForRollback, setLastFactionSaisieForRollback] = useState({codeFaction: null, libelleFaction: null});
     const [modeSelectByDoubleClic, setModeSelectByDoubleClic] = useState(false);
+    const [modeFactionsRandom, setModeFactionsRandom] = useState(false);
 
     useEffect(() => {
         if (nbJoueursSelected === 0) {
@@ -74,21 +76,33 @@ const Smashup = () => {
         setCompteurNbFactionsSelonBoitesSelected(isNaN(nbFactions) ? 0 : nbFactions);
     }, [listeBoites])
 
-    const handleBuildFiltreFactions = (boxes) => {
+    const handleBuildFiltreFactions = (boxes, modeNormalOrRandom) => {
         let filtreFactions = "";
         boxes?.map((currentBox, index) => {
             currentBox?.Selected && (filtreFactions += (filtreFactions !== "" ? "$" : "") + currentBox?.CodeBox);
         });
-        getFactionsFromBoxesSelected(filtreFactions);
+        getFactionsFromBoxesSelected(filtreFactions, modeNormalOrRandom);
     };
 
-    const getFactionsFromBoxesSelected = (filtre) => {
+    const getFactionsFromBoxesSelected = (filtre, modeNormalOrRandom) => {
         fetch('/api/smashup/factions?filtreBoxes=' + filtre)
         .then(response => response.json())
         .then(data => {
-          setListeFactions(data);
+          modeNormalOrRandom == "Normal" ? setListeFactions(data) : randomisationFactions(data, 2);
         })
         .catch(error => console.error('Erreur fetch smashup factions:', error));
+    };
+
+    const randomisationFactions = (data, nbPlayers) => {
+        let nbFactionsPickable = data.length;
+        const indiceFactionsGoPickableOff = getRandomUniqueNumbers(nbFactionsPickable - ((nbPlayers*4) +4), nbFactionsPickable -1);
+        const newData = data.map((currentFaction, index) => 
+        indiceFactionsGoPickableOff.includes(index) 
+            ?   {...currentFaction, Pickable: false}
+            : currentFaction
+        );
+        setModeFactionsRandom(true);
+        setListeFactions(newData);
     };
 
     const handleClickOnBox = (codeBoite) => {
@@ -1156,8 +1170,11 @@ const Smashup = () => {
                     </div>
                     
                     <div className="row mb-5">           
-                        <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
-                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +4)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider les sets sélectionnés</button>
+                        <div className="col-12 mt-4 d-flex justify-content-center">
+                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +4)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Normal"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider et sélection sur le pool complet</button>
+                        </div>
+                        <div className="col-12 mt-3 mb-5 d-flex justify-content-center">
+                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +5)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected > ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Random"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider, randomiser et sélection sur pool restreint</button>
                         </div>
                     </div>
                 </>
@@ -1171,6 +1188,13 @@ const Smashup = () => {
                                 <h6 className="mt-4 text-center txtColorWhite">Le draft porte sur les sets suivants :</h6>
                         </div>
                     </div>
+                    {modeFactionsRandom && 
+                        <div className="row">
+                            <div className="col-12 mt-2 d-flex justify-content-center">
+                                <h6 className="text-center txtColorDarkBisLight">(Factions randomisées)</h6>
+                             </div>
+                        </div>
+                    }
                     <div className="row">             
                         <div className="col-12 col-lg-6 offset-lg-3 mt-2 d-flex justify-content-center">
                             <ul className="list-group">
@@ -1181,7 +1205,6 @@ const Smashup = () => {
                             </ul>
                         </div>
                     </div>
-                
 
                     {!draftTermine && 
                     <>
@@ -1217,14 +1240,15 @@ const Smashup = () => {
                         <div className="row">        
                             <div className="col-12 mt-4 d-flex flex-wrap justify-content-center">
                                 {listeFactions?.map((currentFaction, index) => (
-                                    <div key={"faction-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentFaction.TypeSelected == "Pick" ? styles.factionPicked : (currentFaction.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
-                                        <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
-                                            <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
+                                    currentFaction?.Pickable == true && 
+                                        <div key={"faction-" + index} className={`${styles.conteneurImgX5} ${phasePickOrBan == "Pick" && styles.toPick} ${phasePickOrBan == "Ban" && styles.toBan} ${currentFaction.TypeSelected == "Pick" ? styles.factionPicked : (currentFaction.TypeSelected == "Ban" ? styles.factionBanned : "")} me-3 mb-3`}>
+                                            <div className={`${styles.blocFaction} ${currentFaction?.Selected && styles.grayscale}`}>
+                                                <img src={currentFaction.LienImg} className={`rounded float-start ${styles.responsiveImgFaction}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} onDoubleClick={() => modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} alt="..."></img>
+                                            </div>
+                                            <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} onDoubleClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)}>
+                                                {currentFaction.Libelle}
+                                            </div>
                                         </div>
-                                        <div className={`${styles.overlayText} ${showOverlayFactions && styles.show}`} onClick={() => !modeSelectByDoubleClic && handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)} onDoubleClick={() => handleClickOnFaction(currentFaction?.CodeFaction, currentFaction?.Libelle, currentFaction?.Selected)}>
-                                            {currentFaction.Libelle}
-                                        </div>
-                                    </div>
                                 ))}
                             </div>
                         </div>

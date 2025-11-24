@@ -9,6 +9,10 @@
 /coverage
 
 # production
+/Compilation.txt
+/Deploy.bat
+/startPrjBack.bat
+/startPrjFront.bat
 
 # misc
 .DS_Store

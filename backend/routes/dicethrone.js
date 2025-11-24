@@ -16,7 +16,7 @@ router.get('/boites', async (req, res) => {
 router.get('/heros', async (req, res) => {
   const filtreBoxes = req.query.filtreBoxes ?? "";
   try {
-    const result = await pool.query(`SELECT h."CodeHeros", h."CodeBox", h."Libelle", h."LienImg", h."Classement", b."Vague" FROM l_dicethrone_boxes b LEFT JOIN l_dicethrone_heros h ON b."CodeBox" = h."CodeBox" WHERE h."Actif" IS TRUE AND ($1::text = '' OR ('$' || $1::text || '$') LIKE '%$' || h."CodeBox" || '$%') GROUP BY h."CodeHeros", h."CodeBox", h."Libelle", h."LienImg", h."Classement", b."Vague" ORDER BY h."Classement";`,
+    const result = await pool.query(`SELECT DISTINCT h."CodeHeros", h."CodeBox", h."Libelle", h."LienImg", h."Classement", b."Vague", TRUE AS "Pickable" FROM l_dicethrone_boxes b LEFT JOIN l_dicethrone_heros h ON b."CodeBox" = h."CodeBox" WHERE h."Actif" IS TRUE AND ($1::text = '' OR ('$' || $1::text || '$') LIKE '%$' || h."CodeBox" || '$%') ORDER BY h."Classement";`,
       [filtreBoxes]
     );
     if (result.rows.length === 0) {
