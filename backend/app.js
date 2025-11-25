@@ -76,6 +76,7 @@ const generateSitemap = async () => {
       { url: '/dicethrone', changefreq: 'monthly', priority: 0.7 },
       { url: '/article/admin', changefreq: 'monthly', priority: 0.4 },
       { url: '/article/create', changefreq: 'monthly', priority: 0.4 },
+      { url: '/release/patchnotes', changefreq: 'monthly', priority: 0.2 },
     ];
     staticRoutes.forEach(route => sitemap.write(route));
 

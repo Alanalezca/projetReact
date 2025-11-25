@@ -127,6 +127,9 @@ main {
   --txtColorDarkBisLight: #6E6E6E;
   --txtColorDarkBisLightRGB: rgba(110, 110, 110);
 
+  --txtColorDarkLight: #adb5bd;
+  --txtColorDarkLightRGB: #adb5bd;
+
   --txtColorPlayerRed: #E53935;
   --txtColorPlayerRedRGB: rgba(229, 57, 53);
 
@@ -193,6 +196,24 @@ main {
 
 .bxMiniGreyWithoutAnim {
   color: var(--backgroundColorE);
+  font-size: 16px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxMiniGreyWithAnim {
+  color: var(--backgroundColorF);
+  font-size: 16px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxMiniGreyWithAnim :hover{
+  color: white;
+  font-size: 16px;
+  transition: color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.bxMiniGreyWithAnim :active{
+  color: var(--ColorA);
   font-size: 16px;
   transition: color 0.25s ease;  /* Transition de 0.5 seconde */
 }
@@ -343,6 +364,34 @@ span { font-size: 1rem; }
 
 .txtColorE {
   color: var(--ColorE);
+}
+
+.txtColorDarkLight {
+  color: var(--txtColorDarkLight);
+  transition: color 0.2s ease;
+}
+
+.txtColorDarkLight:hover {
+  color: white;
+}
+
+.txtColorDarkLight:active {
+  color: var(--ColorE);
+}
+
+.txtColorDarkLight a {
+  color: var(--txtColorDarkLight);
+  transition: color 0.2s ease;
+}
+
+.txtColorDarkLight:hover a {
+  color: white;
+  transition: color 0.2s ease;
+}
+
+.txtColorDarkLight a:active {
+  color: white;
+  transition: color 0.2s ease;
 }
 
 .txtColorSuccessLight {

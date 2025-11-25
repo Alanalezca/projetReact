@@ -359,6 +359,8 @@ const DiceThroneDrafter = () => {
                             Voici le déroulement :<br />
                             1. Commencez par sélectionner les boîtes de jeu que vous souhaitez utiliser.<br />
                             2. Une liste de héros issus de ces boîtes vous sera alors proposée.<br />
+                            - "<b>Valider la sélection</b>" -> Fait ressortir la totalité des héros contenus dans les boites sélectionnées.<br />
+                            - "<b>Valider et randomiser</b>" -> Ne fait ressortir que 8 héros choisis au hasard parmis les héros contenus dans les boites sélectionnées.
                             3. Les joueurs entament ensuite la phase de sélection (pick) pour choisir 3 héros chacun.<br />
                             4. Chaque joueur peut alors bannir un héros parmi ceux de son adversaire.<br />
                             5. Enfin, chacun valide le héros avec lequel il disputera la partie.<br />

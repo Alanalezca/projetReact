@@ -7,6 +7,7 @@ import Smashup from '../src/pages/smashup/smashup';
 import DiceThrone from '../src/pages/dicethrone/dicethrone';
 import ArticleCreate from '../src/pages/articles/createArticle';
 import ArticleAdmin from '../src/pages/articles/adminArticles';
+import Patchnotes from '../src/pages/others/patchnotes';
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
       <Route path="/article/create/:slug" element={<ArticleCreate />} />
       <Route path="/smashup" element={<Smashup />} />
       <Route path="/dicethrone" element={<DiceThrone />} />
+      <Route path="/release/patchnotes" element={<Patchnotes />} />
       <Route path="*" element={<Articles />} />
     </Routes>
   )

@@ -1088,6 +1088,8 @@ const Smashup = () => {
                             Voici le déroulement :<br />
                             1. Choisissez <b>le nombre de joueurs</b> participant à la partie.<br />
                             2. Sélectionnez <b>les boîtes de jeu</b> qui seront utilisées.<br />
+                            - "<b>Valider la sélection</b>" -> Fait ressortir la totalité des factions contenues dans les boites sélectionnées.<br />
+                            - "<b>Valider et randomiser</b>" -> Ne fait ressortir que (nombre de joueurs x4) +4 factions choisies au hasard parmis les factions contenues dans les boites sélectionnées.
                             3. La liste des <b>factions</b> correspondant aux boîtes choisies sera alors proposée.<br />
                             4. Chaque joueur procédera ensuite à la <b>phase de pick/ban</b> dans l’ordre indiqué.<br />
                             5. Prêt à <b>jouer</b> !`}/>
@@ -1174,7 +1176,7 @@ const Smashup = () => {
                             <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +4)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected >= ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Normal"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider la sélection</button>
                         </div>
                         <div className="col-12 mt-3 mb-5 d-flex justify-content-center">
-                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +5)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected > ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Random"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider et</button>
+                            <button type="button" disabled={compteurNbFactionsSelonBoitesSelected < ((parseInt(nbJoueursSelected) +2) *4 +5)} className={`btn btn-primary ${compteurNbFactionsSelonBoitesSelected > ((parseInt(nbJoueursSelected) +2) *4 +4) ? "btn-ColorA" : "btn-ColorInactif"}`} onClick={() => {handleBuildFiltreFactions(listeBoites, "Random"); setCurrentEtapeDraft(2); handleLoadNamePlayers();}}>Valider et randomiser</button>
                         </div>
                     </div>
                 </>
