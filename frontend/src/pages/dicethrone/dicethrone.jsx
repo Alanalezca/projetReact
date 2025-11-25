@@ -334,7 +334,7 @@ const DiceThroneDrafter = () => {
         } 
 
         setCompteurNbHerosSelonBoitesSelected(isNaN(nbHeros) ? 0 : nbHeros);
-    }, [listeBoites])
+    }, [listeBoites]) 
 
     console.log('boites', listeBoites);
     console.log('heros', listeHeros);

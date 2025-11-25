@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Accordeon from '../../components/others/Accordeon';
-const Patchnotes = () => {
+const Patchnotes = () => { 
 
 
   return (

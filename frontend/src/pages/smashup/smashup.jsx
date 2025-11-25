@@ -1063,7 +1063,7 @@ const Smashup = () => {
                 break;
             case 17:
                 setTxtCurrentInstructionColor("txtClignoteGreen");
-                break;
+                break; 
             }
         }
     };
