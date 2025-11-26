@@ -65,7 +65,7 @@ const frontendBuildPath = path.join(__dirname, '../frontend/build');
 app.use(express.static(frontendBuildPath));
 console.log('Frontend Build Path:', frontendBuildPath);
 
-// --- Génération du sitemap ---
+// --- Génération du sitemap  ---
 const generateSitemap = async () => {
   try {
     const sitemap = new SitemapStream({ hostname: 'https://www.alanalezca.fr' });

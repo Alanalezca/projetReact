@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import {useState, useRef, useEffect} from 'react';
 import styles from './dicethrone.module.css';
 import Loader from '../../components/others/Loader';
 import Accordeon from '../../components/others/Accordeon';
