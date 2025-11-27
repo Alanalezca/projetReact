@@ -181,9 +181,30 @@ const Articles = () => {
                   <>
                     {articlesFiltered.slice(indiceFirstArticlePartB, indiceLastArticlePartB).map((currentArticles, index) => (
                       isLargeScreen ? (
-                        <CardLarge classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} tags={currentArticles.tags}/>
+                        <CardLarge 
+                        classCSSColorBackground="bgcolorC" 
+                        cheminImg={currentArticles.LienImg} 
+                        classCSSColorTxtTitre="txtColorA" 
+                        titre={currentArticles.Titre} 
+                        classCSSColorTxtContenu="txtColorWhite" 
+                        texteContenu={currentArticles.Resume.length >= 270 ? currentArticles.Resume.substring(0, 270) + "..." : currentArticles.Resume} 
+                        classCSSColorTxtBottom="txtColorD" 
+                        texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  
+                        key={currentArticles.CodeArticle}
+                        slugArticle={currentArticles.Slug}
+                        tags={currentArticles.tags}/>
                       ) : (
-                        <Card classCSSColorBackground="bgcolorC" cheminImg={currentArticles.LienImg} classCSSColorTxtTitre="txtColorA" titre={currentArticles.Titre} classCSSColorTxtContenu="txtColorWhite" texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} classCSSColorTxtBottom="txtColorD" texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  key={currentArticles.CodeArticle} tags={currentArticles.tags}/>
+                        <Card classCSSColorBackground="bgcolorC" 
+                        cheminImg={currentArticles.LienImg} 
+                        classCSSColorTxtTitre="txtColorA" 
+                        titre={currentArticles.Titre} 
+                        classCSSColorTxtContenu="txtColorWhite" 
+                        texteContenu={currentArticles.Resume.length >= 170 ? currentArticles.Resume.substring(0, 170) + "..." : currentArticles.Resume} 
+                        classCSSColorTxtBottom="txtColorD" 
+                        texteBottom={currentArticles.DateCreation > currentArticles.DateMajnew ? new Date(currentArticles.DateCreation).toLocaleDateString('fr-FR') : new Date(currentArticles.DateMaj).toLocaleDateString('fr-FR')}  
+                        key={currentArticles.CodeArticle}
+                        slugArticle={currentArticles.Slug} 
+                        tags={currentArticles.tags}/>
                       )
                     ))}
                   </>

@@ -826,3 +826,7 @@ button.list-group-item:hover {
 }
 
 /* Button list group : Fin */
+
+a {
+  color: var(--ColorA);
+}

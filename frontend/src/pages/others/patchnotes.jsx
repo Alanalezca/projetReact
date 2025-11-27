@@ -20,6 +20,7 @@ const Patchnotes = () => {
                             - Ajout de la page "patchnotes".<br/>
                             - Ajout du lien vers email (footer)<br/>
                             - Ajout du lien discord (en cours)<br/>
+                            - Correction des liens menant aux articles affichés en mode "large" depuis la liste.
                             `
                             }/>
                     </div>
