@@ -6,6 +6,7 @@ import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
 import { handleDeleteArticle } from '../../functions/callAPIx/articleDelete';
 import { handleReversePublished } from '../../functions/callAPIx/articleReversePublish';
 import Pagination from '../../components/others/Pagination';
+import { useSessionUserContext } from '../../components/contexts/sessionUserContext';
   
 const ArticlePage = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -13,6 +14,7 @@ const ArticlePage = () => {
     const [articles, setArticles] = useState([]);
     const [forceRefresh, setForceRefresh] = useState(0);
     const { showOngletAlerte } = useOngletAlerteContext();
+    const {sessionUser, setSessionUser} = useSessionUserContext();
 
     // Pagination : Début //
     const nbElementsParPage = 10;
@@ -44,66 +46,76 @@ const ArticlePage = () => {
     return (
         <div className={`container-xl mt-4 ${!isLoading && "txtColorWhite"}`}>
             {isLoading ?
-            <Loader/> : <>
-            <div className="row">
-                <div className="col-12 mt-4">
-                    <h2 className="text-center txtColorWhite">Administration des articles</h2>
-                    <div className="row mt-5">
-                        <div className="col-8 col-lg-4">
-                            <b>Titre</b>
-                        </div>
-                        <div className="d-none d-lg-block col-lg-2">
-                            <b>Date création</b>
-                        </div>
-                        <div className="d-none d-lg-block col-lg-2">
-                            <b>Date màj</b>
-                        </div>
-                        <div className="d-none d-lg-block col-lg-2">
-                            <b>Publié</b>
-                        </div>
-                        <div className="col-4 col-lg-2">
-                        
+            <Loader/> : 
+            (sessionUser?.grade == "Administrateur" ?
+            <>
+                <div className="row">
+                    <div className="col-12 mt-4">
+                        <h2 className="text-center txtColorWhite">Administration des articles</h2>
+                        <div className="row mt-5">
+                            <div className="col-8 col-lg-4">
+                                <b>Titre</b>
+                            </div>
+                            <div className="d-none d-lg-block col-lg-2">
+                                <b>Date création</b>
+                            </div>
+                            <div className="d-none d-lg-block col-lg-2">
+                                <b>Date màj</b>
+                            </div>
+                            <div className="d-none d-lg-block col-lg-2">
+                                <b>Publié</b>
+                            </div>
+                            <div className="col-4 col-lg-2">
+                            
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div className={`${styles.breakerTitre} mt-3`}></div>
+                <div className="row d-flex align-items-center mb-4">
+                    <div className="col-12 mt-3">
+                    {articles.length > 0 ? (
+                        articles.slice(indiceFirstElement, indiceLastElement).map((currentArticles) => (
+                        <div key={currentArticles.Slug} className="row mt-1">
+                            <div className="col-8 col-lg-4">
+                            <Link to={`/article/${currentArticles.Slug}`}>
+                                <span className="cPointer txtColorWhiteToTxtColorB">{currentArticles?.Titre}</span>
+                            </Link>
+                            </div>
+                            <div className="d-none d-lg-block col-lg-2">
+                            <span>{new Date(currentArticles?.DateCreation).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                            <div className="d-none d-lg-block col-lg-2">
+                            <span>{new Date(currentArticles?.DateMaj).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                            <div className="col-1 col-lg-2">
+                            {currentArticles.Publie ? 
+                                <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div> :
+                                <div className="d-inline"><i className="bx bx-cloud-upload bxDisabledToEnabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div>
+                            }
+                            </div>
+                            <div className="col-3 col-lg-2">
+                            <Link to={`/article/create/${currentArticles.Slug}`}>
+                                <div className="d-inline"><i className="bx bx-edit bxNormalOrange topMinus3 cPointer"></i></div>
+                            </Link>
+                                <div className="d-inline"><i className="bx bx-message-square-x bxNormalOrange topMinus3 cPointer" onClick={() => handleDeleteArticle(currentArticles.CodeArticle, currentArticles.Titre, showOngletAlerte, setForceRefresh)}></i></div>
+                            </div>
+                        </div>
+                        ))
+                    ) : (
+                        <p>Aucun article disponible</p>
+                    )}
+                    </div>
+                </div><Pagination centrer="true" totalNbElement={articles.length} nbElementParPage={nbElementsParPage} numCurrentPageActive={numCurrentPagePaginationActive} setterCurrentNumPageActive={setNumCurrentPagePaginationActive}/>
+            </>
+         : 
+            <div className="row">
+                <div className="col-12 col-lg-12 mt-5">
+                <h2 className="mt-5 text-center txtColorWhite">L'administration des articles est réservée aux administrateurs</h2> 
                 </div>
             </div>
-            <div className={`${styles.breakerTitre} mt-3`}></div>
-            <div className="row d-flex align-items-center mb-4">
-                <div className="col-12 mt-3">
-                {articles.length > 0 ? (
-                    articles.slice(indiceFirstElement, indiceLastElement).map((currentArticles) => (
-                    <div key={currentArticles.Slug} className="row mt-1">
-                        <div className="col-8 col-lg-4">
-                        <Link to={`/article/${currentArticles.Slug}`}>
-                            <span className="cPointer txtColorWhiteToTxtColorB">{currentArticles?.Titre}</span>
-                        </Link>
-                        </div>
-                        <div className="d-none d-lg-block col-lg-2">
-                        <span>{new Date(currentArticles?.DateCreation).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                        <div className="d-none d-lg-block col-lg-2">
-                        <span>{new Date(currentArticles?.DateMaj).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                        <div className="col-1 col-lg-2">
-                        {currentArticles.Publie ? 
-                            <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div> :
-                            <div className="d-inline"><i className="bx bx-cloud-upload bxDisabledToEnabled topMinus3 cPointer" onClick={() => handleReversePublished(currentArticles.CodeArticle, currentArticles.Titre, currentArticles.Publie, showOngletAlerte, setForceRefresh)}></i></div>
-                        }
-                        </div>
-                        <div className="col-3 col-lg-2">
-                        <Link to={`/article/create/${currentArticles.Slug}`}>
-                            <div className="d-inline"><i className="bx bx-edit bxNormalOrange topMinus3 cPointer"></i></div>
-                        </Link>
-                            <div className="d-inline"><i className="bx bx-message-square-x bxNormalOrange topMinus3 cPointer" onClick={() => handleDeleteArticle(currentArticles.CodeArticle, currentArticles.Titre, showOngletAlerte, setForceRefresh)}></i></div>
-                        </div>
-                    </div>
-                    ))
-                ) : (
-                    <p>Aucun article disponible</p>
-                )}
-                </div>
-            </div><Pagination centrer="true" totalNbElement={articles.length} nbElementParPage={nbElementsParPage} numCurrentPageActive={numCurrentPagePaginationActive} setterCurrentNumPageActive={setNumCurrentPagePaginationActive}/>
-        </>}
+      )
+    }
         </div>
     )
 };

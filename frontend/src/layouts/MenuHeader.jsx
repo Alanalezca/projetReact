@@ -98,6 +98,7 @@ import Subscribe from '../components/modals/Subscribe';
                 <ul className={menuOpen ? styles.subMenusMini : styles.subMenus}>
                   <li><Link to="/smashup">Smash Up</Link></li>
                   <li><Link to="/dicethrone">Dice Throne</Link></li>
+                  <li><Link to="/keyforge">Keyforge</Link></li>
                 </ul>
           </li>
         </ul>

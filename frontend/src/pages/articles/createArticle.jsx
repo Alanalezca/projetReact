@@ -6,6 +6,7 @@ import { useSessionUserContext } from '../../components/contexts/sessionUserCont
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
+import { Link as LinkToURL } from 'react-router-dom';
 import Image from "@tiptap/extension-image";
 import TextAlign from "@tiptap/extension-text-align";
 import Code from "@tiptap/extension-code";
@@ -17,7 +18,8 @@ import convertDateToDateLong from '../../functions/getDateLong';
 import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
 
 const CreateArticle = () => {
-  const [loadingFinish, setLoadingFinish] = useState(false);
+  const [loadingArticleAEditer, setloadingArticleAEditer] = useState(true);
+  const [loadingTags, setloadingTags] = useState(true);
   const { slug } = useParams();
   const [article, setArticle] = useState(null);
   const [tags, setTags] = useState(null);
@@ -48,60 +50,145 @@ const CreateArticle = () => {
     group: 'block',
     content: 'paragraph+',
     parseHTML() {
-      return [{ tag: 'div.article-box' }];
+      return [{ tag: 'div.article-box' }, { tag: 'p' }];
     },
     renderHTML({ HTMLAttributes }) {
       return ['div', { ...HTMLAttributes, class: 'article-box' }, 0];
     },
   });
 
+  const SpacerBox = Node.create({
+    name: 'spacerBox',
+    group: 'block',
+    parseHTML() { return [{ tag: 'div.spacer-box' }]; },
+    renderHTML() { return ['div', { class: 'spacer-box', style: 'height:0.5em;' }, 0]; },
+  });
+
+  const CustomParagraph = Node.create({
+    name: 'paragraph',
+    group: 'block',
+    content: 'inline*',
+    parseHTML() {
+      return [
+        { tag: 'p' }, // pour les paragraphes
+        { tag: 'span' }, // pour les spans inline
+        { tag: 'strong' }, // gras
+        { tag: 'em' }, // italique
+        { tag: 'u' }, // souligné
+        {
+          tag: 'a[href]', // lien
+          getAttrs: dom => ({
+            href: dom.getAttribute('href'),
+            target: dom.getAttribute('target'),
+            rel: dom.getAttribute('rel'),
+          }),
+        },
+      ];
+    },
+    renderHTML({ HTMLAttributes }) {
+      return ['p', HTMLAttributes, 0];
+    },
+    addAttributes() {
+      return {
+        id: {
+          default: null,
+          parseHTML: el => el.getAttribute('id'),
+          renderHTML: attrs => (attrs.id ? { id: attrs.id } : {}),
+        },
+      };
+    },
+  });
+
+  // Extension pour gérer les liens/ancres
+  const AnchorLink = Link.extend({
+    name: 'anchorLink',
+
+    addAttributes() {
+      return {
+        href: {
+          default: null,
+          parseHTML: element => element.getAttribute('href'),
+          renderHTML: attributes => ({ href: attributes.href }),
+        },
+        target: {
+          default: null,
+          parseHTML: element => element.getAttribute('target'),
+          renderHTML: attrs => ({ target: attrs.target }),
+        },
+        rel: {
+          default: null,
+          parseHTML: element => element.getAttribute('rel'),
+          renderHTML: attrs => ({ rel: attrs.rel }),
+        },
+      };
+    },
+
+    validateLink: href => href.startsWith('#') || /^https?:\/\//.test(href)
+  });
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({ paragraph: false }),
+      CustomParagraph,
+      Underline,
+      ArticleBox,
+      AnchorLink.configure({ openOnClick: false }), // <-- utiliser AnchorLink ici
+      Image,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      Code,
+      TextStyle,
+      SpacerBox,
+      Color.configure({ types: ['textStyle'] }),
+    ],
+    content: "<p>Commence à écrire ici...</p>",
+    onUpdate({ editor }) {
+      setHtmlContent(editor.getHTML());
+    }
+  });
+
   const insertAnchor = () => {
+    if (!editor) return;
     const tag = prompt("Nom de l'ancre :");
     if (!tag) return;
 
     const { state, commands } = editor;
     const { selection } = state;
-    const parentNode = selection.$from.parent; // nœud actuel
-    const nodeType = parentNode.type;
+    const parentNode = selection.$from.parent;
 
-    // Vérifie si le nœud accepte un attribut `id`
-    if (nodeType.spec.attrs && 'id' in nodeType.spec.attrs) {
-      commands.updateAttributes(nodeType.name, { ...parentNode.attrs, id: tag });
-    } 
-    // Sinon, essaye de transformer le nœud en paragraph (optionnel)
-    else if (editor.can().setNode('paragraph')) {
+    if (parentNode.type.spec.attrs && 'id' in parentNode.type.spec.attrs) {
+      commands.updateAttributes(parentNode.type.name, { ...parentNode.attrs, id: tag });
+    } else if (editor.can().setNode('paragraph')) {
       commands.setNode('paragraph', { id: tag });
-    } 
-    else {
-      alert("Impossible d'ajouter une ancre ici (nœud incompatible).");
+    } else {
+      alert("Impossible d'ajouter une ancre ici.");
     }
   };
 
   useEffect(() => {
     if (sessionUser) {
-    const splitTags = (tagsString) => {
-      if (tagsString) return tagsString.split(",");
-    };
+      const splitTags = (tagsString) => {
+        if (tagsString) return tagsString.split(",");
+      };
 
-    setLoadingFinish(false);
-    fetch(`/api/articles/${slug}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const dataModify = data;
-          if (dataModify[0]) {
-          dataModify[0].Tags = splitTags(data[0].Tags);
-          setArticle(dataModify);
-          handleSetterInputFormFromDB(dataModify);
+      setloadingArticleAEditer(true);
+      fetch(`/api/articles/${slug}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const dataModify = data;
+            if (dataModify[0]) {
+            dataModify[0].Tags = splitTags(data[0].Tags);
+            setArticle(dataModify);
+            handleSetterInputFormFromDB(dataModify);
+          }
         }
-      }
-    )
-      .catch((err) => console.error('Erreur:', err));
+      )
+        .catch((err) => console.error('Erreur:', err));
+      setloadingArticleAEditer(false);
     }
-    setLoadingFinish(true);
   }, [slug, sessionUser]);
 
 useEffect(() => {
-  setLoadingFinish(false);
+  setloadingTags(true);
 
   fetch(`/api/tagsArticles`)
     .then((res) => res.json())
@@ -120,7 +207,7 @@ useEffect(() => {
     })
     .catch((err) => console.error('Erreur:', err))
     .finally(() => {
-      setLoadingFinish(true);
+      setloadingTags(false);
     });
 }, [slug, sessionUser, article]);
 
@@ -159,6 +246,7 @@ useEffect(() => {
 
     const result = await response.json();
     showOngletAlerte('success', '(Modification article)', '', `L'article "` + inputForm.titre + `" a bien été modifié !`);
+    
   } catch (err) {
     console.error("Erreur lors de la mise à jour de l'article :", err);
   }
@@ -198,51 +286,6 @@ useEffect(() => {
     }
   };
 
-  const CustomParagraph = Node.create({
-    name: 'paragraph',
-
-    group: 'block',
-    content: 'inline*',
-    parseHTML() {
-      return [{ tag: 'p' }];
-    },
-    renderHTML({ HTMLAttributes }) {
-      return ['p', HTMLAttributes, 0];
-    },
-
-    addAttributes() {
-      return {
-        id: {
-          default: null,
-          parseHTML: element => element.getAttribute('id'),
-          renderHTML: attributes => {
-            if (!attributes.id) return {};
-            return { id: attributes.id };
-          },
-        },
-      };
-    },
-  });
-
-  const editor = useEditor({
-    extensions: [
-    StarterKit.configure({ paragraph: false }), // remplace le paragraph standard
-    CustomParagraph,
-    Underline,
-    ArticleBox,
-    Link.configure({ openOnClick: false }),
-    Image,
-    TextAlign.configure({ types: ["heading", "paragraph"] }),
-    Code,
-    TextStyle,
-    Color.configure({ types: ['textStyle'] }),
-    ],
-    content: "<p>Commence à écrire ici...</p>",
-    onUpdate({ editor }) {
-      setHtmlContent(editor.getHTML());
-    },
-  });
-
   const insertArticleBox = () => {
     if (!editor) return;
     const { from, to } = editor.state.selection;
@@ -274,21 +317,29 @@ useEffect(() => {
 
   // Fonction pour ajouter un lien hypertexte
   const setLink = () => {
-    const previousUrl = editor.getAttributes("link").href;
-    const url = window.prompt("URL du lien ?", previousUrl);
-    if (url === null) {
-      return;
-    }
+    if (!editor) return;
+
+    // Récupère le href actuel du mark anchorLink (s'il y en a un)
+    const previousUrl = editor.getAttributes('anchorLink')?.href || '';
+
+    // Demande à l'utilisateur la nouvelle URL
+    const url = prompt("URL du lien ?", previousUrl);
+
+    if (url === null) return; // annulation
     if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      // supprime le lien si champ vide
+      editor.chain().focus().extendMarkRange('anchorLink').unsetLink().run();
       return;
     }
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+
+    // applique le lien via ton extension AnchorLink
+    editor.chain().focus().extendMarkRange('anchorLink').setLink({ href: url }).run();
   };
 
+  console.log(tags);
   return (
     <div className="container-xl mt-4">
-      {!loadingFinish ?
+      {loadingArticleAEditer && loadingTags ?
       <Loader/> :
         (sessionUser?.grade == "Administrateur" ?
         <div className="row">
@@ -519,6 +570,17 @@ useEffect(() => {
               >
                 Cadre
               </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!editor) return;
+                  // Insère un paragraphe vide pour créer un "espace"
+                  editor.chain().focus().insertContent('<p><br></p>').run();
+                }}
+              >
+                Ajouter un saut
+              </button>
               </div>
 
           <EditorContent editor={editor} style={{ border: "1px solid #ccc", padding: "1em", minHeight: "300px" }} />
@@ -534,15 +596,25 @@ useEffect(() => {
             Sauvegarder l’article
           </button>
           :
-          <button className="mb-5"
-            type="button"
-            onClick={() => {
-              handleEditCurrentArticle();
-            }}
-            style={{ marginTop: "1em" }}
-          >
-            Mettre à jour l'article
-          </button>
+          <>
+            <button className="mb-5"
+              type="button"
+              onClick={() => {
+                handleEditCurrentArticle();
+              }}
+              style={{ marginTop: "1em" }}
+            >
+              Mettre à jour l'article
+            </button>
+            <LinkToURL to={`/article/${slug}`}>
+              <button className="mb-5 ms-3"
+                type="button"
+                style={{ marginTop: "1em" }}
+              >
+                Consulter l'article
+              </button>
+            </LinkToURL>
+          </>
           }
           </div>
         </div> : 
