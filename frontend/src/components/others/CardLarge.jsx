@@ -25,18 +25,18 @@ const Card = ({
         <>
           <div className="col-12">
             <Link to={`/article/${slugArticle}`}>
-              <div className={`card h-100 d-flex flex-row ${classCSSColorBackground} ${styles.shadow}`}>
+              <div className={`card d-flex flex-row ${classCSSColorBackground} ${styles.shadow} ${styles.cadreEnglobant}`}>
                 
                 {/* Image à gauche, hauteur 100% */}
                 <img 
                   src={cheminImg} 
                   alt="..." 
-                  className={`${styles.cardImg} h-100`} 
-                  style={{ objectFit: 'cover', width: '75%' }} 
+                  className={`${styles.cardImg}`} 
+                  style={{ objectFit: 'cover'}} 
                 />
                 
                 {/* Contenu à droite */}
-                <div className="d-flex flex-column justify-content-between flex-grow-1">
+                <div className={`d-flex flex-column justify-content-between flex-grow-1 ${styles.cadreEnglobant}`}>
                   <div className="card-body">
                     <h5 className={`card-title ${classCSSColorTxtTitre}`}>{titre}</h5>
                     <p className={`card-text ${classCSSColorTxtContenu}`}>{texteContenu}</p>

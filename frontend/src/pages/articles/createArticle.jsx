@@ -343,7 +343,7 @@ useEffect(() => {
       <Loader/> :
         (sessionUser?.grade == "Administrateur" ?
         <div className="row">
-            <div className="col-12 col-lg-12">
+          <div className="col-12 col-lg-12">
             <h2 className="mt-4 text-center txtColorWhite">{article ? "Éditer un " : "Créer un nouvel "}article</h2>
             <input className={`mt-4 ${styles.input}`}
             type="text"
@@ -377,211 +377,13 @@ useEffect(() => {
               onChange={(e) => setInputForm((prev) => ({...prev, resume: e.target.value}))}
               rows={5}
             />
-              <div className="col-12 mb-2 d-flex flex-wrap align-items-start justify-content-start txtColorWhite">
-                <span className="ps-1"><b>Tags : </b></span>
-                {tags && tags.map((currentTag, index) => (
-                  <div className="ps-2" key={currentTag.CodeTagArticle} onClick={()=>handleChangeTagChecker(currentTag.CodeTagArticle, !currentTag.checked)}><span className={`badge ${currentTag.checked ? "badge-customOn" : "badge-customOff"} cPointer`}>{currentTag.Libelle}</span></div>
-                ))}
-              </div>
-              <div className={`${styles.breakerTitre} mt-4 mb-4`}></div>
-              <div style={{ marginBottom: "1em", display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const color = prompt("Choisis une couleur (ex: red, #ff0000, rgb(255,0,0)) :");
-                    if (color) {
-                      editor.chain().focus().setColor(color).run();
-                    }
-                  }}
-                >
-                  Couleur texte
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().unsetColor().run()}
-                >
-                  Supprimer couleur
-                </button>
-
-                <button className={styles.button}
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleBold().run()}
-                  disabled={!editor.can().chain().focus().toggleBold().run()}
-                  style={{ fontWeight: editor.isActive("bold") ? "bold" : "normal" }}
-                >
-                  Gras
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleItalic().run()}
-                  disabled={!editor.can().chain().focus().toggleItalic().run()}
-                  style={{ fontStyle: editor.isActive("italic") ? "italic" : "normal" }}
-                >
-                  Italique
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleUnderline().run()}
-                  disabled={!editor.can().chain().focus().toggleUnderline().run()}
-                  style={{ textDecoration: editor.isActive("underline") ? "underline" : "none" }}
-                >
-                  Souligné
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleStrike().run()}
-                  disabled={!editor.can().chain().focus().toggleStrike().run()}
-                  style={{ textDecoration: editor.isActive("strike") ? "line-through" : "none" }}
-                >
-                  Barré
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleCode().run()}
-                  disabled={!editor.can().chain().focus().toggleCode().run()}
-                  style={{ fontFamily: editor.isActive("code") ? "monospace" : "inherit" }}
-                >
-                  Code inline
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                  disabled={!editor.can().chain().focus().toggleCodeBlock().run()}
-                  style={{ fontFamily: editor.isActive("codeBlock") ? "monospace" : "inherit" }}
-                >
-                  Bloc de code
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                  disabled={!editor.can().chain().focus().toggleBlockquote().run()}
-                  style={{ fontStyle: editor.isActive("blockquote") ? "italic" : "normal" }}
-                >
-                  Citation
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleBulletList().run()}
-                  disabled={!editor.can().chain().focus().toggleBulletList().run()}
-                  style={{ fontWeight: editor.isActive("bulletList") ? "bold" : "normal" }}
-                >
-                  Liste à puces
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                  disabled={!editor.can().chain().focus().toggleOrderedList().run()}
-                  style={{ fontWeight: editor.isActive("orderedList") ? "bold" : "normal" }}
-                >
-                  Liste numérotée
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setParagraph().run()}
-                  style={{ fontWeight: editor.isActive("paragraph") ? "bold" : "normal" }}
-                >
-                  Paragraphe
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                  style={{ fontWeight: editor.isActive("heading", { level: 1 }) ? "bold" : "normal" }}
-                >
-                  H1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                  style={{ fontWeight: editor.isActive("heading", { level: 2 }) ? "bold" : "normal" }}
-                >
-                  H2
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                  style={{ fontWeight: editor.isActive("heading", { level: 3 }) ? "bold" : "normal" }}
-                >
-                  H3
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setTextAlign("left").run()}
-                  style={{ fontWeight: editor.isActive({ textAlign: "left" }) ? "bold" : "normal" }}
-                >
-                  Gauche
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setTextAlign("center").run()}
-                  style={{ fontWeight: editor.isActive({ textAlign: "center" }) ? "bold" : "normal" }}
-                >
-                  Centre
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setTextAlign("right").run()}
-                  style={{ fontWeight: editor.isActive({ textAlign: "right" }) ? "bold" : "normal" }}
-                >
-                  Droite
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-                  style={{ fontWeight: editor.isActive({ textAlign: "justify" }) ? "bold" : "normal" }}
-                >
-                  Justifié
-                </button>
-
-                <button type="button" onClick={addImage}>
-                  Ajouter une image
-                </button>
-                <button type="button" onClick={setLink}>
-                  Ajouter / Modifier lien
-                </button>
-
-                <button
-                  type="button"
-                  onClick={insertAnchor}
-                >
-                  Insérer ancre
-                </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  const { from, to } = editor.state.selection;
-                  const selectedText = editor.state.doc.textBetween(from, to, "\n");
-
-                  if (!selectedText) {
-                    // rien de sélectionné → on insère un cadre vide
-                    editor.chain().focus().insertContent('<div class="article-box"><p>Ton texte ici</p></div>').run();
-                    return;
-                  }
-
-                  // on supprime la sélection
-                  editor.chain().focus().deleteRange({ from, to }).run();
-
-                  // on insère le texte sélectionné dans le cadre
-                  editor.chain().focus().insertContent(`<div class="article-box"><p>${selectedText}</p></div>`).run();
-                }}
-              >
-                Cadre
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  if (!editor) return;
-                  // Insère un paragraphe vide pour créer un "espace"
-                  editor.chain().focus().insertContent('<p><br></p>').run();
-                }}
-              >
-                Ajouter un saut
-              </button>
-              </div>
+            <div className="col-12 mb-2 d-flex flex-wrap align-items-start justify-content-start txtColorWhite">
+              <span className="ps-1"><b>Tags : </b></span>
+              {tags && tags.map((currentTag, index) => (
+                <div className="ps-2" key={currentTag.CodeTagArticle} onClick={()=>handleChangeTagChecker(currentTag.CodeTagArticle, !currentTag.checked)}><span className={`badge ${currentTag.checked ? "badge-customOn" : "badge-customOff"} cPointer`}>{currentTag.Libelle}</span></div>
+              ))}
+            </div>
+            <div className={`${styles.breakerTitre} mt-4 mb-4`}></div>
 
           <EditorContent editor={editor} style={{ border: "1px solid #ccc", padding: "1em", minHeight: "300px" }} />
 
@@ -616,13 +418,239 @@ useEffect(() => {
             </LinkToURL>
           </>
           }
-          </div>
-        </div> : 
-          <div className="row">
-            <div className="col-12 col-lg-12 mt-5">
-            <h2 className="mt-5 text-center txtColorWhite">La création/édition d'article est réservée aux administrateurs</h2> 
+            <div className={styles.bandeauBoutonsEditArticle}>
+              <div className="container-xl mt-4">
+                <div className="row">
+                  <div className="col-12 col-lg-12">
+                    <div style={{ marginBottom: "1em", display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const color = prompt("Choisis une couleur (ex: red, #ff0000, rgb(255,0,0)) :");
+                          if (color) {
+                            editor.chain().focus().setColor(color).run();
+                          }
+                        }}
+                      >
+                        Couleur texte
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().unsetColor().run()}
+                      >
+                        Supprimer couleur
+                      </button>
+
+                      <button className={styles.button}
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleBold().run()}
+                        disabled={!editor.can().chain().focus().toggleBold().run()}
+                        style={{ fontWeight: editor.isActive("bold") ? "bold" : "normal" }}
+                      >
+                        Gras
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleItalic().run()}
+                        disabled={!editor.can().chain().focus().toggleItalic().run()}
+                        style={{ fontStyle: editor.isActive("italic") ? "italic" : "normal" }}
+                      >
+                        Italique
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleUnderline().run()}
+                        disabled={!editor.can().chain().focus().toggleUnderline().run()}
+                        style={{ textDecoration: editor.isActive("underline") ? "underline" : "none" }}
+                      >
+                        Souligné
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleStrike().run()}
+                        disabled={!editor.can().chain().focus().toggleStrike().run()}
+                        style={{ textDecoration: editor.isActive("strike") ? "line-through" : "none" }}
+                      >
+                        Barré
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleCode().run()}
+                        disabled={!editor.can().chain().focus().toggleCode().run()}
+                        style={{ fontFamily: editor.isActive("code") ? "monospace" : "inherit" }}
+                      >
+                        Code inline
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                        disabled={!editor.can().chain().focus().toggleCodeBlock().run()}
+                        style={{ fontFamily: editor.isActive("codeBlock") ? "monospace" : "inherit" }}
+                      >
+                        Bloc de code
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                        disabled={!editor.can().chain().focus().toggleBlockquote().run()}
+                        style={{ fontStyle: editor.isActive("blockquote") ? "italic" : "normal" }}
+                      >
+                        Citation
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleBulletList().run()}
+                        disabled={!editor.can().chain().focus().toggleBulletList().run()}
+                        style={{ fontWeight: editor.isActive("bulletList") ? "bold" : "normal" }}
+                      >
+                        Liste à puces
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                        disabled={!editor.can().chain().focus().toggleOrderedList().run()}
+                        style={{ fontWeight: editor.isActive("orderedList") ? "bold" : "normal" }}
+                      >
+                        Liste numérotée
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().setParagraph().run()}
+                        style={{ fontWeight: editor.isActive("paragraph") ? "bold" : "normal" }}
+                      >
+                        Paragraphe
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                        style={{ fontWeight: editor.isActive("heading", { level: 1 }) ? "bold" : "normal" }}
+                      >
+                        H1
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                        style={{ fontWeight: editor.isActive("heading", { level: 2 }) ? "bold" : "normal" }}
+                      >
+                        H2
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                        style={{ fontWeight: editor.isActive("heading", { level: 3 }) ? "bold" : "normal" }}
+                      >
+                        H3
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+                        style={{ fontWeight: editor.isActive("heading", { level: 4 }) ? "bold" : "normal" }}
+                      >
+                        H4
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
+                        style={{ fontWeight: editor.isActive("heading", { level: 5 }) ? "bold" : "normal" }}
+                      >
+                        H5
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
+                        style={{ fontWeight: editor.isActive("heading", { level: 6 }) ? "bold" : "normal" }}
+                      >
+                        H6
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+                        style={{ fontWeight: editor.isActive({ textAlign: "left" }) ? "bold" : "normal" }}
+                      >
+                        Gauche
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+                        style={{ fontWeight: editor.isActive({ textAlign: "center" }) ? "bold" : "normal" }}
+                      >
+                        Centre
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+                        style={{ fontWeight: editor.isActive({ textAlign: "right" }) ? "bold" : "normal" }}
+                      >
+                        Droite
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+                        style={{ fontWeight: editor.isActive({ textAlign: "justify" }) ? "bold" : "normal" }}
+                      >
+                        Justifié
+                      </button>
+
+                      <button type="button" onClick={addImage}>
+                        Ajouter une image
+                      </button>
+                      <button type="button" onClick={setLink}>
+                        Ajouter / Modifier lien
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={insertAnchor}
+                      >
+                        Insérer ancre
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const { from, to } = editor.state.selection;
+                          const selectedText = editor.state.doc.textBetween(from, to, "\n");
+
+                          if (!selectedText) {
+                            // rien de sélectionné → on insère un cadre vide
+                            editor.chain().focus().insertContent('<div class="article-box"><p>Ton texte ici</p></div>').run();
+                            return;
+                          }
+
+                          // on supprime la sélection
+                          editor.chain().focus().deleteRange({ from, to }).run();
+
+                          // on insère le texte sélectionné dans le cadre
+                          editor.chain().focus().insertContent(`<div class="article-box"><p>${selectedText}</p></div>`).run();
+                        }}
+                      >
+                        Cadre
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!editor) return;
+                          // Insère un paragraphe vide pour créer un "espace"
+                          editor.chain().focus().insertContent('<p><br></p>').run();
+                        }}
+                      >
+                        Ajouter un saut
+                      </button>
+                    </div>
+                  </div>  
+                </div>
+              </div>
             </div>
-          </div>
+        </div>
+        </div> : 
+      <div className="row">
+        <div className="col-12 col-lg-12 mt-5">
+          <h2 className="mt-5 text-center txtColorWhite">La création/édition d'article est réservée aux administrateurs</h2> 
+        </div>
+      </div>
       )
     }
     </div>

@@ -13,14 +13,16 @@ const Patchnotes = () => {
                 <div className="row">
                     <div className="col-12 mt-4">   
                         <Accordeon blocSoloOrTopOrMidOrBot="Solo" textTitre="Version 1.00.02" textMain={`
-                            - Ajout de la fonctionnalité "random" sur le module de draft Smash Up.<br/>
-                            - Correction d'un soucis d'affichage des instructions de draft (module Smash Up) en mode mobile<br/>
-                            - Ajout de la fonctionnalité "random" sur le module de draft Dice Throne.<br/>
-                            - Correction d'un soucis d'affichage des instructions de draft (module Dice Throne) en mode mobile<br/>
-                            - Ajout de la page "patchnotes".<br/>
-                            - Ajout du lien vers email (footer)<br/>
-                            - Ajout du lien discord (en cours)<br/>
-                            - Correction des liens menant aux articles affichés en mode "large" depuis la liste.
+                            - [Module de draft Smash Up] + Ajout de la fonctionnalité "random".<br/>
+                            - [Module de draft Smash Up] ¤ Correction d'un soucis d'affichage des instructions de draft en mode mobile<br/>
+                            - [Module de draft Dice Throne] + Ajout de la fonctionnalité "random" sur le module de draft.<br/>
+                            - [Module de draft Dice Throne] ¤Correction d'un soucis d'affichage des instructions de draft en mode mobile<br/>
+                            - [Patchnote] + Ajout de la page "patchnotes".<br/>
+                            - [Footer] + Ajout du lien vers email.<br/>
+                            - [Footer] + Ajout du lien discord (en cours)<br/>
+                            - [Liste d'articles] ¤ Correction des liens menant aux articles affichés en mode "large".<br/>
+                            - [Création/Edition d'articles] + Mise en bandeau des boutons de l'éditeur.<br/>
+                            - [Liste d'articles] ¤ Correction d'un problème de taille de l'image de la "card large".
                             `
                             }/>
                     </div>

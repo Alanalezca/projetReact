@@ -41,3 +41,12 @@ button:disabled {
     transparent 100%
   );
 }
+
+.bandeauBoutonsEditArticle {
+  border-top: 2px solid var(--backgroundColorE); 
+  background-color: var(--backgroundColorC);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
