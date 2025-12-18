@@ -830,3 +830,14 @@ button.list-group-item:hover {
 a {
   color: var(--ColorA);
 }
+
+/* Bloc article : Début */
+
+.blocArticleShow h2,
+.blocArticleShow h3,
+.blocArticleShow h4,
+.blocArticleShow h5 {
+  color: white;
+}
+
+/* Bloc article : Fin */

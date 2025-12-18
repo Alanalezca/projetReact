@@ -16,6 +16,26 @@ import { Node } from '@tiptap/core';
 import styles from './createArticle.module.css';
 import convertDateToDateLong from '../../functions/getDateLong';
 import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
+import { Heading } from '@tiptap/extension-heading';
+
+
+const CustomHeading = Heading.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+
+      id: {
+        default: null,
+        parseHTML: element => element.getAttribute('id'),
+        renderHTML: attributes => {
+          return attributes.id
+            ? { id: attributes.id }
+            : {};
+        },
+      },
+    };
+  },
+});
 
 const CreateArticle = () => {
   const [loadingArticleAEditer, setloadingArticleAEditer] = useState(true);
@@ -130,6 +150,7 @@ const CreateArticle = () => {
     extensions: [
       StarterKit.configure({ paragraph: false }),
       CustomParagraph,
+      CustomHeading,
       Underline,
       ArticleBox,
       AnchorLink.configure({ openOnClick: false }), // <-- utiliser AnchorLink ici
@@ -174,6 +195,7 @@ const CreateArticle = () => {
       fetch(`/api/articles/${slug}`)
         .then((res) => res.json())
         .then((data) => {
+          console.log('article descandant', data);
           const dataModify = data;
             if (dataModify[0]) {
             dataModify[0].Tags = splitTags(data[0].Tags);

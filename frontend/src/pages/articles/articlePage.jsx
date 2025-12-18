@@ -172,7 +172,7 @@ useEffect(() => {
                               </div>
                             </div>
                             : null}
-                              <div className={`mt-4 ${styles.articleInsered} txt-base`} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+                              <div className={`mt-4 ${styles.articleInsered} txt-base blocArticleShow`} dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
                           </div>
                     </div>
 
