@@ -195,7 +195,7 @@ const CreateArticle = () => {
       fetch(`/api/articles/${slug}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log('article descandant', data);
+          //console.log('article descandant', data);
           const dataModify = data;
             if (dataModify[0]) {
             dataModify[0].Tags = splitTags(data[0].Tags);
@@ -358,7 +358,7 @@ useEffect(() => {
     editor.chain().focus().extendMarkRange('anchorLink').setLink({ href: url }).run();
   };
 
-  console.log(tags);
+  //(tags);
   return (
     <div className="container-xl mt-4">
       {loadingArticleAEditer && loadingTags ?

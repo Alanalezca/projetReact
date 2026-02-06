@@ -1,6 +1,6 @@
 // backend/routes/dicethrone.js
 import express from 'express';
-import { pool } from '../db.js'; // Note bien l'extension .js
+import { pool } from '../db.js';
 const router = express.Router();
 
 router.get('/boites', async (req, res) => {

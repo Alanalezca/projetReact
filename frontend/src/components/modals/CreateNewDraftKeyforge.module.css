@@ -1,0 +1,36 @@
+.bandeauTag {
+
+}
+
+.bandeauTag:hover {
+  background-color: var(--backgroundColorCaution) !important;
+}
+
+.bandeauTagFocus {
+  background-color: var(--backgroundColorHalo) !important;
+}
+
+.bandeauTagFocus:hover {
+  background-color: var(--backgroundColorHalo) !important;
+}
+
+.LoginModalBot {
+    background-color: var(--backgroundColorC) !important;
+}
+
+.borderTop {
+  border-left: 2px solid var(--ColorC);
+  border-top: 2px solid var(--ColorC);
+  border-right: 2px solid var(--ColorC);
+}
+
+.borderMid {
+  border-left: 2px solid var(--ColorC);
+  border-right: 2px solid var(--ColorC);
+}
+
+.borderBottom {
+  border-left: 2px solid var(--ColorC);
+  border-bottom: 2px solid var(--ColorC);
+  border-right: 2px solid var(--ColorC);
+}

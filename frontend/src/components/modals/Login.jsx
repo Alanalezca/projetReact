@@ -33,13 +33,13 @@ import FloatingLabel from '../inputs/FloatingInput';
     const data = await response.json();
     if (response.ok) {
       setSessionUser(data.user);
-      console.log('Connecté :', data);
-      console.log('Connecté :', data.user);
-      console.log("cookies", document.cookie);
+      //console.log('Connecté :', data);
+      //console.log('Connecté :', data.user);
+      //console.log("cookies", document.cookie);
       handleClose(false);
       showOngletAlerte('success', '(Identification)', '', 'Vous êtes à présent connecté.');
     } else {
-      console.error('Erreur login :', data.message);
+      //console.error('Erreur login :', data.message);
     }
   };
 

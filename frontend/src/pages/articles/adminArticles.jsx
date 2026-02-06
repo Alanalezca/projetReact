@@ -42,7 +42,7 @@ const ArticlePage = () => {
         .catch(error => console.error('Erreur fetch articles:', error));
     }, [forceRefresh]);
 
-    console.log('Articles', articles);
+    //console.log('Articles', articles);
     return (
         <div className={`container-xl mt-4 ${!isLoading && "txtColorWhite"}`}>
             {isLoading ?

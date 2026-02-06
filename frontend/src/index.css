@@ -158,6 +158,11 @@ main {
   gap: 6px;
 }
 
+.bxNormalOrangeWithoutHover {
+  color: #FF9901;
+  font-size: 32px;
+}
+
 .bxNormalOrange {
   color: #FF9901;
   font-size: 32px;
@@ -410,6 +415,10 @@ span { font-size: 1rem; }
   font-weight: bold;
 }
 
+.txtNormal {
+  font-weight: normal;
+}
+
 .txtColorWhiteToTxtColorB {
   color: var(--txtColorWhite);
   transition: color 0.2s ease;
@@ -632,6 +641,14 @@ span { font-size: 1rem; }
   }
 }
 
+/* Borders : début */
+
+.borderLeft1pxColE {
+  border-left: solid 1px var(--backgroundColorE);
+}
+
+/* Borders : fin */
+
 /* List-group-item : début */
 
 .list-group-item {
@@ -722,6 +739,10 @@ span { font-size: 1rem; }
 
 .red {
   background-color: red;
+}
+
+.pink {
+  background-color: pink;
 }
 
 /* Icones : début */
@@ -841,3 +862,102 @@ a {
 }
 
 /* Bloc article : Fin */
+
+/* Border animé : debut */
+
+.borderAnimGreen {
+  animation: AnimGreen 1s infinite alternate;
+}
+
+@keyframes AnimGreen {
+  from {
+    border: 3px solid var(--backgroundColorA);
+    border-radius: 6px;
+  }
+  to {
+    border: 3px solid var(--backgroundColorSuccessLight);
+    border-radius: 6px;
+  }
+}
+
+.borderAnimGreenSmooth {
+  animation: AnimGreenSmooth 1s infinite alternate;
+}
+
+@keyframes AnimGreenSmooth {
+  from {
+    border: 3px solid var(--backgroundColorSuccess);
+    border-radius: 6px;
+  }
+  to {
+    border: 3px solid var(--backgroundColorSuccessLight);
+    border-radius: 6px;
+  }
+}
+
+.borderAnimRed {
+  animation: AnimRed 1s infinite alternate;
+}
+
+@keyframes AnimRed {
+  from {
+    border: 3px solid var(--backgroundColorDanger);
+    border-radius: 6px;
+  }
+  to {
+    border: 3px solid var(--backgroundColorDangerSmoothLight);
+    border-radius: 6px;
+  }
+}
+
+/* Border animé : fin */
+
+/* Background animé : debut */
+
+.backgroundAnimGreen {
+  animation: bgAnimGreen 1s infinite alternate;
+}
+
+@keyframes bgAnimGreen {
+  from {
+    background-color: var(--backgroundColorA);
+  }
+  to {
+    background-color: var(--backgroundColorSuccessLight);
+  }
+}
+
+.backgroundAnimGreenSmooth {
+  animation: bgAnimGreenSmooth 1s infinite alternate;
+}
+
+@keyframes bgAnimGreenSmooth {
+  from {
+    background-color: var(--backgroundColorSuccess);
+  }
+  to {
+    background-color:  var(--backgroundColorSuccessLight);
+  }
+}
+
+.backgroundAnimRed {
+  animation: bgAnimRed 1s infinite alternate;
+}
+
+@keyframes bgAnimRed {
+  from {
+    background-color: var(--backgroundColorDanger);
+  }
+  to {
+    background-color: var(--backgroundColorDangerSmoothLight);
+  }
+}
+
+/* Background animé : fin */
+
+/* Border radius : Début */
+.borderRadius6 {
+  border-radius: 6px;
+}
+
+/* Border radius : Fin */

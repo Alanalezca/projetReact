@@ -14,6 +14,7 @@ import tagsArticlesRoutes from './routes/tagsArticles.js';
 import usersRoutes from './routes/users.js';
 import smashupRoutes from './routes/smashup.js';
 import dicethroneRoutes from './routes/dicethrone.js';
+import keyforgeRoutes from './routes/keyforge.js';
 import { SitemapStream, streamToPromise } from 'sitemap';
 
 dotenv.config(); // À placer tôt
@@ -111,6 +112,7 @@ app.use('/api/articles', articlesRoutes);
 app.use('/api/tagsArticles', tagsArticlesRoutes);
 app.use('/api/smashup', smashupRoutes);
 app.use('/api/dicethrone', dicethroneRoutes);
+app.use('/api/keyforge', keyforgeRoutes);
 
 // Fallback React
 app.use((req, res, next) => {

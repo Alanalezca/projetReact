@@ -83,7 +83,7 @@ const DiceThroneDrafter = () => {
                     Selected: !prevBoite?.Selected}
                 : prevBoite,
             ));
-        console.log(numWave);
+        //console.log(numWave);
         setListeSets(prevListeSets => 
             prevListeSets?.map(prevSet =>
                 prevSet.Numero === numWave
@@ -94,7 +94,7 @@ const DiceThroneDrafter = () => {
     };
 
     const handleClickOnSet = (numWave, selectedOrNot) => {
-        console.log(numWave);
+        //console.log(numWave);
         setListeBoite(prevListeBoites => 
             prevListeBoites?.map(prevBoite =>
                 prevBoite.Vague === numWave
@@ -336,9 +336,9 @@ const DiceThroneDrafter = () => {
         setCompteurNbHerosSelonBoitesSelected(isNaN(nbHeros) ? 0 : nbHeros);
     }, [listeBoites]) 
 
-    console.log('boites', listeBoites);
-    console.log('heros', listeHeros);
-    console.log('etape', currentEtapeDraft);
+    //console.log('boites', listeBoites);
+    //console.log('heros', listeHeros);
+    //console.log('etape', currentEtapeDraft);
 
     return (
         <>

@@ -1067,8 +1067,8 @@ const Smashup = () => {
             }
         }
     };
-    console.log(lastFactionSaisieForRollback, currentEtapeDraft);
-    console.log(factionsPickBanByPlayer);
+    //console.log(lastFactionSaisieForRollback, currentEtapeDraft);
+    //console.log(factionsPickBanByPlayer);
     return (
         <>
             <div className="container-xl mt-3">

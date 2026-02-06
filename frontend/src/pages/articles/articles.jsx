@@ -25,12 +25,12 @@ const Articles = () => {
     const indiceLastArticlePartA = ((nbElementsParPage * numCurrentPagePaginationActive) - nbElementsParPage) +3;
     const indiceFirstArticlePartB = ((nbElementsParPage * numCurrentPagePaginationActive) - nbElementsParPage) +3;
     const indiceLastArticlePartB = ((nbElementsParPage * numCurrentPagePaginationActive) - nbElementsParPage) + nbElementsParPage;
-    console.log(indiceFirstArticlePartA, indiceLastArticlePartA, indiceFirstArticlePartB, indiceLastArticlePartB);
+    //console.log(indiceFirstArticlePartA, indiceLastArticlePartA, indiceFirstArticlePartB, indiceLastArticlePartB);
     useEffect(() => {
         fetch('/api/articles')
         .then(response => response.json())
         .then(data => {
-          console.log('articles', data);
+          //console.log('articles', data);
           setArticles(data);
           setArticlesFiltered(data);
           setIsLoading(false);

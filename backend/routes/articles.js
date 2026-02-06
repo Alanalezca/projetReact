@@ -128,7 +128,7 @@ router.post('/delete', checkSiCurrentUserGetGradeRequis('Administrateur'), async
       return res.status(500).json({ error: "Échec de la suppression de l'article" });
     }
 
-    res.status(200             ).json(result.rows[0]);
+    res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error(`Erreur lors de la suppression de l'article :`, err);
     res.status(500).json({ error: 'Erreur serveur' });

@@ -53,7 +53,7 @@ const SubscribeFormV2 = ({handleClose, show, handleShowLogin}) => {
             return;
           }
       
-          console.log('Utilisateur créé:', data.user);
+          //console.log('Utilisateur créé:', data.user);
           showOngletAlerte('success', '(Enregistrement)', '', 'Votre compte a bien été créé. Vous pouvez à présent vous connecter.');
           // Ici, tu peux fermer le modal et afficher une notification si tu veux
       
