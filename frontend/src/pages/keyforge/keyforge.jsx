@@ -17,7 +17,6 @@ const Keyforge = () => {
     const [listeSets, setListeSets] = useState();
     const [idSetSelected, setIDSetSelected] = useState();
     const [listeMyDrafts, setListeMyDrafts] = useState();
-    const [reloadMyDraft, setReloadMyDraft] = useState(1);
     const [showFormCreateNewDraft, setShowFormCreateNewDraft] = useState(false);
     const inputsRef = useRef({});
     const {sessionUser, setSessionUser} = useSessionUserContext();
@@ -37,21 +36,9 @@ const Keyforge = () => {
         .then(response => response.json())
         .then(data => {
           setListeMyDrafts(data);
-          //console.log(data);
           setIsLoading(false);
         }).catch(error => console.error('Erreur fetch keyforge drafts:', error));
-    }, [reloadMyDraft, sessionUser?.id]);
-
-    useEffect(() => {
-        if (!sessionUser?.id) return;
-        setIsLoading(true);
-        fetch('/api/keyforge/sets')
-        .then(response => response.json())
-        .then(data => {
-          setListeSets(data);
-          setIsLoading(false);
-        }).catch(error => console.error('Erreur fetch keyforge sets:', error));
-    }, []);
+    }, [sessionUser?.id]);
 
     const handleDeleteDraft = async (codeDraft, titreDraft) => {
     try {
@@ -70,12 +57,11 @@ const Keyforge = () => {
 
         const result = await response.json();
         showOngletAlerte('success', '(Suppression draft)', '', `Le draft KeyForge "` + titreDraft + `" a bien été supprimé.`);
-        setReloadMyDraft(prev => prev + 1);
+        setListeMyDrafts(prev => prev.filter(current => current.ID !== codeDraft));
     } catch (err) {
         console.error("Erreur lors de la suppression de l'article :", err);
     }
     };
-
     return (
             <div className="container-xl mt-3">
                     <div className="row mb-4">
@@ -102,7 +88,7 @@ const Keyforge = () => {
                         </div>
                     </div>
                 {(sessionUser?.grade == "Administrateur" ?
-                <><ModalCreateNewDraftKeyforge show={showFormCreateNewDraft} handleClose={setShowFormCreateNewDraft} handleRefresh={setReloadMyDraft}/>
+                <><ModalCreateNewDraftKeyforge show={showFormCreateNewDraft} handleClose={setShowFormCreateNewDraft} handleRefresh={setListeMyDrafts}/>
                     <div className="row">
                         <div className="col-12 mt-4">
                             <h2 className="text-center txtColorWhite mb-4">Mes drafts</h2>

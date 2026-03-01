@@ -117,13 +117,13 @@
 }
 
 .conteneurImgX6.toPick:hover {
-    border: 2px solid var(--txtColorPlayerGreen);
-    box-shadow: 0 0 3px 3px var(--txtColorPlayerGreen);
+    border: 2px solid var(--ColorA);
+    box-shadow: 0 0 3px 3px var(--ColorA);
 }
 
 .conteneurImgX6.toBan:hover {
-    border: 2px solid var(--txtColorPlayerRed);
-    box-shadow: 0 0 3px 3px var(--txtColorPlayerRed);
+    border: 2px solid var(--ColorA);
+    box-shadow: 0 0 3px 3px var(--ColorA);
 }
 
 .conteneurImgX6:focus {
@@ -216,4 +216,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Bouton rollback */
+
+#btnRollBack {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 8vh;
+  right: 2vw;
+  background-color: var(--ColorA);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+#btnRollBack:hover {
+  background-color: var(--ColorA);
 }

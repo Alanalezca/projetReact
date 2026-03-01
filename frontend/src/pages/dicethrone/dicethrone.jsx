@@ -7,7 +7,7 @@ import getRandomUniqueNumbers from '../../functions/getRandomUniqueNumbers';
 
 const DiceThroneDrafter = () => {
     const [flip, setFlip] = useState(false);
-
+    const [lastHeroSaisiForRollback, setLastHeroSaisiForRollback] = useState({lastPlayer: "", lastHero: "", indiceHerosPickBanByPlayerImg: "", indiceHerosPickBanByPlayer: ""});
     const [isLoading, setIsLoading] = useState(true);
     const [currentEtapeDraft, setCurrentEtapeDraft] = useState(0);
     const inputsRef = useRef({});
@@ -134,6 +134,7 @@ const DiceThroneDrafter = () => {
         getHerosFromBoxesSelected(filtreHeros, modeNormalOrRandom);
     };
 
+    
     const getHerosFromBoxesSelected = (filtre, modeNormalOrRandom) => {
         fetch('/api/dicethrone/heros?filtreBoxes=' + filtre)
         .then(response => response.json())
@@ -167,14 +168,11 @@ const DiceThroneDrafter = () => {
                     TypeSelected: phasePickOrBan}
                 : prevHeros
             ));
-        setLastHerosSaisieForRollback(prev => 
-            ({...prev,
-                codeHeros: codeHeros,
-                libelleHeros: libelleHeros
-            })
-        );
         
-        
+        let indiceLastPlayer = "";
+        let indiceHerosPickBanByPlayerImg ="";
+        let indiceHerosPickBanByPlayer = "";
+
         switch (currentEtapeDraft) {
             case 1:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -189,6 +187,9 @@ const DiceThroneDrafter = () => {
                         LibelleHerosPickA: libelleHeros}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 0;
+                indiceHerosPickBanByPlayerImg = "HerosPickA";
+                indiceHerosPickBanByPlayer = "LibelleHerosPickA";
                 break;
             case 2:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -203,6 +204,9 @@ const DiceThroneDrafter = () => {
                         LibelleHerosPickA: libelleHeros}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 1;
+                indiceHerosPickBanByPlayerImg = "HerosPickA";
+                indiceHerosPickBanByPlayer = "LibelleHerosPickA";
                 break;
             case 3:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -217,6 +221,9 @@ const DiceThroneDrafter = () => {
                         LibelleHerosPickB: libelleHeros}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 0;
+                indiceHerosPickBanByPlayerImg = "HerosPickB";
+                indiceHerosPickBanByPlayer = "LibelleHerosPickB";
                 break;
             case 4:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -231,6 +238,9 @@ const DiceThroneDrafter = () => {
                         LibelleHerosPickB: libelleHeros}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 1;
+                indiceHerosPickBanByPlayerImg = "HerosPickB";
+                indiceHerosPickBanByPlayer = "LibelleHerosPickB";
                 break;
             case 5:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -245,6 +255,9 @@ const DiceThroneDrafter = () => {
                         LibelleHerosPickC: libelleHeros}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 0;
+                indiceHerosPickBanByPlayerImg = "HerosPickC";
+                indiceHerosPickBanByPlayer = "LibelleHerosPickC";
                 break;
             case 6:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -259,6 +272,9 @@ const DiceThroneDrafter = () => {
                         LibelleHerosPickC: libelleHeros}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 1;
+                indiceHerosPickBanByPlayerImg = "HerosPickC";
+                indiceHerosPickBanByPlayer = "LibelleHerosPickC";
                 break;
             case 7:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -272,6 +288,9 @@ const DiceThroneDrafter = () => {
                         IndiceHerosBan: indiceIfBan}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 0;
+                indiceHerosPickBanByPlayerImg = "IndiceHerosBan";
+                indiceHerosPickBanByPlayer = "IndiceHerosBan";
                 break;
             case 8:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -285,6 +304,9 @@ const DiceThroneDrafter = () => {
                         IndiceHerosBan: indiceIfBan}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 1;
+                indiceHerosPickBanByPlayerImg = "IndiceHerosBan";
+                indiceHerosPickBanByPlayer = "IndiceHerosBan";
                 break;
             case 9:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -298,6 +320,9 @@ const DiceThroneDrafter = () => {
                         IndiceHerosSelectedFinal: indiceIfBan}
                     : draftFromCurrentPlayer
                 ));
+                indiceLastPlayer = 0;
+                indiceHerosPickBanByPlayerImg = "IndiceHerosSelectedFinal";
+                indiceHerosPickBanByPlayer = "IndiceHerosSelectedFinal";
                 break;
             case 10:
                 setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
@@ -310,7 +335,14 @@ const DiceThroneDrafter = () => {
                 setDraftTermine(true);
                 break;
             }
-
+        console.log('titi', indiceLastPlayer);
+        setLastHeroSaisiForRollback(prev => ({
+            ...prev,
+            lastPlayer: indiceLastPlayer,
+            lastHero: codeHeros,
+            indiceHerosPickBanByPlayerImg: indiceHerosPickBanByPlayerImg,
+            indiceHerosPickBanByPlayer: indiceHerosPickBanByPlayer
+        }));
         setCurrentEtapeDraft(prev => prev + 1);
     };
 
@@ -324,21 +356,59 @@ const DiceThroneDrafter = () => {
     useEffect(() => {
         let nbHeros = 0;
         listeBoites?.map((currentBoite) => {
+            console.log('currentboite', currentBoite.Selected);
             currentBoite.Selected && (nbHeros += parseInt(currentBoite.nbheros));
         });
 
-        if(nbHeros == 0) {
+        /*if(nbHeros == 0) {
             listeBoites?.map((currentBoite) => {
                 nbHeros += parseInt(currentBoite.nbheros);
             });
-        } 
+        } */
 
         setCompteurNbHerosSelonBoitesSelected(isNaN(nbHeros) ? 0 : nbHeros);
+        console.log('nbHeros', nbHeros);
     }, [listeBoites]) 
+
+    const handleClickOnRollback = (idCurrentPlayer, codeHerosPickBanByPlayerToReinit, indiceHerosPickBanByPlayer, indiceHerosPickBanByPlayerImg) => {
+        setCurrentEtapeDraft(prev => prev - 1);
+        setHerosPickBanByPlayer(prev =>
+        prev.map(player =>
+            player.ID === (idCurrentPlayer + 1)
+            ? {
+                ...player,
+                [indiceHerosPickBanByPlayer]: null,
+                [indiceHerosPickBanByPlayerImg]: null
+                }
+            : player
+        )
+        );
+        
+        switch (currentEtapeDraft) {
+            case 7:
+            setIndiceJoueurViewedPourBan(1);
+            break;
+            case 8:
+            setIndiceJoueurViewedPourBan(0);
+            break;
+        }
+
+        setListeHeros(prevListeHeros => 
+        prevListeHeros?.map(prevHeros =>
+            prevHeros.CodeHeros === codeHerosPickBanByPlayerToReinit
+            ? {...prevHeros, 
+                Selected: null,
+                TypeSelected: null}
+            : prevHeros
+        ));
+        console.log(idCurrentPlayer, indiceHerosPickBanByPlayer, indiceHerosPickBanByPlayerImg);
+        console.log(herosPickBanByPlayer);
+        setLastHeroSaisiForRollback({lastPlayer: "", lastHero: ""});
+    }
 
     //console.log('boites', listeBoites);
     //console.log('heros', listeHeros);
-    //console.log('etape', currentEtapeDraft);
+    console.log('etape', currentEtapeDraft);
 
     return (
         <>
@@ -597,6 +667,16 @@ const DiceThroneDrafter = () => {
                     </div>
                 </div>
             }
+
+            {currentEtapeDraft >= 1 && currentEtapeDraft < 10 ? !draftTermine && 
+                <div
+                id={styles.btnRollBack}
+                className={lastHeroSaisiForRollback.lastPlayer !== "" ? "btn-ColorA" : "btn-ColorInactif"}
+                onClick={lastHeroSaisiForRollback ? () => handleClickOnRollback(lastHeroSaisiForRollback?.lastPlayer, lastHeroSaisiForRollback?.lastHero, lastHeroSaisiForRollback?.indiceHerosPickBanByPlayer, lastHeroSaisiForRollback?.indiceHerosPickBanByPlayerImg) : undefined}
+                >
+                <i className="bx bxs-eraser bx-sm"></i>
+                </div>
+            : <></>}
         </>
     );
 }

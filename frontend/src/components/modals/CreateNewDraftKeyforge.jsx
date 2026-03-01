@@ -50,7 +50,7 @@ import InputStandard from '../../components/inputs/InputStandard';
             headers: {
             "Content-Type": "application/json"
             },
-            body: JSON.stringify({ parID: (sessionUser.id.toString() + "-" + dateFormated), parJoueurA: inputsRef?.current["pseudoJoueurA"]?.value, parJoueurB: inputsRef?.current["pseudoJoueurB"]?.value, parPresenceAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value, parSet: idSetSelected, parDateCreation: dateNow, parDateMaj: dateNow, parCreePar: sessionUser.id, parTitreDraft: inputsRef?.current["titreDraft"]?.value, parEtat: 0})
+            body: JSON.stringify({ parID: (sessionUser.id.toString() + "-" + dateFormated), parJoueurA: inputsRef?.current["pseudoJoueurA"]?.value, parJoueurB: inputsRef?.current["pseudoJoueurB"]?.value, parPresenceAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value, parSet: idSetSelected, parDateCreation: dateNow, parDateMaj: dateNow, parTitreDraft: inputsRef?.current["titreDraft"]?.value, parEtat: 0})
         });
 
         if (!response.ok) {
@@ -68,7 +68,21 @@ import InputStandard from '../../components/inputs/InputStandard';
             }))
         );
         setUnlockBtnValiderCreateNewDraft(false);
-        handleRefresh(prev => prev +1);
+        handleRefresh(prev => [
+            ...prev,
+            {
+                ID: (sessionUser.id.toString() + "-" + dateFormated),
+                Titre: inputsRef?.current["titreDraft"]?.value,
+                AvecAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value,
+                DateCreation: dateNow,
+                DateDerModif: dateNow,
+                Etat: "0",
+                PseudoJ1: inputsRef?.current["pseudoJoueurA"]?.value,
+                PseudoJ2: inputsRef?.current["pseudoJoueurB"]?.value,
+                SetID: idSetSelected,
+                IDSet: idSetSelected
+            }
+        ]);
         setIDSetSelected();
         } catch (err) {
         console.error("Erreur lors de la création du draft KeyForge :", err);
@@ -126,9 +140,9 @@ import InputStandard from '../../components/inputs/InputStandard';
                 </div>
                 <div className="row">             
                     <div className="col-12 mt-3 d-flex justify-content-center">
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="checkAvecAnomalies" ref={(e) => (inputsRef.current["checkAvecAnomalies"] = e)}></input>
-                            <label class="form-check-label txtColorWhite" for="checkAvecAnomalies">Inclure la possibilité d'anomalies</label>
+                        <div className="mb-3 form-check">
+                            <input type="checkbox" className="form-check-input" id="checkAvecAnomalies" ref={(e) => (inputsRef.current["checkAvecAnomalies"] = e)}></input>
+                            <label className="form-check-label txtColorWhite" htmlFor="checkAvecAnomalies">Inclure la possibilité d'anomalies</label>
                         </div>
                     </div>
                 </div>
