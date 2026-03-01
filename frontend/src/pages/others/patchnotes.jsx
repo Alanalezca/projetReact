@@ -17,12 +17,14 @@ const Patchnotes = () => {
                             - [Module de draft Smash Up] ¤ Correction d'un soucis d'affichage des instructions de draft en mode mobile<br/>
                             - [Module de draft Dice Throne] + Ajout de la fonctionnalité "random" sur le module de draft.<br/>
                             - [Module de draft Dice Throne] ¤Correction d'un soucis d'affichage des instructions de draft en mode mobile<br/>
+                            - [Module de draft Dice Throne] + Ajout de la fonctionnalité Rollback<br/>
                             - [Patchnote] + Ajout de la page "patchnotes".<br/>
                             - [Footer] + Ajout du lien vers email.<br/>
                             - [Footer] + Ajout du lien discord (en cours)<br/>
                             - [Liste d'articles] ¤ Correction des liens menant aux articles affichés en mode "large".<br/>
                             - [Création/Edition d'articles] + Mise en bandeau des boutons de l'éditeur.<br/>
                             - [Liste d'articles] ¤ Correction d'un problème de taille de l'image de la "card large".
+                            - [Keyforge] Début du travail concernant le module de draft Keyforge.
                             `
                             }/>
                     </div>

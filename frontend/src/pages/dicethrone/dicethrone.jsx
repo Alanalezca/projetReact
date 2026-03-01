@@ -7,7 +7,7 @@ import getRandomUniqueNumbers from '../../functions/getRandomUniqueNumbers';
 
 const DiceThroneDrafter = () => {
     const [flip, setFlip] = useState(false);
-    const [lastHeroSaisiForRollback, setLastHeroSaisiForRollback] = useState({lastPlayer: "", lastHero: "", indiceHerosPickBanByPlayerImg: "", indiceHerosPickBanByPlayer: ""});
+    const [lastHeroSaisiForRollback, setLastHeroSaisiForRollback] = useState({lastPlayer: "", lastHero: "", indiceHerosPickBanByPlayerImg: "", indiceHerosPickBanByPlayer: "", lastTxtCurrentPlayer: "", lastTxtCurrentPlayerColor: "", lastTxtCurrentInstruction: "", lastTxtCurrentInstructionColor: ""});
     const [isLoading, setIsLoading] = useState(true);
     const [currentEtapeDraft, setCurrentEtapeDraft] = useState(0);
     const inputsRef = useRef({});
@@ -172,6 +172,10 @@ const DiceThroneDrafter = () => {
         let indiceLastPlayer = "";
         let indiceHerosPickBanByPlayerImg ="";
         let indiceHerosPickBanByPlayer = "";
+        let lastTxtCurrentPlayer = "";
+        let lastTxtCurrentPlayerColor = "";
+        let lastTxtCurrentInstruction = "";
+        let lastTxtCurrentInstructionColor = ";"
 
         switch (currentEtapeDraft) {
             case 1:
@@ -190,6 +194,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 0;
                 indiceHerosPickBanByPlayerImg = "HerosPickA";
                 indiceHerosPickBanByPlayer = "LibelleHerosPickA";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A";
+                lastTxtCurrentPlayerColor = "txtColorPlayerRed";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit SELECTIONNER un héros";
                 break;
             case 2:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -207,6 +215,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 1;
                 indiceHerosPickBanByPlayerImg = "HerosPickA";
                 indiceHerosPickBanByPlayer = "LibelleHerosPickA";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B";
+                lastTxtCurrentPlayerColor = "txtColorPlayerBlue";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit SELECTIONNER un héros";
                 break;
             case 3:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -224,6 +236,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 0;
                 indiceHerosPickBanByPlayerImg = "HerosPickB";
                 indiceHerosPickBanByPlayer = "LibelleHerosPickB";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A";
+                lastTxtCurrentPlayerColor = "txtColorPlayerRed";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit SELECTIONNER un héros";
                 break;
             case 4:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -241,6 +257,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 1;
                 indiceHerosPickBanByPlayerImg = "HerosPickB";
                 indiceHerosPickBanByPlayer = "LibelleHerosPickB";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B";
+                lastTxtCurrentPlayerColor = "txtColorPlayerBlue";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit SELECTIONNER un héros";
                 break;
             case 5:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -258,6 +278,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 0;
                 indiceHerosPickBanByPlayerImg = "HerosPickC";
                 indiceHerosPickBanByPlayer = "LibelleHerosPickC";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A";
+                lastTxtCurrentPlayerColor = "txtColorPlayerRed";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit SELECTIONNER un héros";
                 break;
             case 6:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -275,6 +299,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 1;
                 indiceHerosPickBanByPlayerImg = "HerosPickC";
                 indiceHerosPickBanByPlayer = "LibelleHerosPickC";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B";
+                lastTxtCurrentPlayerColor = "txtColorPlayerRed";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit SELECTIONNER un héros";
                 break;
             case 7:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -291,6 +319,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 0;
                 indiceHerosPickBanByPlayerImg = "IndiceHerosBan";
                 indiceHerosPickBanByPlayer = "IndiceHerosBan";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B";
+                lastTxtCurrentPlayerColor = "txtColorPlayerBlue";
+                lastTxtCurrentInstructionColor = "txtClignoteRed";
+                lastTxtCurrentInstruction = "doit BANNIR un héros";
                 break;
             case 8:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A");
@@ -307,6 +339,10 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 1;
                 indiceHerosPickBanByPlayerImg = "IndiceHerosBan";
                 indiceHerosPickBanByPlayer = "IndiceHerosBan";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A";
+                lastTxtCurrentPlayerColor = "txtColorPlayerRed";
+                lastTxtCurrentInstructionColor = "txtClignoteRed";
+                lastTxtCurrentInstruction = "doit BANNIR un héros";
                 break;
             case 9:
                 setTxtCurrentPlayer(inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B");
@@ -323,6 +359,15 @@ const DiceThroneDrafter = () => {
                 indiceLastPlayer = 0;
                 indiceHerosPickBanByPlayerImg = "IndiceHerosSelectedFinal";
                 indiceHerosPickBanByPlayer = "IndiceHerosSelectedFinal";
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerA"]?.value || "Joueur A";
+                lastTxtCurrentPlayerColor = "txtColorPlayerRed";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit valider son héros";
+
+                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B";
+                lastTxtCurrentPlayerColor = "txtColorPlayerBlue";
+                lastTxtCurrentInstructionColor = "txtClignoteGreen";
+                lastTxtCurrentInstruction = "doit valider son héros";
                 break;
             case 10:
                 setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 
@@ -335,13 +380,17 @@ const DiceThroneDrafter = () => {
                 setDraftTermine(true);
                 break;
             }
-        console.log('titi', indiceLastPlayer);
+
         setLastHeroSaisiForRollback(prev => ({
             ...prev,
             lastPlayer: indiceLastPlayer,
             lastHero: codeHeros,
             indiceHerosPickBanByPlayerImg: indiceHerosPickBanByPlayerImg,
-            indiceHerosPickBanByPlayer: indiceHerosPickBanByPlayer
+            indiceHerosPickBanByPlayer: indiceHerosPickBanByPlayer,
+            lastTxtCurrentPlayer: lastTxtCurrentPlayer,
+            lastTxtCurrentPlayerColor: lastTxtCurrentPlayerColor,
+            lastTxtCurrentInstruction: lastTxtCurrentInstruction,
+            lastTxtCurrentInstructionColor: lastTxtCurrentInstructionColor
         }));
         setCurrentEtapeDraft(prev => prev + 1);
     };
@@ -401,9 +450,11 @@ const DiceThroneDrafter = () => {
                 TypeSelected: null}
             : prevHeros
         ));
-        console.log(idCurrentPlayer, indiceHerosPickBanByPlayer, indiceHerosPickBanByPlayerImg);
-        console.log(herosPickBanByPlayer);
         setLastHeroSaisiForRollback({lastPlayer: "", lastHero: ""});
+        setTxtCurrentPlayer(lastHeroSaisiForRollback.lastTxtCurrentPlayer);
+        setTxtCurrentPlayerColor(lastHeroSaisiForRollback.lastTxtCurrentPlayerColor);
+        setTxtCurrentInstructionColor(lastHeroSaisiForRollback.lastTxtCurrentInstructionColor);
+        setTxtCurrentInstruction(lastHeroSaisiForRollback.lastTxtCurrentInstruction);
     }
 
     //console.log('boites', listeBoites);
