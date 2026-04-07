@@ -11,6 +11,16 @@
   );
 }
 
+.logoFaction {
+  max-height: 25px;
+  margin-top: -4px;
+}
+
+.logoFactionBig {
+  max-height: 45px;
+  margin-left: 5px;
+}
+
 .bandeauTag {
 
 }

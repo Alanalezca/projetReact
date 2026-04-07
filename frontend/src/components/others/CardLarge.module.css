@@ -15,3 +15,12 @@
 .cadreEnglobant {
   height: 200px;
 }
+
+.card {
+  transition: transform 0.2s ease;
+}
+
+/* zoom au hover */
+.card:hover {
+  transform: scale(1.03);
+}

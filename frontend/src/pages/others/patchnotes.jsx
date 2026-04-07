@@ -7,7 +7,16 @@ const Patchnotes = () => {
         <div className="container-xl mt-3">
                 <div className="row">
                     <div className="col-12">
-                        <h2 className="mt-4 text-center txtColorWhite">Version actuelle : 1.00.02</h2>
+                        <h2 className="mt-4 text-center txtColorWhite">Version actuelle : 1.00.03</h2>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-12 mt-4">   
+                        <Accordeon blocSoloOrTopOrMidOrBot="Solo" textTitre="Version 1.00.03" textMain={`
+                            - [Module de draft Keyforge] + La version 1.0 avance, elle devrait arriver d'ici peu.<br/>
+                            - [Backend] ¤ Refactorisation de l'ensemble du backend (partie Keyforge terminée).<br/>
+                            `
+                            }/>
                     </div>
                 </div>
                 <div className="row">

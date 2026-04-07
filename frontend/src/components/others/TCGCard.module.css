@@ -1,0 +1,96 @@
+.cardWrapper {
+  display: inline-block;
+  position: relative;       /* nécessaire pour ::after */
+  border-radius: 25px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  margin: 20px;
+  border: 1px solid rgb(67, 67, 56);
+  aspect-ratio: 300 / 420;
+}
+
+/* zoom au hover */
+.cardWrapper:hover {
+  transform: scale(1.08);
+}
+
+
+/* état "loading" : on assombrit */
+.cardWrapperIsLoading::after {
+  opacity: 1; /* visible quand la carte charge */
+}
+
+.cardWrapper.cardWrapperIsLoading::after {
+  opacity: 1;                 /* visible quand loading */
+}
+
+/* image */
+.cardImage {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* raretés */
+.Commune {
+  animation: glowCommune 2s infinite;
+}
+
+.Rare {
+  animation: glowRare 2s infinite;
+}
+
+/* légendaire animé */
+.L\égendaire {
+  animation: glowLegendary 2s infinite;
+}
+
+/* animation glow */
+@keyframes glowCommune {
+
+  0% {
+    box-shadow: 0 0 15px rgba(160,160,160,0.8);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(160,160,160,1);
+  }
+
+  100% {
+    box-shadow: 0 0 15px rgba(160,160,160,0.8);
+  }
+}
+
+@keyframes glowRare {
+
+  0% {
+    box-shadow: 0 0 15px rgba(60,120,255,0.8);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(60,120,255,1);
+  }
+
+  100% {
+    box-shadow: 0 0 15px rgba(60,120,255,0.8);
+  }
+}
+
+
+@keyframes glowLegendary {
+
+  0% {
+    box-shadow: 0 0 15px rgba(173,131,5,0.8);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(173,131,5,1);
+  }
+
+  100% {
+    box-shadow: 0 0 15px rgba(173,131,5,0.8);
+  }
+
+}

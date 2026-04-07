@@ -363,11 +363,6 @@ const DiceThroneDrafter = () => {
                 lastTxtCurrentPlayerColor = "txtColorPlayerRed";
                 lastTxtCurrentInstructionColor = "txtClignoteGreen";
                 lastTxtCurrentInstruction = "doit valider son héros";
-
-                lastTxtCurrentPlayer = inputsRef?.current["pseudoPlayerB"]?.value || "Joueur B";
-                lastTxtCurrentPlayerColor = "txtColorPlayerBlue";
-                lastTxtCurrentInstructionColor = "txtClignoteGreen";
-                lastTxtCurrentInstruction = "doit valider son héros";
                 break;
             case 10:
                 setHerosPickBanByPlayer(prevHerosPickBanByPlayer => 

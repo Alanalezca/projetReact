@@ -23,7 +23,7 @@ const Card = ({
     }, []);
 
     return (
-            <div className={`col-${tailleCol} text-center`}>
+            <div className={`col-${tailleCol} text-center ${styles.card}`}>
               <Link to={`/article/${slugArticle}`}>
                 <div className={`card h-100 ${classCSSColorBackground} ${styles.shadow}`}>
                   <img src={cheminImg} className={`card-img-top ${styles.cardImg}`} alt="..." />

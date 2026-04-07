@@ -103,6 +103,9 @@ main {
   --ColorE: #C47215;
   --ColorCRGE: rgba(196, 114, 21);
 
+  --ColorF: #ad830580;
+  --ColorCRGF: rgba(173, 131, 5, 0.5);
+
   --txtColorWhite: #FFFFFF;
   --txtColorWhiteRGB: rgba(255, 255, 255);
 
@@ -114,9 +117,6 @@ main {
 
   --txtColorB: #FFB300;
   --txtColorBRGB: rgba(255, 179, 0);
-
-  --ColorC: #C47215;
-  --ColorCRGB: rgba(196, 114, 21);
 
   --txtColorDark: #343a40;
   --txtColorDarkRGB: rgba(052, 058, 064);
@@ -583,6 +583,19 @@ span { font-size: 1rem; }
   border: 1px solid var(--ColorB) !important;
 }
 
+.btn-ColorAFocused {
+  background-color: var(--ColorB) !important;
+  border: 1px solid var(--ColorB) !important;
+  transition: background-color 0.25s ease;  /* Transition de 0.5 seconde */
+  cursor: not-allowed !important;
+}
+
+.btn-ColorAFocused:hover {
+  background-color: var(--ColorB) !important;
+  border: 1px solid var(--ColorB) !important;
+  cursor: not-allowed !important;
+}
+
 .btn-ColorInactif {
   background-color: var(--backgroundColorE) !important;
   border: 1px solid var(--backgroundColorE) !important;
@@ -593,6 +606,19 @@ span { font-size: 1rem; }
 .btn-ColorInactif:hover {
   background-color: var(--backgroundColorF) !important;
   border: 1px solid var(--backgroundColorF) !important;
+  cursor: not-allowed !important;
+}
+
+.btn-ColorFinished {
+  background-color: var(--backgroundColorSuccessLight) !important;
+  border: 1px solid var(--backgroundColorSuccessLight) !important;
+  transition: background-color 0.25s ease;  /* Transition de 0.5 seconde */
+  cursor: not-allowed !important;
+}
+
+.btn-ColorFinished:hover {
+  background-color: var(--backgroundColorSuccessLight) !important;
+  border: 1px solid var(--backgroundColorSuccessLight) !important;
   cursor: not-allowed !important;
 }
 
@@ -912,6 +938,14 @@ a {
 
 /* Border animé : fin */
 
+/* Background : debut */
+
+.backgroundGreen {
+  background-color: var(--backgroundColorSuccess);
+}
+
+/* Background : fin */
+
 /* Background animé : debut */
 
 .backgroundAnimGreen {
@@ -950,6 +984,32 @@ a {
   }
   to {
     background-color: var(--backgroundColorDangerSmoothLight);
+  }
+}
+
+.backgroundAnimFocus {
+  animation: bgAnimFocus 1s infinite alternate;
+}
+
+@keyframes bgAnimFocus {
+  from {
+    background-color: var(--ColorA);
+  }
+  to {
+    background-color: var(--ColorB);
+  }
+}
+
+.backgroundAnimSurvol:hover {
+  animation: bgAnimSurvol 2s infinite alternate;
+}
+
+@keyframes bgAnimSurvol {
+  from {
+    background-color: var(--backgroundColorD);
+  }
+  to {
+    background-color: var(--ColorB);
   }
 }
 

@@ -50,7 +50,7 @@ import InputStandard from '../../components/inputs/InputStandard';
             headers: {
             "Content-Type": "application/json"
             },
-            body: JSON.stringify({ parID: (sessionUser.id.toString() + "-" + dateFormated), parJoueurA: inputsRef?.current["pseudoJoueurA"]?.value, parJoueurB: inputsRef?.current["pseudoJoueurB"]?.value, parPresenceAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value, parSet: idSetSelected, parDateCreation: dateNow, parDateMaj: dateNow, parTitreDraft: inputsRef?.current["titreDraft"]?.value, parEtat: 0})
+            body: JSON.stringify({ parID: (sessionUser.id.toString() + "-" + dateFormated), parJoueurA: inputsRef?.current["pseudoJoueurA"]?.value || "Joueur A", parJoueurB: inputsRef?.current["pseudoJoueurB"]?.value || "Joueur B", parPresenceAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value, parSet: idSetSelected, parDateCreation: dateNow, parDateMaj: dateNow, parTitreDraft: inputsRef?.current["titreDraft"]?.value, parEtat: 0})
         });
 
         if (!response.ok) {
@@ -76,9 +76,9 @@ import InputStandard from '../../components/inputs/InputStandard';
                 AvecAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value,
                 DateCreation: dateNow,
                 DateDerModif: dateNow,
-                Etat: "0",
-                PseudoJ1: inputsRef?.current["pseudoJoueurA"]?.value,
-                PseudoJ2: inputsRef?.current["pseudoJoueurB"]?.value,
+                Etat: 0,
+                PseudoJ1: inputsRef?.current["pseudoJoueurA"]?.value || "Joueur A",
+                PseudoJ2: inputsRef?.current["pseudoJoueurA"]?.value || "Joueur B",
                 SetID: idSetSelected,
                 IDSet: idSetSelected
             }

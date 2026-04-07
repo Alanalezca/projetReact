@@ -1,26 +1,20 @@
 import {useState, useRef, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import styles from './keyforge.module.css';
-import InputStandard from '../../components/inputs/InputStandard';
 import ModalCreateNewDraftKeyforge from '../../components/modals/CreateNewDraftKeyforge';
 import Accordeon from '../../components/others/Accordeon';
 import Pagination from '../../components/others/Pagination';
 import { useSessionUserContext } from '../../components/contexts/sessionUserContext';
 import { useOngletAlerteContext } from '../../components/contexts/ToastContext';
-import convertDateToDateLong from '../../functions/getDateLong';
 import Loader from '../../components/others/Loader';
 
 const Keyforge = () => {
     const { showOngletAlerte } = useOngletAlerteContext();
     const [isLoading, setIsLoading] = useState(true);
-    const [currentEtapeDraft, setCurrentEtapeDraft] = useState(0);
-    const [listeSets, setListeSets] = useState();
-    const [idSetSelected, setIDSetSelected] = useState();
     const [listeMyDrafts, setListeMyDrafts] = useState();
     const [showFormCreateNewDraft, setShowFormCreateNewDraft] = useState(false);
     const inputsRef = useRef({});
     const {sessionUser, setSessionUser} = useSessionUserContext();
-    const [unlockBtnValiderCreateNewDraft, setUnlockBtnValiderCreateNewDraft] = useState(false);
     // Pagination : Début //
     const nbElementsParPage = 10;
     const [numCurrentPagePaginationActive, setNumCurrentPagePaginationActive] = useState(1);
@@ -62,6 +56,7 @@ const Keyforge = () => {
         console.error("Erreur lors de la suppression de l'article :", err);
     }
     };
+    console.log(listeMyDrafts);
     return (
             <div className="container-xl mt-3">
                     <div className="row mb-4">
@@ -76,15 +71,12 @@ const Keyforge = () => {
                     </div>
                     <div className="row">
                         <div className="col-12 mt-5">   
-                            <Accordeon blocSoloOrTopOrMidOrBot="Solo" textTitre="Un module de deckbuilding pour Keyforge ?" textMain={`Ce module permet de réaliser un draft de type <b>"Snake Draft avec bans/picks"</b> pour le jeu <b>Smash Up</b>.<br /><br />
+                            <Accordeon blocSoloOrTopOrMidOrBot="Solo" textTitre="Un module de deckbuilding pour Keyforge ?" textMain={`Ce module permet de réaliser un draft de type <b>"Trinômes"</b> (façon Arène de Hearthstone) pour le jeu <b>Keyforge</b>.<br /><br />
                                 Voici le déroulement :<br />
-                                1. Choisissez <b>le nombre de joueurs</b> participant à la partie.<br />
-                                2. Sélectionnez <b>les boîtes de jeu</b> qui seront utilisées.<br />
-                                - "<b>Valider la sélection</b>" -> Fait ressortir la totalité des factions contenues dans les boites sélectionnées.<br />
-                                - "<b>Valider et randomiser</b>" -> Ne fait ressortir que (nombre de joueurs x4) +4 factions choisies au hasard parmis les factions contenues dans les boites sélectionnées.
-                                3. La liste des <b>factions</b> correspondant aux boîtes choisies sera alors proposée.<br />
-                                4. Chaque joueur procédera ensuite à la <b>phase de pick/ban</b> dans l’ordre indiqué.<br />
-                                5. Prêt à <b>jouer</b> !`}/>
+                                1. Créez un nouveau draft en choisissant le <b>Set de jeu</b>.<br />
+                                2. Réalisez la <b>phase de Pick/Ban des maisons</b> pour les deux joueurs.<br />
+                                3. Une fois les maisons validées, passez au <b>Draft des cartes</b> : pour chaque maison, vous devrez choisir 12 cartes parmis des propositions de trinômes.<br />
+                                4. Exportez votre liste et jouez !`}/>
                         </div>
                     </div>
                 {(sessionUser?.grade == "Administrateur" ?
@@ -98,10 +90,10 @@ const Keyforge = () => {
                                     <b>Draft</b>
                                 </div>
                                 <div className="col-4 col-lg-2">
-                                    <b>Factions J1</b>
+                                    <b>Maisons J1</b>
                                 </div>
                                 <div className="col-4 col-lg-2">
-                                    <b>Factions J2</b>
+                                    <b>Maisons J2</b>
                                 </div>
                                 <div className="d-none d-lg-block col-lg-1">
                                     <b>Création</b>
@@ -129,14 +121,38 @@ const Keyforge = () => {
                                     </Link>
                                 </div>
                                 <div className="col-1 col-lg-2">
-                                    <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer"></i></div>
-                                    <div className="d-inline"><i className="bx bx-cloud-upload bxDisabledToEnabled topMinus3 cPointer"></i></div>
-                                    <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer"></i></div>
+                                    <img 
+                                        src={currentDraft.LienImgFactionPickAJ1 || "/images/keyforge/NC.png"} 
+                                        alt="Logo de la faction A du joueur 1" 
+                                        className={styles.logoFaction}
+                                    />
+                                    <img 
+                                        src={currentDraft.LienImgFactionPickBJ1 || "/images/keyforge/NC.png"} 
+                                        alt="Logo de la faction A du joueur 1" 
+                                        className={styles.logoFaction}
+                                    />
+                                    <img 
+                                        src={currentDraft.LienImgFactionPickCJ1 || "/images/keyforge/NC.png"} 
+                                        alt="Logo de la faction A du joueur 1" 
+                                        className={styles.logoFaction}
+                                    />
                                 </div>
                                 <div className="col-1 col-lg-2">
-                                    <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer"></i></div>
-                                    <div className="d-inline"><i className="bx bx-cloud-upload bxDisabledToEnabled topMinus3 cPointer"></i></div>
-                                    <div className="d-inline"><i className="bx bx-cloud bxEnabledToDisabled topMinus3 cPointer"></i></div>
+                                    <img 
+                                        src={currentDraft.LienImgFactionPickAJ2 || "/images/keyforge/NC.png"} 
+                                        alt="Logo de la faction A du joueur 1" 
+                                        className={styles.logoFaction}
+                                    />
+                                    <img 
+                                        src={currentDraft.LienImgFactionPickBJ2 || "/images/keyforge/NC.png"} 
+                                        alt="Logo de la faction A du joueur 1" 
+                                        className={styles.logoFaction}
+                                    />
+                                    <img 
+                                        src={currentDraft.LienImgFactionPickCJ2 || "/images/keyforge/NC.png"} 
+                                        alt="Logo de la faction A du joueur 1" 
+                                        className={styles.logoFaction}
+                                    />
                                 </div>
                                 <div className="d-none d-lg-block col-lg-1">
                                 <span>{new Date(currentDraft?.DateCreation).toLocaleDateString('fr-FR')}</span>

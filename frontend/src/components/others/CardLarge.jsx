@@ -25,7 +25,7 @@ const Card = ({
         <>
           <div className="col-12">
             <Link to={`/article/${slugArticle}`}>
-              <div className={`card d-flex flex-row ${classCSSColorBackground} ${styles.shadow} ${styles.cadreEnglobant}`}>
+              <div className={`card d-flex flex-row ${classCSSColorBackground} ${styles.shadow} ${styles.cadreEnglobant} ${styles.card}`}>
                 
                 {/* Image à gauche, hauteur 100% */}
                 <img 
