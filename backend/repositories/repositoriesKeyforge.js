@@ -5,12 +5,12 @@ export const getCurrentDraft = {
     const query = `
       SELECT d."ID", d."PseudoJ1", d."PseudoJ2",
              d."FactionBanJ1", d."FactionBanJ2",
-             d."FactionPickAJ1", fa1."LienImg" AS "LienImgAJ1",
-             d."FactionPickBJ1", fb1."LienImg" AS "LienImgBJ1",
-             d."FactionPickCJ1", fc1."LienImg" AS "LienImgCJ1",
-             d."FactionPickAJ2", fa2."LienImg" AS "LienImgAJ2",
-             d."FactionPickBJ2", fb2."LienImg" AS "LienImgBJ2",
-             d."FactionPickCJ2", fc2."LienImg" AS "LienImgCJ2",
+             d."FactionPickAJ1", fa1."LienImg" AS "LienImgAJ1", fa1."Libelle" AS "LibelleFactionAJ1", fa1."CouleurRGB" AS "CouleurAJ1",
+             d."FactionPickBJ1", fb1."LienImg" AS "LienImgBJ1", fb1."Libelle" AS "LibelleFactionBJ1", fb1."CouleurRGB" AS "CouleurBJ1",
+             d."FactionPickCJ1", fc1."LienImg" AS "LienImgCJ1", fc1."Libelle" AS "LibelleFactionCJ1", fc1."CouleurRGB" AS "CouleurCJ1",
+             d."FactionPickAJ2", fa2."LienImg" AS "LienImgAJ2", fa2."Libelle" AS "LibelleFactionAJ2", fa2."CouleurRGB" AS "CouleurAJ2",
+             d."FactionPickBJ2", fb2."LienImg" AS "LienImgBJ2", fb2."Libelle" AS "LibelleFactionBJ2", fb2."CouleurRGB" AS "CouleurBJ2",
+             d."FactionPickCJ2", fc2."LienImg" AS "LienImgCJ2", fc2."Libelle" AS "LibelleFactionCJ2", fc2."CouleurRGB" AS "CouleurCJ2",
              d."AvecAnomalies", d."Etat", d."Commentaire",
              d."DateCreation", d."DateDerModif", d."IDSet",
              s."ID" AS "SetID", d."Titre", s."Libelle", s."Numero",
@@ -72,7 +72,7 @@ export const getSets = {
 export const getFactionsFromSet = {
   findFactions: async (IDSet) => {
     const query = `
-      SELECT DISTINCT f."ID", f."Libelle", f."LienImg" 
+      SELECT DISTINCT f."ID", f."Libelle", f."LienImg", f."CouleurRGB"
       FROM tab_affectations_keyforge_sets_factions a 
       JOIN l_keyforge_factions f 
       ON f."ID" = a."IDFaction" 
@@ -150,9 +150,54 @@ export const doUpdateEtapeDraft = {
 
 export const doDeleteDraft = {
   deleteDraft: async (parCodeDraft, userId) => {
-    const query = `DELETE FROM tab_keyforge_draftsessions WHERE "ID" = $1 AND "CreePar" = $2 RETURNING *`;
-    const { rows } = await pool.query(query, [parCodeDraft, userId]);
-    return rows;
+    const client = await pool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      // Vérifie que le draft appartient bien à l'utilisateur
+      const { rows } = await client.query(
+        `SELECT 1 FROM tab_keyforge_draftsessions 
+         WHERE "ID" = $1 AND "CreePar" = $2`,
+        [parCodeDraft, userId]
+      );
+
+      if (rows.length === 0) {
+        throw new Error("Draft introuvable ou non autorisé");
+      }
+
+      // DELETE enfants
+      await client.query(
+        `DELETE FROM tab_affectations_keyforge_draftpool_cartes 
+         WHERE "IDDraftSession" = $1`,
+        [parCodeDraft]
+      );
+
+      await client.query(
+        `DELETE FROM tab_affectations_keyforge_draftpool_cartes_validees 
+         WHERE "IDDraftSession" = $1`,
+        [parCodeDraft]
+      );
+
+      // DELETE parent
+      await client.query(
+        `DELETE FROM tab_keyforge_draftsessions 
+         WHERE "ID" = $1`,
+        [parCodeDraft]
+      );
+
+      await client.query('COMMIT');
+
+      return [{ success: true }];
+
+    } catch (err) {
+      await client.query('ROLLBACK');
+      console.error('Erreur transaction:', err);
+      throw err;
+
+    } finally {
+      client.release();
+    }
   }
 };
 
@@ -194,7 +239,8 @@ export const doEnregistrementCarteValideeEtReinitFactionCurrentDraft = {
     reinitFocusFactionDuDraft, 
     reinitFocusJoueurDuDraft,
     draftJ1Finished,
-    draftJ2Finished
+    draftJ2Finished,
+    etape
   ) => {
 
     const client = await pool.connect();
@@ -202,66 +248,80 @@ export const doEnregistrementCarteValideeEtReinitFactionCurrentDraft = {
     try {
       await client.query('BEGIN');
 
+      // Vérif draft
+      const { rows: draft } = await client.query(
+        `SELECT 1 FROM tab_keyforge_draftsessions WHERE "ID" = $1`,
+        [parIDDraft]
+      );
+
+      if (draft.length === 0) {
+        throw new Error("Draft introuvable");
+      }
+
       // INSERT
-      const insertQuery = `
-        INSERT INTO tab_affectations_keyforge_draftpool_cartes_validees
-        ("IDDraftSession", "IDCarte", "JoueurAouB", "Classement")
-        VALUES ($1, $2, $3, $4)
-        RETURNING *
-      `;
+      const { rows } = await client.query(
+        `INSERT INTO tab_affectations_keyforge_draftpool_cartes_validees
+         ("IDDraftSession", "IDCarte", "JoueurAouB", "Classement")
+         VALUES ($1, $2, $3, $4)
+         RETURNING *`,
+        [parIDDraft, parIDCard, parJAorB, Classement]
+      );
 
-      const { rows } = await client.query(insertQuery, [
-        parIDDraft,
-        parIDCard,
-        parJAorB,
-        Classement
-      ]);
-
-      // DELETE
-      const deleteQuery = `
-        DELETE FROM public.tab_affectations_keyforge_draftpool_cartes
-        WHERE "IDDraftSession" = $1
-        AND "Classement" IN ($2, $3, $4)
-      `;
-
-      await client.query(deleteQuery, [
-        parIDDraft,
-        ClassementCardToDeleteA,
-        ClassementCardToDeleteB,
-        Classement
-      ]);
+      // DELETE pool
+      await client.query(
+        `DELETE FROM tab_affectations_keyforge_draftpool_cartes
+         WHERE "IDDraftSession" = $1
+         AND "Classement" = ANY($2)`,
+        [
+          parIDDraft,
+          [ClassementCardToDeleteA, ClassementCardToDeleteB, Classement]
+        ]
+      );
 
       // UPDATE
       if (reinitFocusFactionDuDraft) {
-        const updateQuery = `
-          UPDATE tab_keyforge_draftsessions
-          SET "DraftEnCoursSurFactionAouBouC" = NULL, "DraftJ1Finished" = $2, "DraftJ2Finished" = $3
-          WHERE "ID" = $1
-        `;
-
-        await client.query(updateQuery, [
-          parIDDraft,
-          draftJ1Finished,
-          draftJ2Finished
-        ]);
+        await client.query(
+            `UPDATE tab_keyforge_draftsessions
+            SET "DraftEnCoursSurFactionAouBouC" = NULL, "DraftJ1Finished" = $2, "DraftJ2Finished" = $3
+            WHERE "ID" = $1
+          `,
+          [
+            parIDDraft,
+            draftJ1Finished,
+            draftJ2Finished
+          ]
+        );
       }
 
+      if (etape) {
+        await client.query(
+            `
+            UPDATE tab_keyforge_draftsessions
+            SET "Etat" = $2
+            WHERE "ID" = $1
+          `,
+          [
+            parIDDraft,
+            etape
+          ]
+        );
+      }
 
       if (reinitFocusJoueurDuDraft) {
-        const updateQueryBis = `
+        await client.query(
+          `
           UPDATE tab_keyforge_draftsessions
           SET "DraftEnCoursPourJoueurAouB" = NULL
           WHERE "ID" = $1
-        `;
-
-        await client.query(updateQueryBis, [
+        `,
+        [
           parIDDraft
         ]);
       }
 
       await client.query('COMMIT');
 
-      return rows;
+      return { success: true };
 
     } catch (err) {
       await client.query('ROLLBACK');

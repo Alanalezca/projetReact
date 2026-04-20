@@ -38,13 +38,17 @@ export const controlleurDraftKeyforge = async (req, res, next) => {
 export const controlleurDeleteDraft = async (req, res, next) => {
   try {
     const { parCodeDraft } = req.body;
+    if (!parCodeDraft) {
+      return res.status(400).json({ error: "Identifiant du draft manquant" });
+    }
+
     const currentUserId = req.session.user.id;
     const result = await servDeleteDraft(parCodeDraft, currentUserId);
     
-    if (!result || result.length === 0) {
+    if (!result || (Array.isArray(result) && result.length === 0)) {
       return res.status(500).json({ error: "Échec de la suppression du draft" });
     }
-    return res.status(200).json(result[0]);
+    return res.status(200).json(Array.isArray(result) ? result[0] : result);
   } catch (err) {
     next(err);
   }
@@ -233,8 +237,8 @@ export const controlleurUpdateEtapeDraft = async (req, res, next) => {
 export const controlleurEnregistrementCarteValidee = async (req, res, next) => {
 
   try {
-    const { parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished } = req.body;
-    const result = await servEnregistrementCarteValidee(parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished);
+    const { parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished, etape } = req.body;
+    const result = await servEnregistrementCarteValidee(parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished, etape);
 
     if (!result) {
       return res.status(404).json({ message: 'Ajout de la carte validée dans le draft échoué' });

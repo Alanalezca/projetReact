@@ -3,16 +3,15 @@
     import { useParams } from 'react-router-dom';
     import TCGCard from '../../components/others/TCGCard';
     import updateFocusSurFactionAouBouC from '../../functions/callAPIx/keyforgeUpdateFocusSurFactionAouBouC';
-    import pullCurrentDraftPoolCards from '../../functions/callAPIx/keyforgePullCurrentDraftPoolCards';
     import updateEtapeDraft from '../../functions/callAPIx/keyforgeUpdateEtapeDraft';
-    import pullCurrentDraftCardsSelected from '../../functions/callAPIx/keyforgePullCurrentDraftCardsSelected';
     import { hasCardsForFaction } from '../keyforge/draftKeyforgeLogic.js';
+    import { useKeyforgeContext } from '../../../src/components/contexts/keyforgeContext';
 
-    const DraftKeyforgePartCardsSelection = ({currentDraftKeyforge, setCurrentDraftKeyforge, draftEnCoursParJoueurAouB, setdraftEnCoursParJoueurAouB, draftEnCoursSurFactionAouBouC, setDraftEnCoursSurFactionAouBouC}) => {
+    const DraftKeyforgePartCardsSelection = ({currentDraftKeyforge, setCurrentDraftKeyforge, draftEnCoursParJoueurAouB, setdraftEnCoursParJoueurAouB, draftEnCoursSurFactionAouBouC, setDraftEnCoursSurFactionAouBouC, setEtapeDraft}) => {
         const indiceFactionJoueurCourant = `${draftEnCoursSurFactionAouBouC}J${draftEnCoursParJoueurAouB + 1}`;
         const factionCourante = currentDraftKeyforge?.[0]?.[`FactionPick${indiceFactionJoueurCourant}`];
-        const [poolCartesGlobal, setPoolCartesGlobal] = useState(null);
-        const [cartesValidees, setCartesValidees] = useState([]);
+        const { poolCartesGlobal, setPoolCartesGlobal } = useKeyforgeContext();
+        const { cartesValidees, setCartesValidees } = useKeyforgeContext();
         const [indexCarte, setIndexCarte] = useState(0);
         const [loaderCardisPicking, setLoaderCardIsPicking] = useState(false);
 
@@ -74,32 +73,11 @@
                 CJ1: hasCardsForFaction(poolCartesGlobal, draft.FactionPickCJ1, 0),
                 AJ2: hasCardsForFaction(poolCartesGlobal, draft.FactionPickAJ2, 1),
                 BJ2: hasCardsForFaction(poolCartesGlobal, draft.FactionPickBJ2, 1),
-                CJ2: hasCardsForFaction(poolCartesGlobal, draft.FactionPickCJ2, 1),
+                CJ2: hasCardsForFaction(poolCartesGlobal, draft.FactionPickCJ2, 1)
             };
         }, [poolCartesGlobal]);
 
-        useEffect(() => {
-            const loadPoolCartes = async () => {
-                const poolCartes = await pullCurrentDraftPoolCards(currentDraftKeyforge[0].ID);
-                setPoolCartesGlobal(poolCartes);
-            };
-
-            loadPoolCartes();
-        }, [currentDraftKeyforge[0].ID]);
-
-        useEffect(() => {
-            const loadCartesValidees = async () => {
-                const cartesValidees = await pullCurrentDraftCardsSelected(currentDraftKeyforge[0].ID);
-                setCartesValidees(cartesValidees);
-                console.log('callAPI cartes validees', cartesValidees);
-            };
-
-            loadCartesValidees();
-        }, [currentDraftKeyforge[0].ID]);
-
-
         const handleClicValiderCard = async (trinomeCards, carte) => {
-
             const isLastPickForCurrentFaction = indexCarte == (poolCartesGlobalWithFilters.length-3);
             const isLastPickForCurrentPlayer = ((factionsDraftHasCardsOrNot?.[`AJ${draftEnCoursParJoueurAouB +1}`] === true && isLastPickForCurrentFaction) 
                 && (factionsDraftHasCardsOrNot?.[`BJ${draftEnCoursParJoueurAouB +1}`] === false)
@@ -113,10 +91,10 @@
             const closeDraftCurrentPlayer = isLastPickForCurrentPlayer;
             const draftJ1AlreadyFinished = factionsDraftHasCardsOrNot?.[`AJ1`] === false && factionsDraftHasCardsOrNot?.[`BJ1`] === false && factionsDraftHasCardsOrNot?.[`CJ1`] === false;
             const draftJ2AlreadyFinished = factionsDraftHasCardsOrNot?.[`AJ2`] === false && factionsDraftHasCardsOrNot?.[`BJ2`] === false && factionsDraftHasCardsOrNot?.[`CJ2`] === false;
+            const updateEtapeSiDraftJ1J2Finished = isLastPickForCurrentPlayer === true && draftJ1AlreadyFinished === true || isLastPickForCurrentPlayer === true && draftJ2AlreadyFinished === true ? 12 : null;
 
             setLoaderCardIsPicking(true);
 
-            console.log('trinome to delete', trinomeCards);
             try {
                 const res = await fetch(`/api/keyforge/enregistrementCarteValidee`, {
                         method: "POST",
@@ -133,7 +111,8 @@
                             reinitFocusFactionDuDraft: isLastPickForCurrentFaction,
                             reinitFocusJoueurDuDraft: isLastPickForCurrentPlayer,
                             draftJ1Finished: draftJ1AlreadyFinished === true ? true : draftEnCoursParJoueurAouB === 0 && closeDraftCurrentPlayer,
-                            draftJ2Finished: draftJ2AlreadyFinished === true ? true : draftEnCoursParJoueurAouB === 1 && closeDraftCurrentPlayer
+                            draftJ2Finished: draftJ2AlreadyFinished === true ? true : draftEnCoursParJoueurAouB === 1 && closeDraftCurrentPlayer,
+                            etape: updateEtapeSiDraftJ1J2Finished
                         }),
                     });
 
@@ -153,6 +132,11 @@
                         retraitCartesTraitees(draftEnCoursParJoueurAouB, factionCourante);
                     }
                     setCartesValidees(prev => [...prev, carte]);
+                    
+                    if(updateEtapeSiDraftJ1J2Finished === 12) {
+                        setCurrentDraftKeyforge(prev => [{...prev[0], Etat: 12}]);
+                        setEtapeDraft(updateEtapeSiDraftJ1J2Finished);
+                    }
 
                     const data = await res.json();
                     return data;
@@ -167,7 +151,7 @@
         }
 
         const currentTrinomeCards = poolCartesGlobalWithFilters?.slice(indexCarte, indexCarte + 3);
-        console.log(indexCarte);
+
         return (
                 <>
                     <div className="row mb-4">
@@ -191,7 +175,6 @@
                                             if(!draftEnCoursSurFactionAouBouC && factionsDraftHasCardsOrNot?.[`AJ${draftEnCoursParJoueurAouB +1}`] === true) 
                                                 {setDraftEnCoursSurFactionAouBouC("A"); 
                                                     updateFocusSurFactionAouBouC(current.ID, "A"); 
-                                                    updateEtapeDraft(current.ID, current.Etat); 
                                                     setCurrentDraftKeyforge(prev => [{...prev[0], DraftEnCoursSurFactionAouBouC: "A"}]);
                                             }}}>
                                     </img>
@@ -202,7 +185,6 @@
                                             if(!draftEnCoursSurFactionAouBouC && factionsDraftHasCardsOrNot?.[`BJ${draftEnCoursParJoueurAouB +1}`] === true) 
                                                 {setDraftEnCoursSurFactionAouBouC("B"); 
                                                     updateFocusSurFactionAouBouC(current.ID, "B"); 
-                                                    updateEtapeDraft(current.ID, current.Etat); 
                                                     setCurrentDraftKeyforge(prev => [{...prev[0], DraftEnCoursSurFactionAouBouC: "B"}]);
                                             }}}>
                                     </img>
@@ -213,7 +195,6 @@
                                         if(!draftEnCoursSurFactionAouBouC && factionsDraftHasCardsOrNot?.[`CJ${draftEnCoursParJoueurAouB +1}`] === true) 
                                             {setDraftEnCoursSurFactionAouBouC("C"); 
                                                 updateFocusSurFactionAouBouC(current.ID, "C"); 
-                                                updateEtapeDraft(current.ID, current.Etat); 
                                                 setCurrentDraftKeyforge(prev => [{...prev[0], DraftEnCoursSurFactionAouBouC: "C"}]);
                                         }}}>
                                     </img>

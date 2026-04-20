@@ -78,8 +78,8 @@ export const servRecupPoolCartesPourDraft = async (idDraft) => {
   return await getPoolCartesPourDraft.findPool(idDraft);
 };
 
-export const servEnregistrementCarteValidee = async (parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished) => {
-  return await doEnregistrementCarteValideeEtReinitFactionCurrentDraft.saveCardValidee(parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished);
+export const servEnregistrementCarteValidee = async (parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished, etape) => {
+  return await doEnregistrementCarteValideeEtReinitFactionCurrentDraft.saveCardValidee(parIDDraft, parIDCard, parJAorB, Classement, ClassementCardToDeleteA, ClassementCardToDeleteB, reinitFocusFactionDuDraft, reinitFocusJoueurDuDraft, draftJ1Finished, draftJ2Finished, etape);
 };
 
 export const servRecupPoolCartesValideesDuDraftEnCours = async (idDraft) => {

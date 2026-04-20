@@ -38,7 +38,9 @@ router.post('/updateFocusSurFactionAouBouC/', controlleurUpdateFocusSurFactionAo
 
 router.post('/updateEtapeDraft/', controlleurUpdateEtapeDraft);
 
-router.post('/delete', checkSiCurrentUserGetGradeRequis('Administrateur'), controlleurDeleteDraft);
+//router.post('/delete', checkSiCurrentUserGetGradeRequis('Administrateur'), controlleurDeleteDraft);
+
+router.post('/delete', controlleurDeleteDraft);
 
 router.post('/enregistrementPoolsCartes', controlleurEnregistrementPoolsCartes);
 

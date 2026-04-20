@@ -7,18 +7,32 @@
     import recupKeyforgeTxtCurrentInstruction from '../../functions/keyforge/recupKeyforgeTxtCurrentInstruction';
     import pullDraftKeyforge from '../../functions/callAPIx/keyforgePullDraftKeyforge';
     import pullCurrentFactionsFromSet from '../../functions/callAPIx/keyforgePullFactionsFromSet';
-    import updateFocusSurJoueurAouB from '../../functions/callAPIx/keyforgeUpdateFocusSurJoueurAouB';
     import updateFactionsCurrentDraft from '../../functions/callAPIx/keyforgeUpdateFactionsSpecificDraft';
     import DraftKeyforgePartCardsSelection from '../../pages/keyforge/draftKeyforgePartCardsSelection';
-    import updateEtapeDraft from '../../functions/callAPIx/keyforgeUpdateEtapeDraft';
+    import pullCurrentDraftPoolCards from '../../functions/callAPIx/keyforgePullCurrentDraftPoolCards';
+    import pullCurrentDraftCardsSelected from '../../functions/callAPIx/keyforgePullCurrentDraftCardsSelected';
+    import DraftKeyforgeResume from '../../pages/keyforge/draftKeyforgeResume';
+    import { useKeyforgeContext } from '../../../src/components/contexts/keyforgeContext';
+    import { useSessionUserContext } from '../../components/contexts/sessionUserContext';
+    import Tooltip from '../../components/others/Tooltip';
+    import DraftKeyforgePartBoutonsJ1J2 from '../../pages/keyforge/draftKeyforgePartBoutonsJ1J2';
 
+    {/* Composant parent du module de draft Keyforge */}
     const DraftKeyforge = () => {
         const { slug } = useParams();
+        const {sessionUser, setSessionUser} = useSessionUserContext();
+        const {
+            setDraftEnCoursParJoueurAouB, 
+            setDraftEnCoursSurFactionAouBouC, 
+            setPoolCartesGlobal, 
+            setCartesValidees, 
+            draftEnCoursParJoueurAouB, 
+            draftEnCoursSurFactionAouBouC
+        } = useKeyforgeContext();
+
         const [isLoading, setIsLoading] = useState(true);
         const [error, setError] = useState(null);
         const [currentDraftKeyforge, setCurrentDraftKeyforge] = useState(null);
-        const [draftEnCoursParJoueurAouB, setDraftEnCoursParJoueurAouB] = useState(null);
-        const [draftEnCoursSurFactionAouBouC, setDraftEnCoursSurFactionAouBouC] = useState(null);
         const [factionsForCurrentDraftKeyforgeJA, setfactionsForCurrentDraftKeyforgeJA] = useState(null);
         const [factionsForCurrentDraftKeyforgeJB, setfactionsForCurrentDraftKeyforgeJB] = useState(null);
         const [factionsPickBan, setFactionPickBan] = useState({
@@ -32,7 +46,8 @@
             factionPickCJ2: ""
         });
         const [etapeDraft, setEtapeDraft] = useState(0);
-
+        const [focusSurJoueurAouBforStats, setFocuSsurJoueurAouBforStats] = useState(null);
+        
         const modeDraftFaction = etapeDraft >= 1 && etapeDraft < 9;
 
         const txtInstructionDraft = useMemo(() => {
@@ -40,64 +55,82 @@
         }, [etapeDraft, currentDraftKeyforge]);
 
     // Chargement des informations du draft passé en paramètre via slug
-    
     useEffect(() => {
-        let draftKeyforgePulled = null;
-        const loadDraft = async () => {
-            if (slug) {
-                draftKeyforgePulled = await pullDraftKeyforge(slug);
+        const loadInitialData = async () => {
+            if (!slug) return;
+            setIsLoading(true);
+            try {
+                const draftData = await pullDraftKeyforge(slug);
+                if (draftData?.length > 0) {
+                    const draft = draftData[0];
+                    const factionsList = await pullCurrentFactionsFromSet(draft.IDSet);
 
-                if (draftKeyforgePulled && Array.isArray(draftKeyforgePulled) && draftKeyforgePulled.length > 0) {
+                    // Chargement anticipé des données du pool si le draft a commencé (Etat >= 10)
+                    let poolData = [];
+                    let validatedData = [];
+                    if (draft.Etat >= 10) {
+                        [poolData, validatedData] = await Promise.all([
+                            pullCurrentDraftPoolCards(draft.ID),
+                            pullCurrentDraftCardsSelected(draft.ID)
+                        ]);
+                    }
 
-                        setCurrentDraftKeyforge(draftKeyforgePulled);
-                        setEtapeDraft(draftKeyforgePulled[0].Etat);
-                        setDraftEnCoursParJoueurAouB(draftKeyforgePulled[0].DraftEnCoursPourJoueurAouB);
-                        setDraftEnCoursSurFactionAouBouC(draftKeyforgePulled[0].DraftEnCoursSurFactionAouBouC);
-                        loadFactions(draftKeyforgePulled);
-                } else {
-                    setCurrentDraftKeyforge(null);
+                    const pickedIDs = [
+                        draft.FactionPickAJ1, draft.FactionPickBJ1, draft.FactionPickCJ1,
+                        draft.FactionPickAJ2, draft.FactionPickBJ2, draft.FactionPickCJ2
+                    ];
+                    const bannedIFactions = [draft.FactionBanJ1, draft.FactionBanJ2];
+
+                    const syncedFactions = factionsList.map(current => ({
+                        ...current,
+                        Picked: pickedIDs.includes(current.ID),
+                        Banned: bannedIFactions.includes(current.ID)
+                    }));
+
+                    // Regroupement des mises à jour d'état
+                    setCurrentDraftKeyforge(draftData);
+                    setEtapeDraft(draft.Etat);
+                    setDraftEnCoursParJoueurAouB(draft.DraftEnCoursPourJoueurAouB);
+                    setDraftEnCoursSurFactionAouBouC(draft.DraftEnCoursSurFactionAouBouC);
+                    setfactionsForCurrentDraftKeyforgeJA(syncedFactions);
+                    setfactionsForCurrentDraftKeyforgeJB(syncedFactions);
+                    setPoolCartesGlobal(poolData);
+                    setCartesValidees(validatedData);
                 }
+            } catch (err) {
+                console.error("Erreur chargement draft:", err);
+                setError("Erreur de chargement");
+            } finally {
+                setIsLoading(false);
             }
         };
 
-        loadDraft();
-
-        const loadFactions = async (myDraftKeyforge) => {
-            if (myDraftKeyforge) {
-                const draft = myDraftKeyforge[0];
-                const factions = await pullCurrentFactionsFromSet(myDraftKeyforge[0].IDSet);
-                
-                const pickedIDs = [
-                    draft.FactionPickAJ1, draft.FactionPickBJ1, draft.FactionPickCJ1,
-                    draft.FactionPickAJ2, draft.FactionPickBJ2, draft.FactionPickCJ2
-                ];
-                const bannedIDs = [draft.FactionBanJ1, draft.FactionBanJ2];
-
-                const syncFactions = (list) => list.map(f => ({
-                    ...f,
-                    Picked: pickedIDs.includes(f.ID),
-                    Banned: bannedIDs.includes(f.ID)
-                }));
-
-                setfactionsForCurrentDraftKeyforgeJA(syncFactions(factions));
-                setfactionsForCurrentDraftKeyforgeJB(syncFactions(factions));
-            }
-        }
-
-    }, [slug]);
+        loadInitialData();
+    }, [slug, setDraftEnCoursParJoueurAouB, setDraftEnCoursSurFactionAouBouC, setPoolCartesGlobal, setCartesValidees]);
 
     // En fin de phase picks/bans de faction, génération et push bdd du pool de cartes
-
     useEffect(() => {
-        if(currentDraftKeyforge?.[0].FactionPickAJ1 && currentDraftKeyforge?.[0].FactionPickBJ1 && currentDraftKeyforge?.[0].FactionPickCJ1 && currentDraftKeyforge?.[0].FactionPickAJ2 && currentDraftKeyforge?.[0].FactionPickBJ2 && currentDraftKeyforge?.[0].FactionPickCJ2 && etapeDraft == 9) 
-        {
-            processCreationPoolCartes(currentDraftKeyforge, setIsLoading);
-        }
-    }, [currentDraftKeyforge?.[0].FactionPickAJ1]);
+    if (!currentDraftKeyforge?.[0]) return;
+
+    const draft = currentDraftKeyforge[0];
+
+    const isReady =
+        draft.FactionPickAJ1 &&
+        draft.FactionPickBJ1 &&
+        draft.FactionPickCJ1 &&
+        draft.FactionPickAJ2 &&
+        draft.FactionPickBJ2 &&
+        draft.FactionPickCJ2 &&
+        etapeDraft === 9;
+
+    if (isReady) {
+        processCreationPoolCartes(currentDraftKeyforge, setIsLoading);
+    }
+    }, [currentDraftKeyforge, etapeDraft]);
 
     const processCreationPoolCartes = async (currentDraftKeyforge, setIsLoading) => {
         try {
-            await creationPoolCartes(currentDraftKeyforge, setIsLoading);
+            await creationPoolCartes(currentDraftKeyforge, setIsLoading, setPoolCartesGlobal);
             setEtapeDraft(prev => prev + 1);
         } catch (e) {
             console.error(e);
@@ -105,107 +138,70 @@
         }
     }
 
-    // Phase de picks/bans factions pour J1/J2
+    const draftStepsConfig = {
+        1: { type: "Banned", player: "J2", cleSetter: "factionBanJ2" },
+        2: { type: "Banned", player: "J1", cleSetter: "factionBanJ1" },
+        3: { type: "Picked", player: "J2", slot: "A", cleSetter: "factionPickAJ2", cleSetterBisA: "factionPickAJ2LienImg", cleSetterBisB: "libelleFactionAJ2", cleSetterBisC: "couleurAJ2" },
+        4: { type: "Picked", player: "J2", slot: "B", cleSetter: "factionPickBJ2", cleSetterBisA: "factionPickBJ2LienImg", cleSetterBisB: "libelleFactionBJ2", cleSetterBisC: "couleurBJ2" },
+        5: { type: "Picked", player: "J2", slot: "C", cleSetter: "factionPickCJ2", cleSetterBisA: "factionPickCJ2LienImg", cleSetterBisB: "libelleFactionCJ2", cleSetterBisC: "couleurCJ2" },
+        6: { type: "Picked", player: "J1", slot: "A", cleSetter: "factionPickAJ1", cleSetterBisA: "factionPickAJ1LienImg", cleSetterBisB: "libelleFactionAJ1", cleSetterBisC: "couleurAJ1" },
+        7: { type: "Picked", player: "J1", slot: "B", cleSetter: "factionPickBJ1", cleSetterBisA: "factionPickBJ1LienImg", cleSetterBisB: "libelleFactionBJ1", cleSetterBisC: "couleurBJ1" }
+    };
 
-    const handleClickOnPickBanFaction = (idFaction, LienImgFaction) => {
-        if (etapeDraft == 1) 
-        {
-            setfactionsForCurrentDraftKeyforgeJB(prevListeFactions => 
-            prevListeFactions?.map(prevFaction =>
-            prevFaction.ID === idFaction
-            ? {...prevFaction,
-                Banned: !prevFaction.Banned}
-            : prevFaction
-        ))
-        setFactionPickBan(prev => ({
-            ...prev,
-            factionBanJ2: idFaction
-        }));
-        } else if (etapeDraft == 2) 
-        {
-            setfactionsForCurrentDraftKeyforgeJA(prevListeFactions => 
-            prevListeFactions?.map(prevFaction =>
-            prevFaction.ID === idFaction
-            ? {...prevFaction,
-                Banned: !prevFaction.Banned}
-            : prevFaction
-        ))
-        setFactionPickBan(prev => ({
-            ...prev,
-            factionBanJ1: idFaction
-        }));
-        } else if (etapeDraft == 3 || etapeDraft == 4 || etapeDraft == 5) 
-        {
-            setfactionsForCurrentDraftKeyforgeJB(prevListeFactions => 
-            prevListeFactions?.map(prevFaction =>
-            prevFaction.ID === idFaction
-            ? {...prevFaction,
-                Picked: !prevFaction.Picked}
-            : prevFaction
+    const step = draftStepsConfig[etapeDraft];
+
+    const setfactionsForCurrentDraftKeyforge = {
+    J1: setfactionsForCurrentDraftKeyforgeJA,
+    J2: setfactionsForCurrentDraftKeyforgeJB,
+    };
+
+    // Phase de picks/bans factions pour J1/J2
+    const handleClickOnPickBanFaction = (idFaction, LienImgFaction, NomFaction, CouleurFaction) => {
+        if (!step) return;
+        if(etapeDraft < 8) {
+            setfactionsForCurrentDraftKeyforge[step.player](prevListeFactions => 
+                prevListeFactions?.map(prevFaction =>
+                prevFaction.ID === idFaction
+                ? {...prevFaction,
+                    [step.type]: !prevFaction[step.type]}
+                : prevFaction
             ))
 
-            switch (etapeDraft) {
-                case 3:
-                    setFactionPickBan(prev => ({
-                        ...prev,
-                        factionPickAJ2: idFaction,
-                        factionPickAJ2LienImg: LienImgFaction
-                    }));
-                    break;
-                case 4:
-                    setFactionPickBan(prev => ({
-                        ...prev,
-                        factionPickBJ2: idFaction,
-                        factionPickBJ2LienImg: LienImgFaction
-                    }));
-                    break;
-                case 5:
-                    setFactionPickBan(prev => ({
-                        ...prev,
-                        factionPickCJ2: idFaction,
-                        factionPickCJ2LienImg: LienImgFaction
-                    }));
-                    break;
-            } 
-        } else if (etapeDraft == 6 || etapeDraft == 7)
+            setFactionPickBan(prev => ({
+                ...prev,
+
+                ...(step.cleSetter && {
+                    [step.cleSetter]: idFaction
+                }),
+
+                ...(step.cleSetterBisA && {
+                    [step.cleSetterBisA]: LienImgFaction
+                }),
+
+                ...(step.cleSetterBisB && {
+                    [step.cleSetterBisB]: NomFaction
+                }),
+
+                ...(step.cleSetterBisC && {
+                    [step.cleSetterBisC]: CouleurFaction
+                }),
+            }));
+        }  
+        else if (etapeDraft == 8)
         {
-            setfactionsForCurrentDraftKeyforgeJA(prevListeFactions => 
-            prevListeFactions?.map(prevFaction =>
-            prevFaction.ID === idFaction
-            ? {...prevFaction,
-                Picked: !prevFaction.Picked}
-            : prevFaction
-        ))
-        switch (etapeDraft) {
-            case 6:
-                setFactionPickBan(prev => ({
-                    ...prev,
-                    factionPickAJ1: idFaction,
-                    factionPickAJ1LienImg: LienImgFaction
-                }));
-                break;
-            case 7:
-                setFactionPickBan(prev => ({
-                    ...prev,
-                    factionPickBJ1: idFaction,
-                    factionPickBJ1LienImg: LienImgFaction
-                }));
-                break;
-        }
-        
-        } else if (etapeDraft == 8)
-        {
-            processPicksBansFactions(idFaction, LienImgFaction);
+            processPicksBansFactions(idFaction, LienImgFaction, NomFaction, CouleurFaction);
         }
     };  
 
     // Saisie en base de données des factions picks et bans + en cas de succès -> refresh useStates
-    const processPicksBansFactions = async (idFaction, LienImgFaction) => {
+    const processPicksBansFactions = async (idFaction, LienImgFaction, NomFaction, CouleurFaction) => {
             try {
                 const tempoFactionPickBan = {
                     ...factionsPickBan,
-                    factionPickCJ1: idFaction,
-                    factionPickCJ1LienImg: LienImgFaction
+                        factionPickCJ1: idFaction,
+                        factionPickCJ1LienImg: LienImgFaction,
+                        libelleFactionCJ1: NomFaction,
+                        couleurCJ1: CouleurFaction
                 }
                 await updateFactionsCurrentDraft(currentDraftKeyforge[0].ID, 
                     tempoFactionPickBan.factionBanJ1, 
@@ -221,7 +217,19 @@
                     tempoFactionPickBan.factionPickCJ1LienImg, 
                     tempoFactionPickBan.factionPickAJ2LienImg, 
                     tempoFactionPickBan.factionPickBJ2LienImg, 
-                    tempoFactionPickBan.factionPickCJ2LienImg);
+                    tempoFactionPickBan.factionPickCJ2LienImg,
+                    tempoFactionPickBan.couleurAJ1,
+                    tempoFactionPickBan.couleurBJ1,
+                    tempoFactionPickBan.couleurCJ1,
+                    tempoFactionPickBan.couleurAJ2,
+                    tempoFactionPickBan.couleurBJ2,
+                    tempoFactionPickBan.couleurCJ2,
+                    tempoFactionPickBan.libelleFactionAJ1,
+                    tempoFactionPickBan.libelleFactionBJ1,
+                    tempoFactionPickBan.libelleFactionCJ1,
+                    tempoFactionPickBan.libelleFactionAJ2,
+                    tempoFactionPickBan.libelleFactionBJ2,
+                    tempoFactionPickBan.libelleFactionCJ2);
                 setfactionsForCurrentDraftKeyforgeJA(prevListeFactions => 
                     prevListeFactions?.map(prevFaction =>
                     prevFaction.ID === idFaction
@@ -246,6 +254,18 @@
                     LienImgAJ2: tempoFactionPickBan.factionPickAJ2LienImg,
                     LienImgBJ2: tempoFactionPickBan.factionPickBJ2LienImg,
                     LienImgCJ2: tempoFactionPickBan.factionPickCJ2LienImg,
+                    CouleurAJ1: tempoFactionPickBan.couleurAJ1,
+                    CouleurBJ1: tempoFactionPickBan.couleurBJ1,
+                    CouleurCJ1: tempoFactionPickBan.couleurCJ1,
+                    CouleurAJ2: tempoFactionPickBan.couleurAJ2,
+                    CouleurBJ2: tempoFactionPickBan.couleurBJ2,
+                    CouleurCJ2: tempoFactionPickBan.couleurCJ2,
+                    LibelleFactionAJ1: tempoFactionPickBan.libelleFactionAJ1,
+                    LibelleFactionBJ1: tempoFactionPickBan.libelleFactionBJ1,
+                    LibelleFactionCJ1: tempoFactionPickBan.libelleFactionCJ1,
+                    LibelleFactionAJ2: tempoFactionPickBan.libelleFactionAJ2,
+                    LibelleFactionBJ2: tempoFactionPickBan.libelleFactionBJ2,
+                    LibelleFactionCJ2: tempoFactionPickBan.libelleFactionCJ2,
                     Etat: 10
                 }]);
             } catch(e) {
@@ -254,233 +274,100 @@
             }
     }
 
+    const isReadyToLaunchPhasePickBanFactions = currentDraftKeyforge && !modeDraftFaction && etapeDraft < 9
+    const isPhasePickBanFactions = modeDraftFaction && etapeDraft < 9
+    const j1isDrafting = etapeDraft == 2 || etapeDraft == 6 || etapeDraft == 7 || etapeDraft == 8
+    const j2isDrafting = etapeDraft == 1 || etapeDraft == 3 || etapeDraft == 4 || etapeDraft == 5
+    const isNotPickedAndNotBanned = (faction) => { 
+        return !faction.Banned && !faction.Picked
+    };
+
+    const cssCurrentFactionPickedOrBanned = (faction) => { 
+        return faction.Picked 
+        ? "backgroundAnimGreenSmooth" 
+        : faction.Banned && "backgroundAnimRed";
+    };
+
+    const phaseDeDraftParTrinomeEnCours = (draft, draftParJoueurAouB, etape) => {
+        return draft && draftParJoueurAouB != null && etape > 9
+    };
+
+    const draftFactionsEnCours = (etape) => {
+        return etape >= 1 && etape < 9
+    };
+
+    const factionsForPickBanCurrentPlayer = 
+        j1isDrafting 
+        ? factionsForCurrentDraftKeyforgeJA 
+        : j2isDrafting && factionsForCurrentDraftKeyforgeJB;
+
 
     return (
-            <>
+        <>
+        {sessionUser ? <>
+            <Tooltip content="Nombre de cartes validées">
+                <button>Hover moi</button>
+            </Tooltip>
             <div className="container-xl mt-3">
                 <div className="row mb-4">
                     <div className="col-12">
                         <h2 className="mt-4 text-center txtColorWhite">Draft KeyForge</h2>
                     </div>
                 </div>
-                <div className={`mb-4 ${styles.EnteteDraft}`}>
-                    <div className="col-12 d-flex justify-content-center">
-                            <h4 className="text-center txtColorWhite">{currentDraftKeyforge?.[0]?.Titre ?? "---"}</h4>
-                    </div>
-                    <div className="row">
-                        {/* Labels du draft en cours */}
-                        <div className="col-2 mt-2">
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Date de création</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Date de mise à jour</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Joueur A</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Maisons joueur A</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Joueur B</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Maisons joueur B</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Set</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Anomalies</p>
-                            </div>
-                            <div className="col-12 ps-4">
-                                <p className="txtBold">Avancement</p>
-                            </div>
-                        </div>
-                        <div className="col-2 mt-2">
-                            {/* Infos du draft en cours */}
-                            {currentDraftKeyforge ? 
-                            <>
-                            {currentDraftKeyforge?.map((current, index) => (
-                            <div key={current.ID}>
-                                <div className="col-12,">
-                                    <p className="txtColorWhite">{new Date(current.DateCreation).toLocaleDateString('fr-FR')}</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">{new Date(current.DateDerModif).toLocaleDateString('fr-FR')}</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">{current.PseudoJ1}</p>
-                                </div>
-                                    <p>
-                                        <img 
-                                            src={current.LienImgAJ1 || "/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction A du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={current.LienImgBJ1 || "/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction B du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={current.LienImgCJ1 || "/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction C du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                    </p>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">{current.PseudoJ2}</p>
-                                </div>
-                                <div className="col-12">
-                                    <p>
-                                        <img 
-                                            src={current.LienImgAJ2 || "/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction A du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={current.LienImgBJ2 || "/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction B du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={current.LienImgCJ2 || "/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction C du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                    </p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">{current.Libelle + " (" + current.Numero + ")"}</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">{current.AvecAnomalies ? "Avec" : "Sans"}</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">{current.Etat == 0 ? "Maisons à renseigner" : current.Etat == 10 ? "Draft prêt" : current.Etat}</p>
-                                </div>
-                            </div>
-                        ))}</>
-                        :
-                            <div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">---</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">---</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">---</p>
-                                </div>
-                                    <p>
-                                        <img 
-                                            src={"/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction A du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={"/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction B du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={"/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction C du joueur 1" 
-                                            className={styles.logoFaction}
-                                        />
-                                    </p>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">---</p>
-                                </div>
-                                <div className="col-12">
-                                    <p>
-                                        <img 
-                                            src={"/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction A du joueur 2" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={"/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction B du joueur 2" 
-                                            className={styles.logoFaction}
-                                        />
-                                        <img 
-                                            src={"/images/keyforge/NC.png"} 
-                                            alt="Logo de la faction C du joueur 2" 
-                                            className={styles.logoFaction}
-                                        />
-                                    </p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">---</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">---</p>
-                                </div>
-                                <div className="col-12">
-                                    <p className="txtColorWhite">---</p>
-                                </div>
-                            </div>
-                        }
-
-                        </div>
-                        <div className="col-8 mt-2 borderLeft1pxColE">
-                        </div>
-                    </div>
-                </div>
+                <DraftKeyforgeResume 
+                    currentDraftKeyforge={currentDraftKeyforge} 
+                    cusSurJoueurAouBforStats={focusSurJoueurAouBforStats}
+                />
                 
-                {/* Picks/bans des factions */}
-                {currentDraftKeyforge && !modeDraftFaction && etapeDraft < 9 &&
+                {/* Bouton lancement phase picks/bans factions */}
+                {isReadyToLaunchPhasePickBanFactions &&
                 <div className="row">
                     <div className="col-12 mt-4 mb-5 d-flex justify-content-center">
-                        <Button className={`btn btn-primary btn-ColorA`} onClick={() => {setEtapeDraft(prev => prev + 1);}}>
+                        <Button 
+                            className={`btn btn-primary btn-ColorA`} 
+                            onClick={() => {
+                                setEtapeDraft(prev => prev + 1);
+                                }
+                            }>
                             Drafter les maisons
                         </Button>
                     </div>
                 </div>
                 }
 
-                {modeDraftFaction && etapeDraft < 9 && 
+                {/* Picks/bans des factions */}
+                {isPhasePickBanFactions  && 
                 <>
                     <div className="row">             
                         <div className="col-12 mt-1 justify-content-center">
-                                <h6 className="mt-3 text-center txtColorWhite">Procédez au draft des maisons ...</h6>
+                                <h6 className="mt-3 text-center txtColorWhite">
+                                    Procédez au draft des maisons ...
+                                </h6>
                         </div>
                     </div>
                     <div className="row mb-5">
                         <div className="col-12 mt-4 d-flex justify-content-center">
                             <p>
-                                {(etapeDraft == 2 || etapeDraft == 6 || etapeDraft == 7 || etapeDraft == 8) && 
+                                {isPhasePickBanFactions && 
                                 <>
-                                    {factionsForCurrentDraftKeyforgeJA?.map((current, index) => (
-                                        <img key={`factionLogoA-${current.ID}`} 
+                                    {factionsForPickBanCurrentPlayer?.map((current, index) => (
+                                        <img key={`factionLogo-${current.ID}`} 
                                             src={current.LienImg} 
-                                            alt="Logo de la faction A du joueur 1" 
-                                            className={`borderRadius6 ${styles.logoFactionBig} backgroundAnimSurvol ${current.Picked ? "backgroundAnimGreenSmooth" : current.Banned && "backgroundAnimRed"}`} 
+                                            alt="Logo de la faction" 
+                                            className={`borderRadius6 
+                                                ${styles.logoFactionBig} 
+                                                backgroundAnimSurvol 
+                                                ${cssCurrentFactionPickedOrBanned(current)}`} 
                                             onClick={() => {
-                                            if (!current.Banned && !current.Picked) {
-                                                setEtapeDraft(prev => prev + 1);
-                                                handleClickOnPickBanFaction(current.ID, current.LienImg);
-                                            }
-                                            }}
-                                        />
-                                    ))}
-                                </>}
-
-                                {(etapeDraft == 1 || etapeDraft == 3 || etapeDraft == 4 || etapeDraft == 5) && 
-                                <>
-                                    {factionsForCurrentDraftKeyforgeJB?.map((current, index) => (
-                                        <img key={`factionLogoB-${current.ID}`} 
-                                            src={current.LienImg} 
-                                            alt="Logo de la faction A du joueur 1" 
-                                            className={`borderRadius6 ${styles.logoFactionBig} backgroundAnimSurvol ${current.Picked ? "backgroundAnimGreenSmooth" : current.Banned && "backgroundAnimRed"}`} 
-                                            onClick={() => {
-                                            if (!current.Banned && !current.Picked) {
-                                                setEtapeDraft(prev => prev + 1);
-                                                handleClickOnPickBanFaction(current.ID, current.LienImg);
-                                            }
+                                            if (isNotPickedAndNotBanned(current)) {
+                                                handleClickOnPickBanFaction(
+                                                        current.ID, 
+                                                        current.LienImg, 
+                                                        current.Libelle, 
+                                                        current.CouleurRGB
+                                                    );
+                                                    setEtapeDraft(prev => prev + 1);
+                                                }
                                             }}
                                         />
                                     ))}
@@ -491,83 +378,19 @@
                 </>
                 }
 
-                {/* Draft par trinomes */}
+                {/* Draft par trinomes : boutons J1/J2*/}
                 {etapeDraft >= 10 &&
-                <div className="row mb-4">
-                    <div className="col-6 mt-4 mb-4 d-flex justify-content-center">
-                        <Button 
-                            className={`btn btn-primary ${currentDraftKeyforge[0].DraftJ1Finished == true ? "btn-ColorFinished" : draftEnCoursParJoueurAouB == 1 ? "btn-ColorInactif" : draftEnCoursParJoueurAouB == 0 ? "btn-ColorAFocused" : "btn-ColorA"} btn-lg`} 
-                            disabled={draftEnCoursParJoueurAouB == 1} 
-                            onClick={currentDraftKeyforge[0].DraftJ1Finished == true ? null : async () => {
-                                try {
-                                    await updateFocusSurJoueurAouB(
-                                    currentDraftKeyforge[0].ID,
-                                    0
-                                    );
-                                    // Je devrais fusionner cette partie avec le updateFocusSurJoueurAouB, comme ca si cela plante, on est bueno)
-                                    await updateEtapeDraft(
-                                    currentDraftKeyforge[0].ID,
-                                    11
-                                    );
-
-                                    setCurrentDraftKeyforge(prev => [
-                                    {
-                                        ...prev[0],
-                                        DraftEnCoursPourJoueurAouB: 0,
-                                        Etat: 11
-                                    }
-                                    ]);
-
-                                    setDraftEnCoursParJoueurAouB(0);
-
-                                } catch (e) {
-                                    console.error(e);
-                                }
-                                }
-                            }
-                        >
-                            {"Commencer le draft de " + currentDraftKeyforge[0]?.PseudoJ1}
-                        </Button>
-                    </div>
-                    <div className="col-6 mt-4 mb-4 d-flex justify-content-center">
-                        <Button 
-                            className={`btn btn-primary ${currentDraftKeyforge[0].DraftJ2Finished == true ? "btn-ColorFinished" : draftEnCoursParJoueurAouB == 0 ? "btn-ColorInactif" : draftEnCoursParJoueurAouB == 1 ? "btn-ColorAFocused" : "btn-ColorA"} btn-lg`} 
-                            disabled={draftEnCoursParJoueurAouB == 0} 
-                            onClick={currentDraftKeyforge[0].DraftJ2Finished == true ? null : async () => {
-                                try {
-                                    await updateFocusSurJoueurAouB(
-                                    currentDraftKeyforge[0].ID,
-                                    1
-                                    );
-
-                                    await updateEtapeDraft(
-                                    currentDraftKeyforge[0].ID,
-                                    11
-                                    );
-
-                                    setCurrentDraftKeyforge(prev => [
-                                    {
-                                        ...prev[0],
-                                        DraftEnCoursPourJoueurAouB: 1,
-                                        Etat: 11
-                                    }
-                                    ]);
-
-                                    setDraftEnCoursParJoueurAouB(1);
-
-                                } catch (e) {
-                                    console.error(e);
-                                }
-                                }
-                            }
-                        >
-                            {"Commencer le draft de " + currentDraftKeyforge[0]?.PseudoJ2}
-                        </Button>
-                    </div>
-                </div>
+                    <DraftKeyforgePartBoutonsJ1J2 
+                        currentDraft={currentDraftKeyforge?.[0]}
+                        setCurrentDraft={setCurrentDraftKeyforge}
+                        draftTermine={etapeDraft >= 12}
+                        focusAouBforStats={focusSurJoueurAouBforStats}
+                        setfocusAouBforStats={setFocuSsurJoueurAouBforStats}
+                    />
                 }
 
-                {currentDraftKeyforge && draftEnCoursParJoueurAouB != null && etapeDraft > 9 && 
+                {/* Draft par trinomes */}
+                {phaseDeDraftParTrinomeEnCours(currentDraftKeyforge, draftEnCoursParJoueurAouB, etapeDraft) && 
                     <div className={`${styles.EnteteDraft} mb-5`}>
                         <DraftKeyforgePartCardsSelection 
                             currentDraftKeyforge={currentDraftKeyforge} 
@@ -575,11 +398,14 @@
                             draftEnCoursParJoueurAouB={draftEnCoursParJoueurAouB} 
                             setdraftEnCoursParJoueurAouB={setDraftEnCoursParJoueurAouB} 
                             draftEnCoursSurFactionAouBouC={draftEnCoursSurFactionAouBouC} 
-                            setDraftEnCoursSurFactionAouBouC={setDraftEnCoursSurFactionAouBouC}/>
+                            setDraftEnCoursSurFactionAouBouC={setDraftEnCoursSurFactionAouBouC}
+                            setEtapeDraft={setEtapeDraft}
+                        />
                     </div>
                 }
             </div>
-            {etapeDraft >= 1 && etapeDraft < 9  &&
+            {/* Bandeau d instruction du pick/ban factions bottom */}
+            {draftFactionsEnCours(etapeDraft)  &&
                 <div className={styles.bandeauInstructionDraft}>
                     <div className="col-12 d-flex justify-content-center txt-base">
                         {true &&
@@ -595,8 +421,21 @@
                         }
                     </div>
                 </div>
+            }</> :
+            <div className="row">
+                {/* Warning connexion requise */}
+                <div className="col-12 col-lg-12 mt-1 mb-5">
+                    <h2 className="
+                    mt-5 
+                    text-center 
+                    txtColorWhite"
+                    >
+                        Le module de deckbuilding Keyforge requiert d'être connecté.
+                    </h2> 
+                </div>
+            </div>
             }
-            </>
+        </>
         )
     };
 

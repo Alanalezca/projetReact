@@ -79,7 +79,7 @@ const Keyforge = () => {
                                 4. Exportez votre liste et jouez !`}/>
                         </div>
                     </div>
-                {(sessionUser?.grade == "Administrateur" ?
+                {(sessionUser ?
                 <><ModalCreateNewDraftKeyforge show={showFormCreateNewDraft} handleClose={setShowFormCreateNewDraft} handleRefresh={setListeMyDrafts}/>
                     <div className="row">
                         <div className="col-12 mt-4">
@@ -162,7 +162,6 @@ const Keyforge = () => {
                                 </div>
                                 <div className="col-3 col-lg-2">
                                     <div className="d-inline"><i className="bx bx-circle-quarter bxNormalOrangeWithoutHover topMinus3"></i></div>
-                                    <div className="d-inline"><i className="bx bx-edit bxNormalOrange topMinus3 cPointer"></i></div>
                                     <div className="d-inline"><i className="bx bx-message-square-x bxNormalOrange topMinus3 cPointer" onClick={(e) => handleDeleteDraft(currentDraft?.ID, currentDraft?.Titre)}></i></div>
                                 </div>
                             </div>

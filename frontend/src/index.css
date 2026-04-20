@@ -130,6 +130,12 @@ main {
   --txtColorDarkLight: #adb5bd;
   --txtColorDarkLightRGB: #adb5bd;
 
+  --txtColorOrange: #FF9901;
+  --txtColorOrangeRGB: rgba(255, 153, 1);
+
+  --txtColorGreen: #42BC5A;
+  --txtColorGreenRGB: rgba(66, 188, 90);
+
   --txtColorPlayerRed: #E53935;
   --txtColorPlayerRedRGB: rgba(229, 57, 53);
 
@@ -311,7 +317,7 @@ html body {
 
 h1 { font-size: 2.5rem; }
 p { font-size: 1rem; }
-span { font-size: 1rem; }
+/*span { font-size: 1rem; }*/
 
 .borderColorA {
   border: 2px solid var(--ColorA);
@@ -446,6 +452,18 @@ span { font-size: 1rem; }
 
 .txtColorRed {
   color: var(--txtColorPlayerRed);
+}
+
+.txtColorYellow {
+  color: var(--txtColorPlayerYellow);
+}
+
+.txtColorOrange {
+  color: var(--txtColorOrange);
+}
+
+.txtColorGreen {
+  color: var(--txtColorGreen);
 }
 
 .txtColorBlue {
@@ -584,6 +602,30 @@ span { font-size: 1rem; }
 }
 
 .btn-ColorAFocused {
+  background-color: var(--ColorB) !important;
+  border: 1px solid var(--ColorB) !important;
+  transition: background-color 0.25s ease;  /* Transition de 0.5 seconde */
+  cursor: not-allowed !important;
+}
+
+.btn-ColorAFocused:hover {
+  background-color: var(--ColorB) !important;
+  border: 1px solid var(--ColorB) !important;
+  cursor: not-allowed !important;
+}
+
+.btn-ColorF {
+  background-color: var(--ColorF) !important;
+  border: 1px solid var(--ColorF) !important;
+  transition: background-color 0.25s ease;  /* Transition de 0.5 seconde */
+}
+
+.btn-ColorF:hover {
+  background-color: var(--ColorA) !important;
+  border: 1px solid var(--ColorA) !important;
+}
+
+.btn-ColorFFocused {
   background-color: var(--ColorB) !important;
   border: 1px solid var(--ColorB) !important;
   transition: background-color 0.25s ease;  /* Transition de 0.5 seconde */

@@ -50,7 +50,7 @@ import InputStandard from '../../components/inputs/InputStandard';
             headers: {
             "Content-Type": "application/json"
             },
-            body: JSON.stringify({ parID: (sessionUser.id.toString() + "-" + dateFormated), parJoueurA: inputsRef?.current["pseudoJoueurA"]?.value || "Joueur A", parJoueurB: inputsRef?.current["pseudoJoueurB"]?.value || "Joueur B", parPresenceAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value, parSet: idSetSelected, parDateCreation: dateNow, parDateMaj: dateNow, parTitreDraft: inputsRef?.current["titreDraft"]?.value, parEtat: 0})
+            body: JSON.stringify({ parID: (sessionUser.id.toString() + "-" + dateFormated), parJoueurA: inputsRef?.current["pseudoJoueurA"]?.value || "Joueur A", parJoueurB: inputsRef?.current["pseudoJoueurB"]?.value || "Joueur B", parPresenceAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value, parSet: idSetSelected, parDateCreation: dateNow, parDateMaj: dateNow, parTitreDraft: inputsRef?.current["titreDraft"]?.value || "(sans nom)", parEtat: 0})
         });
 
         if (!response.ok) {
@@ -59,7 +59,7 @@ import InputStandard from '../../components/inputs/InputStandard';
         }
 
         const result = await response.json();
-        showOngletAlerte('success', '(Création draft)', '', `Le nouveau draft KeyForge "` + inputsRef?.current["titreDraft"]?.value + `" a bien été créé !`);
+        showOngletAlerte('success', '(Création draft)', '', `Le nouveau draft KeyForge "` + (inputsRef?.current["titreDraft"]?.value || "(sans nom)") + `" a bien été créé !`);
         handleClose(false);
         setListeSets(prevListeSets =>
             prevListeSets?.map(currentSet => ({
@@ -72,7 +72,7 @@ import InputStandard from '../../components/inputs/InputStandard';
             ...prev,
             {
                 ID: (sessionUser.id.toString() + "-" + dateFormated),
-                Titre: inputsRef?.current["titreDraft"]?.value,
+                Titre: inputsRef?.current["titreDraft"]?.value || "(sans nom)",
                 AvecAnomalies: inputsRef?.current["checkAvecAnomalies"]?.value,
                 DateCreation: dateNow,
                 DateDerModif: dateNow,
@@ -89,7 +89,7 @@ import InputStandard from '../../components/inputs/InputStandard';
         }
     };
 
-  return (
+    return (
     <Modal show={show} onHide={() => handleClose(false)} centered>
       <Modal.Header closeButton className={`${styles.borderTop} bgcolorC modalTopBordBotTransparent`}>
         <Modal.Title className="txtColorWhite">Création d'un nouveau draft</Modal.Title>

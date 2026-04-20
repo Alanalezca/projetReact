@@ -6,7 +6,7 @@ import ArticlePage from '../src/pages/articles/articlePage';
 import Smashup from '../src/pages/smashup/smashup';
 import DiceThrone from '../src/pages/dicethrone/dicethrone';
 import Keyforge from '../src/pages/keyforge/keyforge';
-import DraftKeyforge from '../src/pages/keyforge/draftKeyforge';
+import DraftKeyforgeEnglobant from '../src/pages/keyforge/draftKeyforgeEnglobant';
 import ArticleCreate from '../src/pages/articles/createArticle';
 import ArticleAdmin from '../src/pages/articles/adminArticles';
 import Patchnotes from '../src/pages/others/patchnotes';
@@ -23,7 +23,7 @@ function App() {
       <Route path="/smashup" element={<Smashup />} />
       <Route path="/dicethrone" element={<DiceThrone />} />
       <Route path="/keyforge" element={<Keyforge />} />
-      <Route path="/draftKeyforge/:slug" element={<DraftKeyforge />} />
+      <Route path="/draftKeyforge/:slug" element={<DraftKeyforgeEnglobant />} />
       <Route path="/release/patchnotes" element={<Patchnotes />} />
       <Route path="*" element={<Articles />} />
     </Routes>

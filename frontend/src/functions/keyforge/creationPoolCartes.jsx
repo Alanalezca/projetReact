@@ -4,7 +4,7 @@ import enregistrementPoolsVersBdd from '../callAPIx/keyforgeEnregistrementPoolsV
 import pullCurrentDraftPoolCards from '../callAPIx/keyforgePullCurrentDraftPoolCards.jsx'
 
 
-const creationPoolCartes = async (currentDraftKeyforge, setIsLoading) => {
+const creationPoolCartes = async (currentDraftKeyforge, setIsLoading, setPoolCartesGlobal) => {
         try {
 
             const response = await fetch(
@@ -122,6 +122,18 @@ const creationPoolCartes = async (currentDraftKeyforge, setIsLoading) => {
 
             const result = await enregistrementPoolsVersBdd(arrayFinalToCharge, currentDraftKeyforge[0].ID);
             if(result) {
+                try {
+                    const cartePoolPulled = await pullCurrentDraftPoolCards(currentDraftKeyforge[0].ID);
+                    
+                    if (cartePoolPulled.length > 0) {
+                        setPoolCartesGlobal(cartePoolPulled);
+                    }
+                }
+                catch (error) {
+                    console.error("Erreur génération du pool de cartes:", error);
+                    throw new Error(`Erreur HTTP ${error}`);
+                }
+
                 pullCurrentDraftPoolCards(currentDraftKeyforge[0].ID);
             } 
             else {
