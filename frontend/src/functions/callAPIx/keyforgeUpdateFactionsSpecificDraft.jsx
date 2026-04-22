@@ -13,7 +13,7 @@ const updateFactionsCurrentDraft = async (
   factionPickBJ2,
   factionPickCJ2
 ) => {
-  console.log('call api');
+
   const response = await fetch("/api/keyforge/updateFactionsSpecificDraft", {
     method: "POST",
     headers: {

@@ -151,21 +151,32 @@
         }
 
         const currentTrinomeCards = poolCartesGlobalWithFilters?.slice(indexCarte, indexCarte + 3);
-
+        console.log('factionsDraftHasCardsOrNot', factionsDraftHasCardsOrNot, poolCartesGlobal);
         return (
                 <>
                     <div className="row mb-4">
-                        <div className="col-12 mt-2 d-flex justify-content-center">
+                        <div className="col-12 
+                        mt-2 
+                        d-flex 
+                        justify-content-center"
+                        >
                             <h4 className="text-center txtColorWhite">Choix des cartes</h4>
                         </div>
                     </div>
                     <div className="row">             
-                        <div className="col-12 mt-1 justify-content-center">
-                                <h6 className=" text-center txtColorWhite">Focus sur la maison ...</h6>
+                        <div className="col-12 
+                        mt-1 
+                        justify-content-center"
+                        >
+                            <h6 className=" text-center txtColorWhite">Focus sur la maison ...</h6>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-12 mt-2 d-flex justify-content-center">
+                        <div className="col-12 
+                        mt-2 
+                        d-flex 
+                        justify-content-center"
+                        >
                             {currentDraftKeyforge.map((current, index) => (
                                 <p key={current.ID}>
                                     <img src={draftEnCoursParJoueurAouB === 1 ? current.LienImgAJ2 : current.LienImgAJ1} 

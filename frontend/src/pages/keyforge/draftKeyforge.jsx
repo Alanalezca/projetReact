@@ -16,6 +16,7 @@
     import { useSessionUserContext } from '../../components/contexts/sessionUserContext';
     import Tooltip from '../../components/others/Tooltip';
     import DraftKeyforgePartBoutonsJ1J2 from '../../pages/keyforge/draftKeyforgePartBoutonsJ1J2';
+    import { useDraftFactions } from '../../functions/hooks/useDraftFactions';
 
     {/* Composant parent du module de draft Keyforge */}
     const DraftKeyforge = () => {
@@ -33,26 +34,29 @@
         const [isLoading, setIsLoading] = useState(true);
         const [error, setError] = useState(null);
         const [currentDraftKeyforge, setCurrentDraftKeyforge] = useState(null);
-        const [factionsForCurrentDraftKeyforgeJA, setfactionsForCurrentDraftKeyforgeJA] = useState(null);
-        const [factionsForCurrentDraftKeyforgeJB, setfactionsForCurrentDraftKeyforgeJB] = useState(null);
-        const [factionsPickBan, setFactionPickBan] = useState({
-            factionBanJ1: "", 
-            factionPickAJ1: "", 
-            factionPickBJ1: "", 
-            factionPickCJ1: "", 
-            factionBanJ2: "", 
-            factionPickAJ2: "", 
-            factionPickBJ2: "", 
-            factionPickCJ2: ""
-        });
         const [etapeDraft, setEtapeDraft] = useState(0);
         const [focusSurJoueurAouBforStats, setFocuSsurJoueurAouBforStats] = useState(null);
-        
-        const modeDraftFaction = etapeDraft >= 1 && etapeDraft < 9;
+        const [factionsJA, setFactionsJA] = useState(null);
+        const [factionsJB, setFactionsJB] = useState(null);
 
         const txtInstructionDraft = useMemo(() => {
             return recupKeyforgeTxtCurrentInstruction(etapeDraft, currentDraftKeyforge);
         }, [etapeDraft, currentDraftKeyforge]);
+
+        const {
+            handleClickOnPickBanFaction
+        } = useDraftFactions({
+            etapeDraft,
+            setEtapeDraft,
+            currentDraftKeyforge,
+            updateFactionsCurrentDraft,
+            setCurrentDraftKeyforge,
+            setError,
+            factionsJA,
+            factionsJB,
+            setFactionsJA,
+            setFactionsJB
+        });
 
     // Chargement des informations du draft passé en paramètre via slug
     useEffect(() => {
@@ -92,8 +96,8 @@
                     setEtapeDraft(draft.Etat);
                     setDraftEnCoursParJoueurAouB(draft.DraftEnCoursPourJoueurAouB);
                     setDraftEnCoursSurFactionAouBouC(draft.DraftEnCoursSurFactionAouBouC);
-                    setfactionsForCurrentDraftKeyforgeJA(syncedFactions);
-                    setfactionsForCurrentDraftKeyforgeJB(syncedFactions);
+                    setFactionsJA(syncedFactions);
+                    setFactionsJB(syncedFactions);
                     setPoolCartesGlobal(poolData);
                     setCartesValidees(validatedData);
                 }
@@ -106,14 +110,14 @@
         };
 
         loadInitialData();
-    }, [slug, setDraftEnCoursParJoueurAouB, setDraftEnCoursSurFactionAouBouC, setPoolCartesGlobal, setCartesValidees]);
+    }, [slug]);
 
     // En fin de phase picks/bans de faction, génération et push bdd du pool de cartes
     useEffect(() => {
     if (!currentDraftKeyforge?.[0]) return;
 
     const draft = currentDraftKeyforge[0];
-
+    
     const isReady =
         draft.FactionPickAJ1 &&
         draft.FactionPickBJ1 &&
@@ -122,12 +126,13 @@
         draft.FactionPickBJ2 &&
         draft.FactionPickCJ2 &&
         etapeDraft === 9;
-
+    console.log('isReady', isReady, draft);
     if (isReady) {
         processCreationPoolCartes(currentDraftKeyforge, setIsLoading);
     }
     }, [currentDraftKeyforge, etapeDraft]);
 
+    // Creation du pool de cartes (en prévision de son upload en bdd + mise en state)
     const processCreationPoolCartes = async (currentDraftKeyforge, setIsLoading) => {
         try {
             await creationPoolCartes(currentDraftKeyforge, setIsLoading, setPoolCartesGlobal);
@@ -138,146 +143,12 @@
         }
     }
 
-    const draftStepsConfig = {
-        1: { type: "Banned", player: "J2", cleSetter: "factionBanJ2" },
-        2: { type: "Banned", player: "J1", cleSetter: "factionBanJ1" },
-        3: { type: "Picked", player: "J2", slot: "A", cleSetter: "factionPickAJ2", cleSetterBisA: "factionPickAJ2LienImg", cleSetterBisB: "libelleFactionAJ2", cleSetterBisC: "couleurAJ2" },
-        4: { type: "Picked", player: "J2", slot: "B", cleSetter: "factionPickBJ2", cleSetterBisA: "factionPickBJ2LienImg", cleSetterBisB: "libelleFactionBJ2", cleSetterBisC: "couleurBJ2" },
-        5: { type: "Picked", player: "J2", slot: "C", cleSetter: "factionPickCJ2", cleSetterBisA: "factionPickCJ2LienImg", cleSetterBisB: "libelleFactionCJ2", cleSetterBisC: "couleurCJ2" },
-        6: { type: "Picked", player: "J1", slot: "A", cleSetter: "factionPickAJ1", cleSetterBisA: "factionPickAJ1LienImg", cleSetterBisB: "libelleFactionAJ1", cleSetterBisC: "couleurAJ1" },
-        7: { type: "Picked", player: "J1", slot: "B", cleSetter: "factionPickBJ1", cleSetterBisA: "factionPickBJ1LienImg", cleSetterBisB: "libelleFactionBJ1", cleSetterBisC: "couleurBJ1" }
-    };
-
-    const step = draftStepsConfig[etapeDraft];
-
-    const setfactionsForCurrentDraftKeyforge = {
-    J1: setfactionsForCurrentDraftKeyforgeJA,
-    J2: setfactionsForCurrentDraftKeyforgeJB,
-    };
-
-    // Phase de picks/bans factions pour J1/J2
-    const handleClickOnPickBanFaction = (idFaction, LienImgFaction, NomFaction, CouleurFaction) => {
-        if (!step) return;
-        if(etapeDraft < 8) {
-            setfactionsForCurrentDraftKeyforge[step.player](prevListeFactions => 
-                prevListeFactions?.map(prevFaction =>
-                prevFaction.ID === idFaction
-                ? {...prevFaction,
-                    [step.type]: !prevFaction[step.type]}
-                : prevFaction
-            ))
-
-            setFactionPickBan(prev => ({
-                ...prev,
-
-                ...(step.cleSetter && {
-                    [step.cleSetter]: idFaction
-                }),
-
-                ...(step.cleSetterBisA && {
-                    [step.cleSetterBisA]: LienImgFaction
-                }),
-
-                ...(step.cleSetterBisB && {
-                    [step.cleSetterBisB]: NomFaction
-                }),
-
-                ...(step.cleSetterBisC && {
-                    [step.cleSetterBisC]: CouleurFaction
-                }),
-            }));
-        }  
-        else if (etapeDraft == 8)
-        {
-            processPicksBansFactions(idFaction, LienImgFaction, NomFaction, CouleurFaction);
-        }
-    };  
-
-    // Saisie en base de données des factions picks et bans + en cas de succès -> refresh useStates
-    const processPicksBansFactions = async (idFaction, LienImgFaction, NomFaction, CouleurFaction) => {
-            try {
-                const tempoFactionPickBan = {
-                    ...factionsPickBan,
-                        factionPickCJ1: idFaction,
-                        factionPickCJ1LienImg: LienImgFaction,
-                        libelleFactionCJ1: NomFaction,
-                        couleurCJ1: CouleurFaction
-                }
-                await updateFactionsCurrentDraft(currentDraftKeyforge[0].ID, 
-                    tempoFactionPickBan.factionBanJ1, 
-                    tempoFactionPickBan.factionPickAJ1, 
-                    tempoFactionPickBan.factionPickBJ1, 
-                    tempoFactionPickBan.factionPickCJ1, 
-                    tempoFactionPickBan.factionBanJ2, 
-                    tempoFactionPickBan.factionPickAJ2, 
-                    tempoFactionPickBan.factionPickBJ2, 
-                    tempoFactionPickBan.factionPickCJ2, 
-                    tempoFactionPickBan.factionPickAJ1LienImg, 
-                    tempoFactionPickBan.factionPickBJ1LienImg, 
-                    tempoFactionPickBan.factionPickCJ1LienImg, 
-                    tempoFactionPickBan.factionPickAJ2LienImg, 
-                    tempoFactionPickBan.factionPickBJ2LienImg, 
-                    tempoFactionPickBan.factionPickCJ2LienImg,
-                    tempoFactionPickBan.couleurAJ1,
-                    tempoFactionPickBan.couleurBJ1,
-                    tempoFactionPickBan.couleurCJ1,
-                    tempoFactionPickBan.couleurAJ2,
-                    tempoFactionPickBan.couleurBJ2,
-                    tempoFactionPickBan.couleurCJ2,
-                    tempoFactionPickBan.libelleFactionAJ1,
-                    tempoFactionPickBan.libelleFactionBJ1,
-                    tempoFactionPickBan.libelleFactionCJ1,
-                    tempoFactionPickBan.libelleFactionAJ2,
-                    tempoFactionPickBan.libelleFactionBJ2,
-                    tempoFactionPickBan.libelleFactionCJ2);
-                setfactionsForCurrentDraftKeyforgeJA(prevListeFactions => 
-                    prevListeFactions?.map(prevFaction =>
-                    prevFaction.ID === idFaction
-                    ? {...prevFaction,
-                        Picked: !prevFaction.Picked}
-                    : prevFaction
-                ))
-                setFactionPickBan(tempoFactionPickBan);
-                setCurrentDraftKeyforge(prev => [{
-                    ...prev[0], 
-                    FactionBanJ1: tempoFactionPickBan.factionBanJ1,
-                    FactionBanJ2: tempoFactionPickBan.factionBanJ2,
-                    FactionPickAJ1: tempoFactionPickBan.factionPickAJ1,
-                    FactionPickBJ1: tempoFactionPickBan.factionPickBJ1,
-                    FactionPickCJ1: tempoFactionPickBan.factionPickCJ1,
-                    FactionPickAJ2: tempoFactionPickBan.factionPickAJ2,
-                    FactionPickBJ2: tempoFactionPickBan.factionPickBJ2,
-                    FactionPickCJ2: tempoFactionPickBan.factionPickCJ2,
-                    LienImgAJ1: tempoFactionPickBan.factionPickAJ1LienImg,
-                    LienImgBJ1: tempoFactionPickBan.factionPickBJ1LienImg,
-                    LienImgCJ1: tempoFactionPickBan.factionPickCJ1LienImg,
-                    LienImgAJ2: tempoFactionPickBan.factionPickAJ2LienImg,
-                    LienImgBJ2: tempoFactionPickBan.factionPickBJ2LienImg,
-                    LienImgCJ2: tempoFactionPickBan.factionPickCJ2LienImg,
-                    CouleurAJ1: tempoFactionPickBan.couleurAJ1,
-                    CouleurBJ1: tempoFactionPickBan.couleurBJ1,
-                    CouleurCJ1: tempoFactionPickBan.couleurCJ1,
-                    CouleurAJ2: tempoFactionPickBan.couleurAJ2,
-                    CouleurBJ2: tempoFactionPickBan.couleurBJ2,
-                    CouleurCJ2: tempoFactionPickBan.couleurCJ2,
-                    LibelleFactionAJ1: tempoFactionPickBan.libelleFactionAJ1,
-                    LibelleFactionBJ1: tempoFactionPickBan.libelleFactionBJ1,
-                    LibelleFactionCJ1: tempoFactionPickBan.libelleFactionCJ1,
-                    LibelleFactionAJ2: tempoFactionPickBan.libelleFactionAJ2,
-                    LibelleFactionBJ2: tempoFactionPickBan.libelleFactionBJ2,
-                    LibelleFactionCJ2: tempoFactionPickBan.libelleFactionCJ2,
-                    Etat: 10
-                }]);
-            } catch(e) {
-                console.error(e);
-                setError("Erreur lors de la mise à jour");
-            }
-    }
-
+    const modeDraftFaction = etapeDraft >= 1 && etapeDraft < 9;
     const isReadyToLaunchPhasePickBanFactions = currentDraftKeyforge && !modeDraftFaction && etapeDraft < 9
     const isPhasePickBanFactions = modeDraftFaction && etapeDraft < 9
     const j1isDrafting = etapeDraft == 2 || etapeDraft == 6 || etapeDraft == 7 || etapeDraft == 8
     const j2isDrafting = etapeDraft == 1 || etapeDraft == 3 || etapeDraft == 4 || etapeDraft == 5
+
     const isNotPickedAndNotBanned = (faction) => { 
         return !faction.Banned && !faction.Picked
     };
@@ -298,9 +169,10 @@
 
     const factionsForPickBanCurrentPlayer = 
         j1isDrafting 
-        ? factionsForCurrentDraftKeyforgeJA 
-        : j2isDrafting && factionsForCurrentDraftKeyforgeJB;
-
+        ? factionsJA 
+        : j2isDrafting 
+            ? factionsJB 
+            : null;
 
     return (
         <>
@@ -308,6 +180,7 @@
             <Tooltip content="Nombre de cartes validées">
                 <button>Hover moi</button>
             </Tooltip>
+            {/* Cadre top : resume */}
             <div className="container-xl mt-3">
                 <div className="row mb-4">
                     <div className="col-12">
@@ -366,7 +239,6 @@
                                                         current.Libelle, 
                                                         current.CouleurRGB
                                                     );
-                                                    setEtapeDraft(prev => prev + 1);
                                                 }
                                             }}
                                         />
@@ -379,7 +251,7 @@
                 }
 
                 {/* Draft par trinomes : boutons J1/J2*/}
-                {etapeDraft >= 10 &&
+                {etapeDraft >= 9 &&
                     <DraftKeyforgePartBoutonsJ1J2 
                         currentDraft={currentDraftKeyforge?.[0]}
                         setCurrentDraft={setCurrentDraftKeyforge}

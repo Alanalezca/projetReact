@@ -36,36 +36,34 @@ const DraftKeyforgePartBoutonsJ1J2 = ({currentDraft, setCurrentDraft, draftTermi
     };
     
 
-    const handleClickBoutonJoueur = ({
-    isDraftFinished,
-    joueurFini,
-    joueurIndex
+    const handleClickBoutonJoueur = async ({
+        isDraftFinished,
+        joueurFini,
+        joueurIndex
     }) => {
-        return async () => {
-            if (!isDraftFinished) {
+        if (!isDraftFinished) {
 
-                if (joueurFini) return;
+            if (joueurFini) return;
 
-                try {
-                    await updateFocusSurJoueurAouB(currentDraft.ID, joueurIndex);
-                    await updateEtapeDraft(currentDraft.ID, 10);
+            try {
+                await updateFocusSurJoueurAouB(currentDraft.ID, joueurIndex);
+                await updateEtapeDraft(currentDraft.ID, 10);
 
-                    setCurrentDraft(prev => [{
+                setCurrentDraft(prev => [{
                     ...prev[0],
                     DraftEnCoursPourJoueurAouB: joueurIndex,
                     Etat: 11
-                    }]);
+                }]);
 
-                    setDraftEnCoursParJoueurAouB(joueurIndex);
+                setDraftEnCoursParJoueurAouB(joueurIndex);
 
-                } catch (e) {
-                    console.error(e);
-                }
-
-            } else {
-                setfocusAouBforStats(joueurIndex);
+            } catch (e) {
+                console.error(e);
             }
-        };
+
+        } else {
+            setfocusAouBforStats(joueurIndex);
+        }
     };
 
     const getButtonLabel = (pseudo) => {
@@ -88,11 +86,13 @@ const DraftKeyforgePartBoutonsJ1J2 = ({currentDraft, setCurrentDraft, draftTermi
                                 })} 
                             btn-lg`} 
                         disabled={draftEnCoursParJoueurAouB == 1} 
-                        onClick={handleClickBoutonJoueur({
-                            isDraftFinished: draftTermine, 
-                            joueurFini: currentDraft.DraftJ1Finished, 
-                            joueurIndex: 0 
-                        })}    
+                        onClick={() =>
+                            handleClickBoutonJoueur({
+                                isDraftFinished: draftTermine,
+                                joueurFini: currentDraft.DraftJ1Finished,
+                                joueurIndex: 0
+                            })
+                        }  
                     >
                         {getButtonLabel(currentDraft?.PseudoJ1)}
                     </Button>
@@ -109,11 +109,13 @@ const DraftKeyforgePartBoutonsJ1J2 = ({currentDraft, setCurrentDraft, draftTermi
                                 })} 
                             btn-lg`} 
                         disabled={draftEnCoursParJoueurAouB == 0} 
-                        onClick={handleClickBoutonJoueur({
-                            isDraftFinished: draftTermine, 
-                            joueurFini: currentDraft.DraftJ2Finished, 
-                            joueurIndex: 1 
-                        })}
+                        onClick={() =>
+                            handleClickBoutonJoueur({
+                                isDraftFinished: draftTermine,
+                                joueurFini: currentDraft.DraftJ2Finished,
+                                joueurIndex: 1
+                            })
+                        }
                     >
                         {getButtonLabel(currentDraft?.PseudoJ2)}
                     </Button>
